@@ -1,6 +1,7 @@
-// models/agendamento.model.ts
 export interface Agendamento {
-  clienteNome: string;
-  servicos: number[]; // IDs dos serviços selecionados
-  dataHora: string;   // Data e hora do agendamento
+  id?: number;
+  diaSemana: string; // "SEGUNDA", "TERCA", etc.
+  horario: string; // formato "HH:mm"
+  bloqueado: boolean;
+  disponivel: boolean;
 }

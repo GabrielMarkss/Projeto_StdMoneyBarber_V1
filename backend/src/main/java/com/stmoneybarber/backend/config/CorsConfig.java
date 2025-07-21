@@ -15,7 +15,6 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
-
 }
 
 // import org.springframework.context.annotation.Configuration;

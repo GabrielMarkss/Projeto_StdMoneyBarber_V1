@@ -1,28 +1,25 @@
 package com.stmoneybarber.backend.model;
 
 import jakarta.persistence.*;
-import java.time.LocalTime;
 import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 @Entity
-public class Horario {
+public class Agendamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private DayOfWeek diaSemana;
 
     private LocalTime horario;
 
-    private boolean disponivel = true;
+    private boolean bloqueado;
+    private boolean disponivel;
 
-    private boolean bloqueado = false;
-
-    private String motivoBloqueio;
-
-    private String clienteNome;
-
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -47,14 +44,6 @@ public class Horario {
         this.horario = horario;
     }
 
-    public boolean isDisponivel() {
-        return disponivel;
-    }
-
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
-    }
-
     public boolean isBloqueado() {
         return bloqueado;
     }
@@ -63,19 +52,11 @@ public class Horario {
         this.bloqueado = bloqueado;
     }
 
-    public String getMotivoBloqueio() {
-        return motivoBloqueio;
+    public boolean isDisponivel() {
+        return disponivel;
     }
 
-    public void setMotivoBloqueio(String motivoBloqueio) {
-        this.motivoBloqueio = motivoBloqueio;
-    }
-
-    public String getClienteNome() {
-        return clienteNome;
-    }
-
-    public void setClienteNome(String clienteNome) {
-        this.clienteNome = clienteNome;
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
     }
 }

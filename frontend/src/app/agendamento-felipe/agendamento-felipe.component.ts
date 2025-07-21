@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
 import { UsuarioService } from '../service/usuario.service';
 import { NotificacaoService } from '../service/notificacao.service';
 import { ServicoService } from '../service/servico.service';
-import { HorarioService } from '../service/horario.service';
+import { AgendamentoService } from '../service/agendamento.service';
 
 import { Notificacao } from '../models/Notificacao.model';
 import { Servico } from '../models/servico.model';
-import { Horario } from '../models/horario.model';
-
-import { FormsModule, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Agendamento } from '../models/agendamento.model';
 
 @Component({
   selector: 'app-agendamento-felipe',
@@ -22,7 +22,7 @@ import { RouterModule } from '@angular/router';
 export class AgendamentoFelipeComponent implements OnInit {
   dataHoje: string = '';
 
-  // ===== NAVBAR - notificações =====
+  // NAVBAR - notificações
   menuAberto = false;
   mostrarNotificacoes = false;
   mostrarFormulario = false;
@@ -36,13 +36,15 @@ export class AgendamentoFelipeComponent implements OnInit {
   };
   imagemSelecionada: File | null = null;
 
-  // ===== SERVICOS =====
+  // SERVIÇOS
   servicos: Servico[] = [];
   servicosSelecionados: number[] = [];
+
+  // BARBEIROS
   barbeiros: string[] = ['João', 'Pedro', 'Lucas'];
   barbeiroSelecionado: any = null;
 
-  // ===== CUPONS E RESUMO VALOR =====
+  // CUPOM E VALORES
   cuponsDisponiveis = [
     { id: 1, nome: 'Fidelidade10', desconto: 10 },
     { id: 2, nome: 'Desconto20', desconto: 20 },
@@ -52,31 +54,37 @@ export class AgendamentoFelipeComponent implements OnInit {
   descontoAplicado: number = 0.0;
   valorFinal: number = 0.0;
 
-  // ===== HORARIOS =====
+  // HORÁRIOS
   diasSemana = [
-    { label: 'DOM', value: 'DOMINGO' },
-    { label: 'SEG', value: 'SEGUNDA' },
-    { label: 'TER', value: 'TERÇA' },
-    { label: 'QUA', value: 'QUARTA' },
-    { label: 'QUI', value: 'QUINTA' },
-    { label: 'SEX', value: 'SEXTA' },
-    { label: 'SAB', value: 'SABADO' },
+    { nome: 'DOM', sigla: 'DOM', backend: 'SUNDAY' },
+    { nome: 'SEG', sigla: 'SEG', backend: 'MONDAY' },
+    { nome: 'TER', sigla: 'TER', backend: 'TUESDAY' },
+    { nome: 'QUA', sigla: 'QUA', backend: 'WEDNESDAY' },
+    { nome: 'QUI', sigla: 'QUI', backend: 'THURSDAY' },
+    { nome: 'SEX', sigla: 'SEX', backend: 'FRIDAY' },
+    { nome: 'SAB', sigla: 'SAB', backend: 'SATURDAY' },
   ];
-
-  diaSelecionado = 'TERÇA';
-  horarios: Horario[] = [];
+  diaSelecionado = 'SEG';
+  horarios: Agendamento[] = [];
   mostrarFormularioHorario = false;
-  horarioParaEditar: Horario | null = null;
+  modoEdicao = false;
+  horarioEditando: Agendamento | null = null;
+  novoHorario: string = '';
+  modoApagarHorario = false;
+  horariosSelecionadosParaApagar = new Set<number>();
+
+  // NOVOS campos para bloqueio
+  selecionarTodos: boolean = false;
+  horariosSelecionadosParaBloqueio = new Set<number>();
 
   constructor(
     public usuarioService: UsuarioService,
     private notificacaoService: NotificacaoService,
     private servicoService: ServicoService,
-    private horarioService: HorarioService,
+    private agendamentoService: AgendamentoService,
     private fb: FormBuilder
   ) {}
 
-  // ===== CICLO DE VIDA =====
   ngOnInit(): void {
     const data = new Date();
     const dias = [
@@ -118,28 +126,25 @@ export class AgendamentoFelipeComponent implements OnInit {
     this.carregarHorarios();
   }
 
-  // ===== MENU DROPDOWN =====
   abrirMenu() {
     clearTimeout(this.menuTimeout);
     this.menuAberto = true;
   }
 
   fecharMenu() {
-    this.menuTimeout = setTimeout(() => {
-      this.menuAberto = false;
-    }, 150);
+    this.menuTimeout = setTimeout(() => (this.menuAberto = false), 150);
   }
 
-  // ===== NOTIFICAÇÕES =====
   abrirNotificacao() {
     clearTimeout(this.notificacaoTimeout);
     this.mostrarNotificacoes = true;
   }
 
   fecharNotificacao() {
-    this.notificacaoTimeout = setTimeout(() => {
-      this.mostrarNotificacoes = false;
-    }, 150);
+    this.notificacaoTimeout = setTimeout(
+      () => (this.mostrarNotificacoes = false),
+      150
+    );
   }
 
   abrirFormularioNotificacao() {
@@ -148,11 +153,7 @@ export class AgendamentoFelipeComponent implements OnInit {
 
   cancelarFormulario() {
     this.mostrarFormulario = false;
-    this.nova = {
-      titulo: '',
-      descricao: '',
-      imagemUrl: '',
-    };
+    this.nova = { titulo: '', descricao: '', imagemUrl: '' };
     this.imagemSelecionada = null;
   }
 
@@ -185,20 +186,9 @@ export class AgendamentoFelipeComponent implements OnInit {
   }
 
   listarNotificacoes() {
-    this.notificacaoService.listar().subscribe((res) => {
-      this.notificacoes = res;
-    });
-  }
-
-  confirmarRemocao(notificacao: Notificacao) {
-    const confirmar = confirm('Você deseja remover esta notificação?');
-    if (!confirmar) return;
-
-    const isAdmin = this.usuarioService.usuarioEhAdmin();
-    this.notificacaoService.deletar(notificacao.id!, true, isAdmin).subscribe({
-      next: () => this.listarNotificacoes(),
-      error: (err) => alert(err.error || 'Erro ao remover notificação'),
-    });
+    this.notificacaoService
+      .listar()
+      .subscribe((res) => (this.notificacoes = res));
   }
 
   editarNotificacao(n: Notificacao) {
@@ -206,25 +196,26 @@ export class AgendamentoFelipeComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-  // ===== SERVIÇOS =====
-  carregarServicos() {
-    this.servicoService.listar().subscribe((servicos) => {
-      this.servicos = servicos;
+  confirmarRemocao(notificacao: Notificacao) {
+    if (!confirm('Você deseja remover esta notificação?')) return;
+    const isAdmin = this.usuarioService.usuarioEhAdmin();
+    this.notificacaoService.deletar(notificacao.id!, true, isAdmin).subscribe({
+      next: () => this.listarNotificacoes(),
+      error: (err) => alert(err.error || 'Erro ao remover notificação'),
     });
   }
 
-  toggleServico(id: number, event: Event) {
-    const checkbox = event.target as HTMLInputElement;
-    const checked = checkbox.checked;
+  carregarServicos() {
+    this.servicoService.listar().subscribe((res) => (this.servicos = res));
+  }
 
-    if (checked) {
-      this.servicosSelecionados.push(id);
-    } else {
+  toggleServico(id: number, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) this.servicosSelecionados.push(id);
+    else
       this.servicosSelecionados = this.servicosSelecionados.filter(
         (s) => s !== id
       );
-    }
-
     this.atualizarValores();
   }
 
@@ -236,7 +227,6 @@ export class AgendamentoFelipeComponent implements OnInit {
     this.valorTotal = this.servicos
       .filter((s) => this.servicosSelecionados.includes(s.id!))
       .reduce((total, s) => total + (s.preco || 0), 0);
-
     const cupom = this.cuponsDisponiveis.find(
       (c) => c.id === Number(this.cupomSelecionadoId)
     );
@@ -255,114 +245,161 @@ export class AgendamentoFelipeComponent implements OnInit {
       desconto: this.descontoAplicado,
       valorFinal: this.valorFinal,
     };
-
     console.log('Agendamento confirmado:', agendamento);
     alert('Agendamento confirmado com sucesso!');
   }
 
-  // ===== HORÁRIOS =====
-  selecionarDia(dia: string): void {
+  selecionarDia(dia: string) {
     this.diaSelecionado = dia;
     this.carregarHorarios();
   }
 
-  carregarHorarios(): void {
-    this.horarioService.getPorDia(this.diaSelecionado).subscribe((data) => {
-      this.horarios = data;
+  carregarHorarios() {
+    const dia = this.diasSemana.find((d) => d.sigla === this.diaSelecionado);
+    if (!dia) return;
+    this.agendamentoService.listarPorDia(dia.backend).subscribe((res) => {
+      this.horarios = res.sort((a, b) => a.horario.localeCompare(b.horario));
+      // Limpa seleção para bloqueio ao trocar dia
+      this.horariosSelecionadosParaBloqueio.clear();
+      this.selecionarTodos = false;
     });
   }
 
-  abrirFormularioCriarHorario() {
-    this.horarioParaEditar = null;
-    this.mostrarFormularioHorario = true;
+  ativarModoApagar() {
+    this.modoApagarHorario = !this.modoApagarHorario;
+    if (this.modoApagarHorario) {
+      this.horariosSelecionadosParaApagar.clear();
+    }
   }
 
-  editarHorario(horario: Horario) {
-    this.horarioParaEditar = { ...horario };
-    this.mostrarFormularioHorario = true;
+  apagarHorarioSelecionado(h: Agendamento) {
+    if (this.horariosSelecionadosParaApagar.has(h.id!)) {
+      this.horariosSelecionadosParaApagar.delete(h.id!);
+    } else {
+      this.horariosSelecionadosParaApagar.add(h.id!);
+    }
   }
 
-  confirmarRemoverHorario(horario: Horario) {
-    const confirmar = confirm(`Deseja remover o horário ${horario.horario}?`);
-    if (confirmar) {
-      this.horarioService.remover(horario.id!).subscribe(() => {
-        this.carregarHorarios();
+  confirmarApagarHorarios() {
+    if (!this.horariosSelecionadosParaApagar.size) return;
+    if (!confirm('Confirma a exclusão dos horários selecionados?')) return;
+    const ids = Array.from(this.horariosSelecionadosParaApagar);
+    this.agendamentoService.deletarVarios(ids).subscribe(() => {
+      this.horariosSelecionadosParaApagar.clear();
+      this.carregarHorarios();
+    });
+  }
+
+  // Clique para bloquear horários — só funciona para admins, não no modo apagar
+  clicarHorario(h: Agendamento) {
+    if (this.modoApagarHorario) {
+      this.apagarHorarioSelecionado(h);
+      return;
+    }
+
+    if (this.usuarioService.usuarioEhAdmin()) {
+      // Só seleciona para bloqueio se não estiver bloqueado
+      if (this.horariosSelecionadosParaBloqueio.has(h.id!)) {
+        this.horariosSelecionadosParaBloqueio.delete(h.id!);
+      } else if (!h.bloqueado) {
+        this.horariosSelecionadosParaBloqueio.add(h.id!);
+      }
+    }
+  }
+
+  toggleSelecionarTodos() {
+    this.horariosSelecionadosParaBloqueio.clear();
+
+    if (this.selecionarTodos) {
+      this.horarios.forEach((h) => {
+        if (!h.bloqueado) {
+          this.horariosSelecionadosParaBloqueio.add(h.id!);
+        }
       });
     }
   }
 
-  toggleBloquearHorario(horario: Horario) {
-    const acao = horario.bloqueado ? 'desbloquear' : 'bloquear';
-    const confirmar = confirm(`Deseja ${acao} o horário ${horario.horario}?`);
-    if (!confirmar) return;
+  bloquearHorariosSelecionados() {
+    if (this.horariosSelecionadosParaBloqueio.size === 0) return;
 
-    this.horarioService
-      .atualizar(horario.id!, { ...horario, bloqueado: !horario.bloqueado })
-      .subscribe(() => {
+    const ids = Array.from(this.horariosSelecionadosParaBloqueio);
+
+    if (!confirm('Confirma o bloqueio dos horários selecionados?')) return;
+
+    this.agendamentoService.bloquearHorarios(ids).subscribe({
+      next: () => {
         this.carregarHorarios();
-      });
-  }
-
-  bloquearDiaSelecionado(): void {
-    const confirmar = confirm(
-      `Deseja bloquear o dia ${this.diaSelecionado} inteiro?`
-    );
-    if (!confirmar) return;
-
-    this.horarioService.bloquearDia(this.diaSelecionado).subscribe(
-      () => {
-        alert(`Dia ${this.diaSelecionado} bloqueado com sucesso.`);
+        this.horariosSelecionadosParaBloqueio.clear();
+        this.selecionarTodos = false;
+      },
+      error: (err) => {
+        alert('Erro ao bloquear horários: ' + (err.error || err.message));
         this.carregarHorarios();
       },
-      (error) => {
-        alert('Erro ao bloquear o dia.');
-      }
-    );
+    });
   }
 
-  removerHorario(horario: Horario): void {
-    const confirmar = confirm(`Deseja remover o horário ${horario.horario}?`);
-    if (!confirmar) return;
-
-    this.horarioService.remover(horario.id!).subscribe(
-      () => {
-        this.carregarHorarios();
-      },
-      (error) => {
-        alert('Erro ao remover o horário.');
-      }
-    );
+  criarHorario() {
+    const dia = this.diasSemana.find((d) => d.sigla === this.diaSelecionado);
+    if (!dia || !this.novoHorario) return;
+    const novo: Agendamento = {
+      diaSemana: dia.backend,
+      horario: this.novoHorario,
+      bloqueado: false,
+      disponivel: true,
+    };
+    this.agendamentoService.criar(novo).subscribe(() => {
+      this.novoHorario = '';
+      this.mostrarFormularioHorario = false;
+      this.carregarHorarios();
+    });
   }
 
-  bloquearHorario(horario: Horario): void {
-    const acao = horario.bloqueado ? 'desbloquear' : 'bloquear';
-    const confirmar = confirm(`Deseja ${acao} o horário ${horario.horario}?`);
-    if (!confirmar) return;
+  editarHorario() {
+    if (!this.horarioEditando || !this.novoHorario) return;
 
-    this.horarioService
-      .atualizar(horario.id!, { ...horario, bloqueado: !horario.bloqueado })
-      .subscribe(
-        () => {
-          this.carregarHorarios();
-        },
-        (error) => {
-          alert(`Erro ao ${acao} o horário.`);
-        }
-      );
+    const atualizado: Agendamento = {
+      ...this.horarioEditando,
+      horario: this.novoHorario,
+    };
+
+    this.agendamentoService.editar(atualizado).subscribe(() => {
+      this.cancelarFormularioHorario();
+      this.carregarHorarios();
+    });
   }
 
-  // ===== GETTERS FILTRADOS PARA HTML =====
-  get horariosManha(): Horario[] {
-    return this.horarios.filter((h) => h.horario < '12:00');
+  abrirFormularioHorario() {
+    this.modoEdicao = false;
+    this.horarioEditando = null;
+    this.novoHorario = '';
+    this.mostrarFormularioHorario = true;
   }
 
-  get horariosTarde(): Horario[] {
-    return this.horarios.filter(
-      (h) => h.horario >= '12:00' && h.horario < '18:00'
-    );
+  abrirFormularioEditarHorario(h: Agendamento) {
+    this.modoEdicao = true;
+    this.horarioEditando = h;
+    this.novoHorario = h.horario;
+    this.mostrarFormularioHorario = true;
   }
 
-  get horariosNoite(): Horario[] {
-    return this.horarios.filter((h) => h.horario >= '18:00');
+  cancelarFormularioHorario() {
+    this.mostrarFormularioHorario = false;
+    this.novoHorario = '';
+    this.horarioEditando = null;
+    this.modoEdicao = false;
+  }
+
+  obterHorariosPorPeriodo(periodo: 'manha' | 'tarde' | 'noite') {
+    const filtro = {
+      manha: (h: string) => h >= '06:00' && h < '12:00',
+      tarde: (h: string) => h >= '12:00' && h < '18:00',
+      noite: (h: string) => h >= '18:00' || h < '06:00',
+    };
+    return this.horarios.filter((h) => filtro[periodo](h.horario));
+  }
+
+  formatarHorario(horario: string): string {
+    return horario.slice(0, 5);
   }
 }
