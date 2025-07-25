@@ -1,3 +1,4 @@
+/* ====== NAVBAR ====== */
 .navbar {
   background-color: #111;
   color: white;
@@ -7,11 +8,17 @@
   padding: 1rem;
 }
 
-.greeting small {
-  color: #aaa;
+.greeting div {
+  font-size: 20px;
+  font-weight: bold;
 }
 
-/* POPUP DE NOTIFICAÇÕES */
+.greeting small {
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* ====== NOTIFICAÇÃO - POPUP E ÍCONES ====== */
 .notificacao-wrapper {
   position: relative;
   cursor: pointer;
@@ -30,39 +37,42 @@
   font-family: sans-serif;
 }
 
-.editar-notificacao {
-  position: absolute;
-  top: 6px;
-  right: 32px; /* Posição mais à esquerda */
+.icone-acao {
   font-size: 16px;
-  font-weight: bold;
-  color: #888;
   cursor: pointer;
   transition: color 0.3s ease;
   user-select: none;
+  background: none;
+  border: none;
 }
 
-.apagar-notificacao {
+.icone-acao.notificacao {
   position: absolute;
   top: 6px;
-  right: 8px; /* Continua no canto */
-  font-size: 16px;
-  font-weight: bold;
-  color: #888;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  user-select: none;
 }
 
-.editar-notificacao:hover {
+.icone-acao.notificacao[title="Editar notificação"] {
+  right: 32px;
+}
+
+.icone-acao.notificacao[title="Remover notificação"] {
+  right: 8px;
+}
+
+.icone-acao.editar:hover {
   color: blue;
 }
 
-.apagar-notificacao:hover {
+.icone-acao.apagar:hover {
   color: red;
 }
 
-/* Cartão de notificação */
+.icone-acao.tabela {
+  position: relative;
+  color: #888;
+}
+
+/* ====== NOTIFICAÇÃO - CONTEUDO ====== */
 .notificacao-card {
   display: flex;
   padding: 10px;
@@ -70,9 +80,14 @@
   align-items: center;
   gap: 10px;
   position: relative;
+  border: none;
 }
 
-/* Imagem lateral esquerda */
+.notificacao-card:hover {
+  background-color: #eee;
+  border-radius: 6px;
+}
+
 .notificacao-imagem {
   width: 55px;
   height: 55px;
@@ -84,7 +99,6 @@
   text-align: center;
 }
 
-/* Conteúdo da notificação */
 .notificacao-conteudo {
   flex: 1;
   overflow: hidden;
@@ -102,13 +116,12 @@
   color: #626262;
   line-height: 1.1;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Máximo de 3 linhas */
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Botão inferior */
 .nova-notificacao {
   padding: 6px;
   text-align: center;
@@ -124,9 +137,7 @@
   background-color: #f0f0f0;
 }
 
-/* FORMULARIO NOTIFICAÇÃO */
-
-/* Estilo geral do modal */
+/* ====== FORMULÁRIO DE NOTIFICAÇÃO ====== */
 .formulario-modal {
   position: fixed;
   top: 50%;
@@ -141,7 +152,6 @@
   font-family: Arial, sans-serif;
 }
 
-/* Inputs e textarea */
 .formulario-modal input[type="text"],
 .formulario-modal textarea {
   width: 100%;
@@ -158,19 +168,16 @@
   color: #bbb;
 }
 
-/* Input file */
 .formulario-modal input[type="file"] {
   margin-bottom: 12px;
 }
 
-/* Container dos botões */
 .formulario-modal .botoes-container {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-/* Botão Cancelar */
 .formulario-modal button.cancelar {
   background: white;
   color: #f46d25;
@@ -187,7 +194,6 @@
   color: white;
 }
 
-/* Botão Salvar */
 .formulario-modal button.salvar {
   background-color: #f46d25;
   border: none;
@@ -199,28 +205,25 @@
   transition: background-color 0.3s ease;
 }
 
-/* Botão Salvar desabilitado */
 .formulario-modal button.salvar:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-/* Botão Salvar hover (ativo) */
 .formulario-modal button.salvar:not(:disabled):hover {
   background-color: #d05e20;
 }
 
-/* MENU DROPDOWN */
-
+/* ====== MENU DROPDOWN ====== */
 .dropdown {
   position: relative;
+  z-index: 9999;
 }
 
 .dropdown-toggle {
   background: none;
   border: none;
   color: white;
-  margin-right: 1rem;
   font-size: 2rem;
   cursor: pointer;
   font-weight: bold;
@@ -236,7 +239,7 @@
   padding: 2px;
   margin: 10px;
   min-width: 160px;
-  z-index: 10;
+  z-index: 9999;
 }
 
 .dropdown-menu li a {
@@ -244,18 +247,724 @@
   padding: 10px 15px;
   color: white;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .dropdown-menu li a:hover {
-  background-color: #555;
+  background-color: #444;
 }
 
-@media (min-width: 769px) {
-  .bottom-nav {
-    display: none !important;
-  }
+/* ===== CONTAINER GERAL ===== */
+.container-agendamento {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
 }
 
+/* COLUNAS */
+.coluna-esquerda,
+.coluna-direita {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.coluna-direita {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== SERVIÇOS ===== */
+.servico-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 17px;
+  user-select: none;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox-container .checkmark {
+  position: absolute;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #f46d25;
+  border-radius: 4px;
+}
+
+.checkbox-container input:checked~.checkmark {
+  background-color: #f46d25;
+  border: 1px solid #f46d25;
+}
+
+.checkbox-container .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-container input:checked~.checkmark:after {
+  display: block;
+}
+
+.servico-nome {
+  flex: 1;
+  font-weight: 500;
+}
+
+.servico-preco {
+  font-weight: bold;
+  color: #333;
+}
+
+.des-blok {
+  background-color: white;
+  border: 1px solid #f46d25;
+  border-radius: 4px;
+  color: #f46d25;
+  font-weight: bold;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.des-blok:hover {
+  background-color: #f46d25;
+  color: white;
+}
+
+/* ===== TÍTULOS ===== */
+h3 {
+  font-size: 25px;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== DIAS DA SEMANA ===== */
+.dias-semana {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: -0.5rem;
+}
+
+.dias-semana.admin {
+  margin-bottom: 0.625rem;
+}
+
+.dias-semana button {
+  background-color: #eee;
+  border: none;
+  border-radius: 4px;
+  color: #f46d25;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dias-semana button:hover {
+  background-color: #f26c1e;
+  color: white;
+}
+
+.dias-semana .ativo {
+  background-color: #f26c1e;
+  color: white;
+}
+
+/* ===== AÇÕES ===== */
+.acoes {
+  display: flex;
+  gap: 10px;
+}
+
+.acoes button {
+  background-color: #f26c1e;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 8px 30px;
+  transition: background-color 0.3s ease;
+}
+
+.acoes button:hover {
+  background-color: #d35400;
+}
+
+/* ===== AVISO ===== */
+.aviso-fechado {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* ===== PERÍODOS E HORÁRIOS ===== */
+.periodo {
+  margin-top: 25px;
+}
+
+.periodo h4 {
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+.periodo .horarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.horario {
+  background-color: white;
+  border: 1px solid #f46d25;
+  border-radius: 5px;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  font-size: 17px;
+  justify-content: center;
+  min-height: 35px;
+  min-width: 80px;
+  overflow: hidden;
+  position: relative;
+  align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.horario.bloqueado {
+  background-color: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+.horario:hover:not(:has(.editar)) {
+  background-color: #f46d25 !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+.horario:hover:has(.editar) {
+  background-color: #f46d25 !important;
+  color: white !important;
+  font-weight: bold;
+  font-size: 18px;
+  padding-right: 25px;
+}
+
+.horario .editar {
+  color: white;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: auto;
+  position: absolute;
+  right: 5px;
+  transition: opacity 0.2s ease;
+  user-select: none;
+}
+
+.horario:hover .editar {
+  opacity: 1;
+}
+
+/* === CLIENTE SELECIONADO === */
+.horario.selecionado {
+  background-color: #f46d25 !important;
+  color: white !important;
+  font-weight: bold;
+  outline: 2px solid #f46d25;
+}
+
+/* === ADMIN SELECIONADO PARA BLOQUEIO === */
+.horario.selecionado.admin-bloqueio {
+  background-color: #f44336 !important;
+  /* vermelho */
+  outline: 2px solid #f46d25;
+}
+
+
+/* ===== SELECIONAR TODOS ===== */
+.selecionar-todos {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  margin: 10px 0;
+}
+
+/* ===== FORMULÁRIO POPUP DE HORÁRIO ===== */
+.formulario-horario-popup {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 90vw;
+  padding: 20px 25px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.formulario-horario-popup form {
+  display: flex;
+  flex-direction: column;
+}
+
+.formulario-horario-popup label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+.formulario-horario-popup input[type="time"] {
+  border: 1.5px solid #f46d25;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  margin-bottom: 18px;
+  outline: none;
+  padding: 8px 12px;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.formulario-horario-popup input[type="time"]:focus {
+  border-color: #d35400;
+  box-shadow: 0 0 5px rgba(244, 109, 37, 0.5);
+}
+
+.formulario-botoes {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-cancelar {
+  background-color: white;
+  border: 2px solid #f46d25;
+  border-radius: 5px;
+  color: #f46d25;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 8px 18px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-cancelar:hover {
+  background-color: #f46d25;
+  color: white;
+}
+
+.btn-salvar {
+  background-color: #f46d25;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 8px 18px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-salvar:hover {
+  background-color: #d35400;
+}
+
+
+/* ===== BOTÕES DIVERSOS ===== */
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* RESUMO AGENDAMENTO */
+.resumo-agendamento {
+  background: #f9f9f9;
+  padding: 30px 35px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: none;
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  margin-top: 40px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resumo-agendamento h2 {
+  font-size: 24px;
+  margin-bottom: 18px;
+  font-weight: bold;
+}
+
+.linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* alinhamento vertical central */
+  font-size: 17px;
+  gap: 12px;
+  /* espaço entre título e valor */
+}
+
+.linha strong {
+  font-weight: bold;
+}
+
+.linha.meio {
+  display: flex;
+  justify-content: space-between;
+  /* espaço entre texto+ícone e botão */
+  align-items: center;
+  /* alinha verticalmente ícone, texto e botão */
+  gap: 12px;
+  /* espaço entre ícone e texto */
+}
+
+.linha.meio>div {
+  display: flex;
+  align-items: center;
+  /* alinhamento vertical do ícone com o texto */
+  gap: 8px;
+  /* espaço entre ícone e texto */
+}
+
+.linha.meio img.icone {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
+
+.linha.meio button.link {
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #f46d25;
+  padding: 0;
+  margin-left: auto;
+  /* empurra o botão para a direita */
+  white-space: nowrap;
+  /* evita quebra do botão */
+}
+
+/* BOTÃO CONFIRMAR */
+.botao-confirmar {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.botao-confirmar button {
+  background-color: #f46d25;
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.botao-confirmar button:hover {
+  background-color: #d35400;
+}
+
+/* ===== BASE ===== */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-conteudo ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.popup-conteudo {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px 30px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== CUPOM ===== */
+.cupom-resgatar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.cupom-input {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-transform: uppercase;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.cupom-input:focus {
+  border-color: #f46d25;
+  box-shadow: 0 0 5px rgba(244, 109, 37, 0.5);
+}
+
+.botao-resgatar {
+  background-color: #f46d25;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+  height: 44px;
+}
+
+.botao-resgatar:hover {
+  background-color: #d35400;
+}
+
+.cupom-opcao {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 15px;
+  padding: 14px 16px;
+  border: 1px solid #f46d25;
+  border-radius: 8px;
+  background-color: #fff;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+
+.cupom-opcao:hover {
+  box-shadow: 0 2px 10px rgba(244, 109, 37, 0.15);
+}
+
+.cupom-opcao img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.cupom-opcao .conteudo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.cupom-opcao .titulo {
+  font-weight: bold;
+  font-size: 18px;
+  color: #000;
+  margin: 0;
+}
+
+.cupom-opcao .descricao {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+}
+
+.cupom-opcao .icone-info {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.cupom-opcao .icone-info:hover {
+  opacity: 1;
+  color: #f46d25;
+}
+
+.cupom-opcao.selecionado {
+  background-color: #e7f1ff;
+  border-color: #f46d25;
+  font-weight: bold;
+}
+
+.cupom-opcao.nenhum {
+  font-style: italic;
+  color: #666;
+  justify-content: center;
+}
+
+/* ===== PAGAMENTO ===== */
+.opcoes-pagamento {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.opcao-pagamento {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.opcao-pagamento img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.opcao-pagamento.selecionado {
+  border-color: #007bff;
+  background-color: #eaf4ff;
+  font-weight: bold;
+}
+
+.botao-adicionar-cartao {
+  margin: 20px auto;
+  display: block;
+  background-color: #f46d25;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.botao-adicionar-cartao:hover {
+  background-color: #d35400;
+}
+
+/* ===== CARTÃO ===== */
+.campo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.campo label {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.campo input {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.campo-duplo {
+  display: flex;
+  gap: 12px;
+}
+
+.botoes-formulario {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+
+.botoes-formulario button {
+  background-color: #f46d25;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.botoes-formulario button:hover {
+  background-color: #d35400;
+}
+
+.popup-conteudo .fechar {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #f46d25;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+}
+
+/* MOBILE */
 @media (max-width: 768px) {
   .navbar {
     padding: 0.8rem 0 0.5rem 1rem !important;
@@ -263,8 +972,8 @@
     top: 0;
     left: 0;
     right: 0;
-    background-color: #000; /* mantém fundo preto como o seu */
-    z-index: 1001; /* um pouco acima da bottom-nav */
+    background-color: #000;
+    z-index: 1001;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -279,13 +988,13 @@
 
   .greeting div {
     font-size: 16px !important;
-    margin-bottom: 0.5px; /* Aproxima da data */
+    margin-bottom: 0.5px;
   }
 
   .greeting small {
     font-size: 11px !important;
     font-weight: bold;
-    line-height: 2; /* Deixa mais compacto */
+    line-height: 2;
   }
 
   .right {
@@ -298,8 +1007,8 @@
   }
 
   .notificacao-popup {
-    border-radius: 3px;
-    width: 12.5rem; /* menor que os 20rem do desktop */
+    border-radius: 5px;
+    width: 12.5rem;
     top: 1.5rem;
     right: 0.25rem;
   }
@@ -327,7 +1036,7 @@
     font-size: 11.5px;
     line-height: 1;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* LIMITA para 2 linhas no mobile */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -335,6 +1044,21 @@
 
   .nova-notificacao {
     display: none;
+  }
+
+  .agendamento-container {
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px;
+    height: auto;
+  }
+
+  .servicos-box,
+  .informacoes-box {
+    max-width: 100%;
+    padding: 15px 20px;
+    height: auto;
+    overflow: visible;
   }
 
   .bottom-nav {
@@ -355,7 +1079,7 @@
     align-items: center;
     color: white;
     text-decoration: none;
-    padding: 0 12px; /* espaçamento lateral de 12px */
+    padding: 0 12px;
     height: 3.5rem;
     justify-content: flex-end;
   }
@@ -369,5 +1093,11 @@
   .bottom-nav .nav-item span {
     font-size: 11px;
     line-height: 1;
+  }
+}
+
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none !important;
   }
 }

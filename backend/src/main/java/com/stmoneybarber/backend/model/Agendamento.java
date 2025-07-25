@@ -1,9 +1,12 @@
 package com.stmoneybarber.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignora campos extras do JSON
 @Entity
 public class Agendamento {
 
@@ -11,13 +14,13 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty("horario") // Mapeia JSON "horario" para atributo "hora"
+    private LocalTime hora;
+
     @Enumerated(EnumType.STRING)
     private DayOfWeek diaSemana;
 
-    private LocalTime horario;
-
     private boolean bloqueado;
-    private boolean disponivel;
 
     // Getters e Setters
     public Long getId() {
@@ -28,6 +31,14 @@ public class Agendamento {
         this.id = id;
     }
 
+    public LocalTime getHora() {
+        return hora;
+    }
+
+    public void setHora(LocalTime hora) {
+        this.hora = hora;
+    }
+
     public DayOfWeek getDiaSemana() {
         return diaSemana;
     }
@@ -36,27 +47,11 @@ public class Agendamento {
         this.diaSemana = diaSemana;
     }
 
-    public LocalTime getHorario() {
-        return horario;
-    }
-
-    public void setHorario(LocalTime horario) {
-        this.horario = horario;
-    }
-
     public boolean isBloqueado() {
         return bloqueado;
     }
 
     public void setBloqueado(boolean bloqueado) {
         this.bloqueado = bloqueado;
-    }
-
-    public boolean isDisponivel() {
-        return disponivel;
-    }
-
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
     }
 }

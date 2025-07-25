@@ -1,7 +1,6 @@
 export interface Agendamento {
   id?: number;
-  diaSemana: string; // "SEGUNDA", "TERCA", etc.
-  horario: string; // formato "HH:mm"
+  diaSemana: string;  // ex: "MONDAY"
+  horario: string;    // ex: "14:00"
   bloqueado: boolean;
-  disponivel: boolean;
 }

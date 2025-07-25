@@ -1,79 +1,52 @@
 package com.stmoneybarber.backend.controller;
 
 import com.stmoneybarber.backend.model.Agendamento;
-import com.stmoneybarber.backend.repository.AgendamentoRepository;
 import com.stmoneybarber.backend.service.AgendamentoService;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/agendamentos")
+@RequestMapping("/api/horarios")
 public class AgendamentoController {
 
     @Autowired
-    private AgendamentoRepository agendamentoRepository;
-
-    private final AgendamentoService service;
-
-    public AgendamentoController(AgendamentoService service) {
-        this.service = service;
-    }
+    private AgendamentoService agendamentoService;
 
     @GetMapping
-    public List<Agendamento> listarTodos() {
-        return service.listarTodos();
+    public List<Agendamento> listar() {
+        return agendamentoService.listarTodos();
     }
 
-    @GetMapping("/dia/{dia}")
-    public List<Agendamento> listarPorDia(@PathVariable String dia) {
-        DayOfWeek diaEnum = DayOfWeek.valueOf(dia.toUpperCase());
-        return service.listarPorDia(diaEnum);
+    @PostMapping
+    public Agendamento criar(@RequestBody Agendamento horario) {
+        return agendamentoService.criar(horario);
     }
 
-    @GetMapping("/id/{id}")
-    public Agendamento buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id).orElseThrow();
+    @PutMapping("/{id}")
+    public Agendamento editar(@PathVariable Long id, @RequestBody Agendamento horario) {
+        return agendamentoService.editar(id, horario);
     }
 
-    @PostMapping("/criar")
-    public void criar(@RequestBody Agendamento agendamento) {
-        service.criar(agendamento);
+    @PostMapping("/deletar")
+    public void deletarHorarios(@RequestBody List<Long> ids) {
+        agendamentoService.deletarTodos(ids);
     }
 
-    @PutMapping("/editar")
-    public Agendamento editar(@RequestBody Agendamento agendamento) {
-        return service.editar(agendamento);
+    @PostMapping("/bloquear")
+    public void bloquearHorarios(@RequestBody List<Long> ids) {
+        agendamentoService.bloquearHorarios(ids);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarPorId(@PathVariable Long id) {
-        if (!agendamentoRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        agendamentoRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/desbloquear")
+    public void desbloquearHorarios(@RequestBody List<Long> ids) {
+        agendamentoService.desbloquearHorarios(ids);
     }
 
-    @PostMapping("/deletar-muitos")
-    public ResponseEntity<Void> deletarVarios(@RequestBody List<Long> ids) {
-        agendamentoRepository.deleteAllById(ids);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/toggle-bloqueio-horario/{id}")
-    public void toggleBloqueioHorario(@PathVariable Long id) {
-        service.toggleBloqueioHorario(id);
-    }
-
-    @PostMapping("/toggle-bloqueio-dia/{dia}")
-    public void toggleBloqueioDia(@PathVariable String dia) {
-        DayOfWeek diaEnum = DayOfWeek.valueOf(dia.toUpperCase());
-        service.toggleBloqueioDia(diaEnum);
+    @GetMapping("/verificar-dia")
+    public boolean isDiaBloqueado(@RequestParam("dia") DayOfWeek dia) {
+        return agendamentoService.isDiaBloqueado(dia);
     }
 }

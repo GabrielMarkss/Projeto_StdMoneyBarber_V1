@@ -29,7 +29,7 @@ export const appRoutes: Routes = [
     component: GaleriaComponent,
   },
   {
-    path: 'agendamentos',
+    path: 'agendamento',
     component: AgendamentoComponent,
   },
   {
