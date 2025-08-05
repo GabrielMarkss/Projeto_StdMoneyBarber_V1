@@ -99,10 +99,12 @@ public class UsuarioController {
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
             Map<String, Object> userData = new HashMap<>();
+            userData.put("id", usuario.getId()); // ✅ Adiciona o ID
             userData.put("nome", usuario.getNome());
             userData.put("email", usuario.getEmail());
-            userData.put("admin", usuario.isAdmin()); // ⚠️ Certifique-se de que existe o getter isAdmin()
+            userData.put("admin", usuario.isAdmin());
             return ResponseEntity.ok(userData);
+
         } else {
             return ResponseEntity.status(404).body(Collections.singletonMap("erro", "Usuário não encontrado"));
         }

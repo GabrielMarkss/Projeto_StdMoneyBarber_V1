@@ -1,0 +1,650 @@
+/* Navbar */
+.navbar {
+  background-color: #111;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Lado esquerdo da navbar */
+.left {
+  display: flex;
+  align-items: center;
+}
+
+/* Imagem de perfil */
+.profile-img {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Saudação */
+.greeting {
+  color: white;
+}
+
+.greeting div {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.greeting small {
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* Lado direito da navbar */
+.right {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding-bottom: 0.25px;
+  margin-top: 20px;
+}
+
+/* Wrapper de notificação */
+.notificacao-wrapper {
+  position: relative;
+  cursor: pointer;
+  margin-right: 0.625rem;
+}
+
+/* Ícone de notificação */
+.notificacao {
+  width: 2.25rem;
+  cursor: pointer;
+  transform: translateY(2px);
+}
+
+/* Popup de notificação */
+.notificacao-popup {
+  position: absolute;
+  top: 3rem;
+  right: 0;
+  width: 20rem;
+  background: white;
+  color: black;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-family: sans-serif;
+}
+
+/* Cartão de notificação */
+.notificacao-card {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+/* Imagem da notificação */
+.notificacao-imagem {
+  width: 55px;
+  height: 55px;
+  background-color: #d9d9d9;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Conteúdo da notificação */
+.notificacao-conteudo {
+  flex: 1;
+  overflow: hidden;
+}
+
+.notificacao-conteudo strong {
+  font-weight: bold;
+  font-size: 15px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.notificacao-conteudo small {
+  font-size: 13px;
+  color: #626262;
+  line-height: 1.1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ícone de editar notificação */
+.editar-notificacao {
+  position: absolute;
+  top: 6px;
+  right: 32px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.editar-notificacao:hover {
+  color: blue;
+}
+
+/* Ícone de apagar notificação */
+.apagar-notificacao {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.apagar-notificacao:hover {
+  color: red;
+}
+
+/* Nova notificação */
+.nova-notificacao {
+  padding: 6px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: normal;
+  border-radius: 0 0 10px 10px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+}
+
+.nova-notificacao:hover {
+  background-color: #f0f0f0;
+}
+
+/* Modal de formulário */
+.formulario-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  z-index: 999;
+  width: 450px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  font-family: Arial, sans-serif;
+}
+
+.formulario-modal h3 {
+  color: #333;
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.formulario-modal .form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.formulario-modal label {
+  color: #333;
+  font-weight: bold;
+  font-size: 0.9rem;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.formulario-modal select,
+.formulario-modal input[type="text"] {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+}
+
+.formulario-modal select:focus,
+.formulario-modal input[type="text"]:focus {
+  outline: none;
+  border-color: #f46d25;
+  box-shadow: 0 0 4px rgba(244, 109, 37, 0.3);
+}
+
+.formulario-modal .servicos-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.75rem;
+}
+
+.formulario-modal .servicos-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #555;
+  font-size: 0.85rem;
+  font-weight: normal;
+  width: auto;
+}
+
+.formulario-modal input[type="checkbox"] {
+  margin: 0;
+}
+
+.formulario-modal input[type="text"],
+.formulario-modal textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.formulario-modal input[type="text"]::placeholder,
+.formulario-modal textarea::placeholder {
+  color: #bbb;
+}
+
+.formulario-modal input[type="file"] {
+  margin-bottom: 12px;
+}
+
+.formulario-modal .botoes-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.formulario-modal button.cancelar {
+  padding: 6px 12px;
+  background-color: #fff;
+  color: #f46d25;
+  border: 2px solid #f46d25;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.formulario-modal button.cancelar:hover {
+  background-color: #f46d25;
+  color: white;
+}
+
+.formulario-modal button.salvar {
+  padding: 6px 12px;
+  background-color: #f46d25;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease;
+}
+
+.formulario-modal button.salvar:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.formulario-modal button.salvar:not(:disabled):hover {
+  background-color: #d05e20;
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  color: white;
+  margin-right: 1rem;
+  font-size: 2rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 2.5rem;
+  background-color: #222;
+  border-radius: 6px;
+  list-style: none;
+  padding: 2px;
+  margin: 10px;
+  min-width: 160px;
+  z-index: 10;
+}
+
+.dropdown-menu li a {
+  display: block;
+  padding: 10px 15px;
+  color: white;
+  text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+  background-color: #555;
+}
+
+/* Container principal */
+.container-agendamentos {
+  max-width: 1500px;
+  margin: 2rem auto;
+  padding: 0 0.5rem;
+  font-family: Arial, sans-serif;
+}
+
+.container-agendamentos h2 {
+  color: #333;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+/* Lista de agendamentos */
+.agendamentos-lista {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 3 colunas fixas */
+  gap: 1rem;
+}
+
+/* Mensagem de sem agendamentos */
+.sem-agendamentos {
+  text-align: center;
+  color: #777;
+  padding: 1.5rem;
+  font-size: 1.1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 1rem;
+}
+
+/* Cartão de agendamento */
+.agendamento-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 140px;
+}
+
+/* Contêiner de botões do agendamento */
+.botoes-agendamento {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Botão de editar agendamento */
+.editar-agendamento {
+  padding: 6px 16px;
+  background-color: white;
+  color: #f46d25;
+  border: 2px solid #f46d25;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.editar-agendamento:hover {
+  background-color: #f46d25;
+  color: white;
+}
+
+/* Botão de cancelar agendamento */
+.cancelar-agendamento {
+  padding: 6px 16px;
+  background-color: #f46d25;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.cancelar-agendamento:hover {
+  background-color: #e63939;
+}
+
+/* Linhas do cartão */
+.linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.linha strong {
+  color: #333;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.linha span {
+  color: #555;
+  font-size: 1rem;
+}
+
+/* Barra inferior */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: end;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #000;
+  padding: 5px 0 15px 0;
+  z-index: 1000;
+}
+
+.bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 0 12px;
+  height: 3.5rem;
+  justify-content: flex-end;
+}
+
+.bottom-nav .nav-item img {
+  max-height: 42px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.bottom-nav .nav-item span {
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* Seletor de barbeiro */
+.seletor-barbeiro {
+  border: none;
+  background: transparent;
+  color: #333;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  appearance: none;
+  text-decoration: underline 1px;
+  padding-right: 25px;
+  position: relative;
+}
+
+.seletor-barbeiro::after {
+  content: "▼";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.seletor-barbeiro option {
+  font-size: 1rem;
+  font-weight: normal;
+  color: #555;
+  background-color: #f9f9f9;
+}
+
+.seletor-barbeiro option:hover {
+  background-color: #eee;
+  color: #222;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.8rem 0 0.5rem 1rem !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .navbar .dropdown,
+  .profile-img {
+    display: none !important;
+  }
+
+  .greeting div {
+    font-size: 16px !important;
+    margin-bottom: 0.5px;
+  }
+
+  .greeting small {
+    font-size: 11px !important;
+    font-weight: bold;
+    line-height: 2;
+  }
+
+  .right {
+    margin-top: 0.8rem !important;
+  }
+
+  .notificacao {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .notificacao-popup {
+    border-radius: 5px;
+    width: 12.5rem;
+    top: 1.5rem;
+    right: 0.25rem;
+  }
+
+  .notificacao-card {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .notificacao-imagem {
+    width: 40px;
+    height: 40px;
+    font-size: 10px;
+  }
+
+  .notificacao-conteudo {
+    font-size: 12px;
+  }
+
+  .notificacao-conteudo strong {
+    font-size: 13px;
+  }
+
+  .notificacao-conteudo small {
+    font-size: 11.5px;
+    line-height: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nova-notificacao {
+    display: none;
+  }
+
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: end;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #000;
+    padding: 5px 0 15px 0;
+    z-index: 1000;
+  }
+
+  .bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    padding: 0 12px;
+    height: 3.5rem;
+    justify-content: flex-end;
+  }
+
+  .bottom-nav .nav-item img {
+    max-height: 42px;
+    object-fit: contain;
+    margin-bottom: 4px;
+  }
+
+  .bottom-nav .nav-item span {
+    font-size: 11px;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none !important;
+  }
+}

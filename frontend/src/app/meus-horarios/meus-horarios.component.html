@@ -1,0 +1,365 @@
+<!-- Navbar Superior -->
+<nav
+  class="navbar"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+  "
+>
+  <div class="left" style="display: flex; align-items: center">
+    <img
+      src="assets/user-profile.png"
+      alt="Perfil"
+      routerLink="/dashteste"
+      class="profile-img"
+      style="width: 85px; height: 85px; border-radius: 50%; cursor: pointer"
+    />
+    <div class="greeting" style="color: white">
+      <div style="font-size: 20px; font-weight: bold">
+        Olá, {{ usuarioService.nomeUsuario || "..." }}
+      </div>
+      <small style="font-size: 14px">{{ dataHoje }}</small>
+    </div>
+  </div>
+
+  <div
+    class="right"
+    style="
+      display: flex;
+      align-items: flex-end;
+      gap: 0.5rem;
+      padding-bottom: 0.25px;
+      margin-top: 20px;
+    "
+  >
+    <!-- Ícone Notificação com pop-up -->
+    <div
+      class="notificacao-wrapper"
+      (mouseenter)="abrirNotificacao()"
+      (mouseleave)="fecharNotificacao()"
+      style="margin-right: 0.625rem"
+    >
+      <img
+        src="assets/notificacao.png"
+        alt="Notificações"
+        class="notificacao"
+        style="width: 2.25rem; cursor: pointer; transform: translateY(2px)"
+      />
+
+      <!-- Pop-up dinâmico -->
+      <div class="notificacao-popup" *ngIf="mostrarNotificacoes">
+        <div *ngFor="let n of notificacoes" class="notificacao-card">
+          <div class="notificacao-imagem">
+            <img
+              [src]="n.imagemUrl"
+              alt="Imagem"
+              style="width: 100%; height: 100%"
+            />
+          </div>
+          <div class="notificacao-conteudo">
+            <strong>{{ n.titulo }}</strong>
+            <small>{{ n.descricao }}</small>
+          </div>
+          <div
+            *ngIf="usuarioService.usuarioEhAdmin()"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.3rem;
+              margin-left: auto;
+            "
+          >
+            <span
+              class="editar-notificacao"
+              title="Editar notificação"
+              style="cursor: pointer; font-size: 18px"
+              (click)="editarNotificacao(n)"
+              >✎</span
+            >
+            <span
+              class="apagar-notificacao"
+              title="Remover notificação"
+              style="cursor: pointer; font-size: 18px"
+              (click)="confirmarRemocao(n)"
+              >✕</span
+            >
+          </div>
+        </div>
+
+        <div
+          class="nova-notificacao"
+          *ngIf="usuarioService.usuarioEhAdmin()"
+          (click)="abrirFormularioNotificacao()"
+        >
+          + Nova notificação
+        </div>
+      </div>
+
+      <!-- Formulário de criação (modal) -->
+      <div
+        class="formulario-modal"
+        *ngIf="mostrarFormulario"
+        style="
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: white;
+          padding: 20px;
+          border-radius: 12px;
+          z-index: 999;
+          width: 400px;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        "
+      >
+        <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
+
+        <input
+          type="text"
+          [(ngModel)]="nova.titulo"
+          class="form-control"
+          placeholder="Título da notificação"
+          style="width: 100%"
+        />
+        <textarea
+          [(ngModel)]="nova.descricao"
+          class="form-control"
+          placeholder="Descrição da notificação"
+          style="width: 100%; resize: none"
+          rows="3"
+        ></textarea>
+
+        <input
+          style="color: black"
+          type="file"
+          (change)="onFileChange($event)"
+        />
+
+        <div class="botoes-container">
+          <button class="cancelar" (click)="cancelarFormulario()">
+            Cancelar
+          </button>
+          <button
+            class="salvar"
+            (click)="salvarNotificacao()"
+            [disabled]="
+              !nova.titulo.trim() || !nova.descricao.trim() || !nova.imagemUrl
+            "
+          >
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botão de menu -->
+    <div
+      class="dropdown"
+      (mouseenter)="abrirMenu()"
+      (mouseleave)="fecharMenu()"
+    >
+      <div class="dropdown-toggle">☰</div>
+      <ul class="dropdown-menu" *ngIf="menuAberto">
+        <li><a routerLink="/menu">Perfil</a></li>
+        <li><a routerLink="/galeria">Galeria</a></li>
+        <li><a routerLink="/produtos">Produtos</a></li>
+        <li><a routerLink="/meus-horarios">Meus Horários</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Formulário de Edição (Modal) -->
+<div
+  class="formulario-modal"
+  *ngIf="mostrarFormularioEdicao"
+  style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    z-index: 999;
+    width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  "
+>
+  <h3 style="color: black; margin-top: 0">Editar Agendamento</h3>
+
+  <div style="margin-bottom: 10px">
+    <label style="color: black">Barbeiro:</label>
+    <select [(ngModel)]="barbeiroSelecionado" style="width: 100%">
+      <option *ngFor="let barbeiro of barbeiros" [value]="barbeiro">
+        {{ barbeiro }}
+      </option>
+    </select>
+  </div>
+
+  <div style="margin-bottom: 10px">
+    <label style="color: black">Serviços:</label>
+    <div *ngFor="let servico of servicos">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="servicosSelecionados.includes(servico.id!)"
+          (change)="toggleServico(servico.id!, $event)"
+        />
+        {{ servico.nome }} (R$ {{ servico.preco.toFixed(2) }})
+      </label>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 10px">
+    <label style="color: black">Dia:</label>
+    <select
+      [(ngModel)]="diaSelecionado"
+      (change)="selecionarDia(diaSelecionado)"
+      style="width: 100%"
+    >
+      <option *ngFor="let dia of diasSemana" [value]="dia.sigla">
+        {{ dia.nome }}
+      </option>
+    </select>
+  </div>
+
+  <div style="margin-bottom: 10px">
+    <label style="color: black">Data:</label>
+    <input
+      type="text"
+      [(ngModel)]="dataSelecionada"
+      placeholder="DD/MM/YYYY"
+      style="width: 100%"
+    />
+  </div>
+
+  <div style="margin-bottom: 10px">
+    <label style="color: black">Horário:</label>
+    <select [(ngModel)]="horarioSelecionado" style="width: 100%">
+      <option
+        *ngFor="let horario of horarios"
+        [value]="horario.horario"
+        [disabled]="horario.bloqueado"
+      >
+        {{ formatarHorario(horario.horario) }}
+        {{ horario.bloqueado ? "(Indisponível)" : "" }}
+      </option>
+    </select>
+  </div>
+
+  <div class="botoes-container">
+    <button class="cancelar" (click)="cancelarFormularioEdicao()">
+      Cancelar
+    </button>
+    <button
+      class="salvar"
+      (click)="salvarEdicao()"
+      [disabled]="
+        !servicosSelecionados.length || !dataSelecionada || !horarioSelecionado
+      "
+    >
+      Salvar
+    </button>
+  </div>
+</div>
+
+<!-- Conteúdo Principal -->
+<div class="container-agendamentos">
+  <h2>Meus Agendamentos</h2>
+  <div class="agendamentos-lista">
+    <div *ngIf="agendamentos.length === 0" class="sem-agendamentos">
+      <p>Nenhum agendamento encontrado.</p>
+    </div>
+    <div *ngFor="let agendamento of agendamentos" class="agendamento-card">
+      <div class="linha">
+        <strong>Barbeiro:</strong>
+        <span>{{ agendamento.barbeiro || "Sem Preferência" }}</span>
+      </div>
+      <div class="linha">
+        <strong>Serviços:</strong>
+        <span>{{ obterNomesServicos(agendamento) }}</span>
+      </div>
+      <div class="linha">
+        <strong>Data e horario:</strong>
+        <span>{{ agendamento.data }} ás {{ agendamento.horario }}</span>
+      </div>
+      <div class="linha">
+        <strong>Subtotal:</strong>
+        <span>R$ {{ agendamento.subtotal.toFixed(2) }}</span>
+      </div>
+      <div class="linha">
+        <strong>Cupom:</strong>
+        <span>{{ agendamento.cupomNome || "Nenhum" }}</span>
+      </div>
+      <div class="linha">
+        <strong>Desconto:</strong>
+        <span>- R$ {{ agendamento.desconto.toFixed(2) }}</span>
+      </div>
+      <br />
+      <div class="linha">
+        <strong>Total:</strong>
+        <span>R$ {{ agendamento.total.toFixed(2) }}</span>
+      </div>
+      <br />
+
+      <div
+        class="botoes-agendamento"
+        *ngIf="
+          usuarioService.usuarioEhAdmin() ||
+          agendamento.usuarioId ===
+            usuarioService.getUsuarioLogadoSnapshot()?.id
+        "
+      >
+        <button
+          class="editar-agendamento"
+          (click)="abrirFormularioEdicao(agendamento)"
+        >
+          Editar
+        </button>
+        <button
+          class="cancelar-agendamento"
+          (click)="confirmarRemocaoAgendamento(agendamento.id!)"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== BARRA INFERIOR MOBILE ===== -->
+    <nav class="bottom-nav">
+      <a routerLink="/dashteste" class="nav-item">
+        <img src="assets/inicio.png" alt="Início" width="38" height="32" />
+        <span>Início</span>
+      </a>
+      <a routerLink="/galeria" class="nav-item">
+        <img
+          src="assets/galeria-ativa.png"
+          alt="Galeria"
+          width="34"
+          height="33"
+        />
+        <span style="color: #f46d25; font-weight: bold">Galeria</span>
+      </a>
+      <a routerLink="/agendamento" class="nav-item">
+        <img
+          src="assets/agendamento.png"
+          alt="Agendamentos"
+          width="34"
+          height="34"
+        />
+        <span>Agendamentos</span>
+      </a>
+      <a routerLink="/produtos" class="nav-item">
+        <img src="assets/produto.png" alt="Produtos" width="30" height="30" />
+        <span>Produtos</span>
+      </a>
+      <a routerLink="/menu" class="nav-item">
+        <img src="assets/user-profile.png" alt="Menu" width="40" height="40" />
+        <span>Menu</span>
+      </a>
+    </nav>
+  </div>
+</div>

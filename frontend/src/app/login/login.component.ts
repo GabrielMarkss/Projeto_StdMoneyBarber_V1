@@ -30,8 +30,14 @@ export class LoginComponent {
       next: () => {
         // Aguarda carregamento do usuário para navegar
         setTimeout(() => {
-          alert('Login realizado com sucesso!');
-          this.router.navigate(['/dashboard']);
+          const usuarioLogado = this.service.getUsuarioLogadoSnapshot();
+          if (usuarioLogado && usuarioLogado.nome && usuarioLogado.email) {
+            alert('Login realizado com sucesso!');
+            this.router.navigate(['/dashboard']);
+          } else {
+            alert('Erro: Informações do usuário incompletas.');
+            this.service.logout();
+          }
         }, 500);
       },
       error: (err) => {
@@ -41,9 +47,25 @@ export class LoginComponent {
   }
 
   ngOnInit() {
-    const token = localStorage.getItem('token'); // só localStorage, não sessionStorage
+    const token = this.service.getToken();
     if (token) {
-      this.router.navigate(['/dashboard']);
+      const usuarioLogado = this.service.getUsuarioLogadoSnapshot();
+      if (usuarioLogado && usuarioLogado.nome && usuarioLogado.email) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.service.getUsuarioLogado().subscribe({
+          next: (user) => {
+            if (user && user.nome && user.email) {
+              this.router.navigate(['/dashboard']);
+            } else {
+              this.service.logout();
+            }
+          },
+          error: () => {
+            this.service.logout();
+          },
+        });
+      }
     }
   }
 

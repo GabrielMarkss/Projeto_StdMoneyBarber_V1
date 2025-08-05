@@ -67,11 +67,6 @@
   color: red;
 }
 
-.icone-acao.tabela {
-  position: relative;
-  color: #888;
-}
-
 /* ====== NOTIFICAÇÃO - CONTEUDO ====== */
 .notificacao-card {
   display: flex;
@@ -255,7 +250,7 @@
 }
 
 /* ===== CONTAINER GERAL ===== */
-.container-agendamento {
+.container-horarios {
   display: flex;
   gap: 1rem;
   padding: 1rem;
@@ -313,7 +308,7 @@
   border-radius: 4px;
 }
 
-.checkbox-container input:checked~.checkmark {
+.checkbox-container input:checked ~ .checkmark {
   background-color: #f46d25;
   border: 1px solid #f46d25;
 }
@@ -331,7 +326,7 @@
   transform: rotate(45deg);
 }
 
-.checkbox-container input:checked~.checkmark:after {
+.checkbox-container input:checked ~ .checkmark:after {
   display: block;
 }
 
@@ -423,8 +418,8 @@ h3 {
   background-color: #d35400;
 }
 
-/* ===== AVISO ===== */
-.aviso-fechado {
+/* ===== MENSAGEM FECHADO ===== */
+.mensagem-fechado {
   color: red;
   font-weight: bold;
   margin-bottom: 1rem;
@@ -510,17 +505,7 @@ h3 {
 /* === ADMIN SELECIONADO PARA BLOQUEIO === */
 .horario.selecionado.admin-bloqueio {
   background-color: #f44336 !important;
-  /* vermelho */
   outline: 2px solid #f46d25;
-}
-
-
-/* ===== SELECIONAR TODOS ===== */
-.selecionar-todos {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-  margin: 10px 0;
 }
 
 /* ===== FORMULÁRIO POPUP DE HORÁRIO ===== */
@@ -605,7 +590,6 @@ h3 {
   background-color: #d35400;
 }
 
-
 /* ===== BOTÕES DIVERSOS ===== */
 button[disabled] {
   opacity: 0.5;
@@ -629,63 +613,41 @@ button[disabled] {
   gap: 12px;
 }
 
-.resumo-agendamento h2 {
+.resumo-agendamento h3 {
   font-size: 24px;
   margin-bottom: 18px;
   font-weight: bold;
 }
 
-.linha {
+.resumo-agendamento p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* alinhamento vertical central */
   font-size: 17px;
   gap: 12px;
-  /* espaço entre título e valor */
+  margin: 0;
 }
 
-.linha strong {
+.resumo-agendamento p strong {
   font-weight: bold;
 }
 
-.linha.meio {
-  display: flex;
-  justify-content: space-between;
-  /* espaço entre texto+ícone e botão */
-  align-items: center;
-  /* alinha verticalmente ícone, texto e botão */
-  gap: 12px;
-  /* espaço entre ícone e texto */
-}
-
-.linha.meio>div {
-  display: flex;
-  align-items: center;
-  /* alinhamento vertical do ícone com o texto */
-  gap: 8px;
-  /* espaço entre ícone e texto */
-}
-
-.linha.meio img.icone {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  display: block;
-}
-
-.linha.meio button.link {
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-  background: none;
+.resumo-agendamento button {
+  background-color: #f46d25;
+  color: white;
   border: none;
-  color: #f46d25;
-  padding: 0;
-  margin-left: auto;
-  /* empurra o botão para a direita */
-  white-space: nowrap;
-  /* evita quebra do botão */
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  align-self: center;
+  margin-top: 24px;
+}
+
+.resumo-agendamento button:hover {
+  background-color: #d35400;
 }
 
 /* BOTÃO CONFIRMAR */
@@ -858,37 +820,6 @@ button[disabled] {
   justify-content: center;
 }
 
-/* ===== PAGAMENTO ===== */
-.opcoes-pagamento {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.opcao-pagamento {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: border-color 0.3s, background-color 0.3s;
-}
-
-.opcao-pagamento img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-
-.opcao-pagamento.selecionado {
-  border-color: #007bff;
-  background-color: #eaf4ff;
-  font-weight: bold;
-}
-
 .botao-adicionar-cartao {
   margin: 20px auto;
   display: block;
@@ -952,18 +883,6 @@ button[disabled] {
   background-color: #d35400;
 }
 
-.popup-conteudo .fechar {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #f46d25;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  display: block;
-  margin-left: auto;
-}
-
 /* MOBILE */
 @media (max-width: 768px) {
   .navbar {
@@ -980,9 +899,7 @@ button[disabled] {
   }
 
   .navbar .dropdown,
-  .profile-img,
-  .editar-notificacao,
-  .apagar-notificacao {
+  .profile-img {
     display: none !important;
   }
 
@@ -1046,21 +963,6 @@ button[disabled] {
     display: none;
   }
 
-  .agendamento-container {
-    flex-direction: column;
-    gap: 20px;
-    margin: 20px;
-    height: auto;
-  }
-
-  .servicos-box,
-  .informacoes-box {
-    max-width: 100%;
-    padding: 15px 20px;
-    height: auto;
-    overflow: visible;
-  }
-
   .bottom-nav {
     display: flex;
     justify-content: space-around;
@@ -1115,7 +1017,6 @@ button[disabled] {
   position: relative;
 }
 
-/* seta personalizada */
 .seletor-barbeiro::after {
   content: "▼";
   position: absolute;
@@ -1134,7 +1035,6 @@ button[disabled] {
   background-color: #f9f9f9;
 }
 
-/* Estilo básico para o hover nas opções - funciona em alguns navegadores */
 .seletor-barbeiro option:hover {
   background-color: #eee;
   color: #222;

@@ -1,47 +1,48 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface Agendamento {
-  id?: number;
-  diaSemana: string;      // Ex: 'MONDAY'
-  horario: string;        // Ex: '08:00'
-  bloqueado: boolean;
-}
+import { Agendamento } from '../models/agendamento.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AgendamentoService {
-  private apiUrl = 'http://localhost:8080/api/horarios';
+  private apiUrl = `http://${window.location.hostname}:8080/api/agendamentos`;
 
-  constructor(private http: HttpClient) { }
-
-  listar(): Observable<Agendamento[]> {
-    return this.http.get<Agendamento[]>(this.apiUrl);
-  }
+  constructor(private http: HttpClient) {}
 
   criar(agendamento: Agendamento): Observable<Agendamento> {
+    console.log(
+      'Enviando para URL:',
+      this.apiUrl,
+      'Payload:',
+      JSON.stringify(agendamento, null, 2)
+    );
     return this.http.post<Agendamento>(this.apiUrl, agendamento);
   }
 
-  editar(agendamento: Agendamento): Observable<Agendamento> {
-    return this.http.put<Agendamento>(`${this.apiUrl}/${agendamento.id}`, agendamento);
+  atualizar(id: number, agendamento: Agendamento): Observable<Agendamento> {
+    console.log(
+      'Atualizando agendamento ID:',
+      id,
+      'Payload:',
+      JSON.stringify(agendamento, null, 2)
+    );
+    return this.http.put<Agendamento>(`${this.apiUrl}/${id}`, agendamento);
   }
 
-  deletarHorarios(ids: number[]): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/deletar`, ids);
+  deletar(id: number): Observable<void> {
+    console.log('Deletando agendamento ID:', id);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  bloquearHorarios(ids: number[]): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/bloquear`, ids);
+  listarPorUsuario(usuarioId: number): Observable<Agendamento[]> {
+    console.log('Listando agendamentos para usuário:', usuarioId);
+    return this.http.get<Agendamento[]>(`${this.apiUrl}/usuario/${usuarioId}`);
   }
 
-  desbloquearHorarios(ids: number[]): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/desbloquear`, ids);
-  }
-
-  verificarDiaBloqueado(diaSemana: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiUrl}/verificar-dia?dia=${diaSemana}`);
+  listarTodos(): Observable<Agendamento[]> {
+    console.log('Listando todos os agendamentos');
+    return this.http.get<Agendamento[]>(`${this.apiUrl}/todos`);
   }
 }

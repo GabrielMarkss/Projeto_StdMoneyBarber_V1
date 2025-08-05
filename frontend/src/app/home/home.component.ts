@@ -55,6 +55,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   cardsVisiveis: Card[] = [];
   proximoIndexCard = 0;
   intervaloCarrosselCards: any;
+  router: any;
 
   constructor(
     public usuarioService: UsuarioService,
@@ -94,10 +95,29 @@ export class HomeComponent implements OnInit, OnDestroy {
     } ${data.getFullYear()}`;
 
     if (this.usuarioService.isLoggedIn()) {
-      this.usuarioService.getUsuarioLogado().subscribe({
-        next: (user) => (this.usuarioService.nomeUsuario = user.nome),
-        error: () => (this.usuarioService.nomeUsuario = ''),
-      });
+      const usuarioLogado = this.usuarioService.getUsuarioLogadoSnapshot();
+      if (usuarioLogado && usuarioLogado.id) {
+        this.usuarioService.nomeUsuario = usuarioLogado.nome;
+      } else {
+        this.usuarioService.getUsuarioLogado().subscribe({
+          next: (user) => {
+            if (user && user.id) {
+              this.usuarioService.nomeUsuario = user.nome;
+            } else {
+              console.warn('Usuário retornado sem ID ou nulo:', user);
+              this.router.navigate(['/login']);
+            }
+          },
+          error: (err) => {
+            console.error('Erro ao carregar usuário:', err);
+            this.usuarioService.nomeUsuario = '';
+            this.router.navigate(['/login']);
+          },
+        });
+      }
+    } else {
+      console.warn('Usuário não está logado. Redirecionando para login.');
+      this.router.navigate(['/login']);
     }
 
     this.listarImagens();

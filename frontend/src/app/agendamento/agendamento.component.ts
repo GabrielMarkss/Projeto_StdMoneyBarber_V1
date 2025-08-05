@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Cupom } from '../models/cupom.model'
-
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
+import { Cupom } from '../models/cupom.model';
 import { UsuarioService } from '../service/usuario.service';
 import { NotificacaoService } from '../service/notificacao.service';
 import { ServicoService } from '../service/servico.service';
+import { HorarioService } from '../service/horario.service';
 import { AgendamentoService } from '../service/agendamento.service';
-
 import { Notificacao } from '../models/Notificacao.model';
 import { Servico } from '../models/servico.model';
+import { Horario } from '../models/horario.model';
 import { Agendamento } from '../models/agendamento.model';
 
 @Component({
@@ -21,9 +21,7 @@ import { Agendamento } from '../models/agendamento.model';
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
 })
 export class AgendamentoComponent implements OnInit {
-  // ==== PROPRIEDADES / VARIÁVEIS ====
   dataHoje: string = '';
-
   menuAberto = false;
   mostrarNotificacoes = false;
   mostrarFormulario = false;
@@ -32,40 +30,35 @@ export class AgendamentoComponent implements OnInit {
   notificacoes: Notificacao[] = [];
   nova: Notificacao = { titulo: '', descricao: '', imagemUrl: '' };
   imagemSelecionada: File | null = null;
-
   servicos: Servico[] = [];
   servicosSelecionados: number[] = [];
-
-  barbeiros: string[] = ['Felipe', 'Ezequiel', 'Sem Preferencia'];
-  barbeiroSelecionado: any = null;
-
-  // ---- CUPOM ----
+  barbeiros: string[] = ['Felipe', 'Ezequiel', 'Sem Preferência'];
+  barbeiroSelecionado: string = 'Sem Preferência';
   cuponsDisponiveis: Cupom[] = [
     {
       id: 1,
       codigo: 'FIDELIDADE10',
       nome: 'Cupom de serviço',
-      descricao: 'Este cupom de fidelidade te dá o direito a um serviço gratuito...',
+      descricao:
+        'Este cupom de fidelidade te dá o direito a um serviço gratuito...',
       desconto: 10,
-      imagem: 'assets/cupom.png'
+      imagem: 'assets/cupom.png',
     },
     {
       id: 2,
       codigo: 'DESCONTO20',
       nome: 'Cupom de serviço',
-      descricao: 'Este cupom de fidelidade te dá o direito a um serviço gratuito...',
+      descricao:
+        'Este cupom de fidelidade te dá o direito a um serviço gratuito...',
       desconto: 20,
-      imagem: 'assets/cupom.png'
-    }
+      imagem: 'assets/cupom.png',
+    },
   ];
-
-  codigoCupom: string = '';          // <- conteúdo do input
+  codigoCupom: string = '';
   cupomSelecionadoId: string = '';
-
   valorTotal: number = 0.0;
   descontoAplicado: number = 0.0;
   valorFinal: number = 0.0;
-
   diasSemana = [
     { nome: 'DOM', sigla: 'DOM', backend: 'SUNDAY' },
     { nome: 'SEG', sigla: 'SEG', backend: 'MONDAY' },
@@ -76,115 +69,111 @@ export class AgendamentoComponent implements OnInit {
     { nome: 'SAB', sigla: 'SAB', backend: 'SATURDAY' },
   ];
   diaSelecionado = 'SEG';
-
-  horarios: Agendamento[] = [];
+  horarios: Horario[] = [];
   mostrarFormularioHorario = false;
   modoEdicao = false;
-  horarioEditando: Agendamento | null = null;
+  horarioEditando: Horario | null = null;
   novoHorario: string = '';
   modoApagarHorario = false;
   horariosSelecionadosParaApagar = new Set<number>();
-
   selecionarTodos: boolean = false;
   horariosSelecionadosParaBloqueio = new Set<number>();
   horariosSelecionadosParaDesbloqueio = new Set<number>();
-  horarioSelecionadoCliente: Agendamento | null = null;
-
+  horarioSelecionadoCliente: Horario | null = null;
   periodos: ('manha' | 'tarde' | 'noite')[] = ['manha', 'tarde', 'noite'];
-
-  // RESUMO AGENDAMENTO
   resumo = {
     barbeiro: '',
     servicos: [] as Servico[],
-    dataHora: '',
+    data: '',
+    horario: '',
     subtotal: 0,
     desconto: 0,
     total: 0,
-    pagamento: '',
-    cupomNome: ''
+    cupomNome: '',
   };
-
-  // Forma de pagamento
-  formasPagamento = ['Crédito', 'Débito', 'Pix', 'Dinheiro'];
-  formaPagamentoSelecionada = 'Pix';
-
-  // POPUPS
   mostrarPopupCupom = false;
-  mostrarPopupPagamento = false;
-  mostrarPopupCartao = false;
-
   cartao = {
     nome: '',
     numero: '',
     validade: '',
-    cvv: ''
+    cvv: '',
   };
 
-  // ==== CONSTRUTOR ====
   constructor(
     public usuarioService: UsuarioService,
     private notificacaoService: NotificacaoService,
     private servicoService: ServicoService,
+    private horarioService: HorarioService,
     private agendamentoService: AgendamentoService,
-    private fb: FormBuilder,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-  // ==== CICLO DE VIDA ====
   ngOnInit(): void {
     const data = new Date();
     const dias = [
       'Domingo',
-      'Segunda',
-      'Terça',
-      'Quarta',
-      'Quinta',
-      'Sexta',
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
       'Sábado',
     ];
     const meses = [
-      'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
-      'jul', 'ago', 'set', 'out', 'nov', 'dez',
+      'jan',
+      'fev',
+      'mar',
+      'abr',
+      'mai',
+      'jun',
+      'jul',
+      'ago',
+      'set',
+      'out',
+      'nov',
+      'dez',
     ];
-    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${meses[data.getMonth()]} ${data.getFullYear()}`;
+    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${
+      meses[data.getMonth()]
+    } ${data.getFullYear()}`;
+    const hojeNum = data.getDay();
+    this.diaSelecionado =
+      hojeNum === 0
+        ? 'SEG'
+        : ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'][hojeNum];
 
-    // Definir dia selecionado para filtro de horários
-    const hojeNum = data.getDay(); // 0=Domingo
-    if (hojeNum === 0) {
-      this.diaSelecionado = 'SEG'; // domingo abre segunda
-    } else {
-      const mappingDiaNumeroParaSigla = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
-      this.diaSelecionado = mappingDiaNumeroParaSigla[hojeNum];
-    }
-
-    // Se estiver logado, pegar nome do usuário
-    if (this.usuarioService.isLoggedIn()) {
-      this.usuarioService.getUsuarioLogado().subscribe({
-        next: (user) => (this.usuarioService.nomeUsuario = user.nome),
-        error: () => (this.usuarioService.nomeUsuario = ''),
-      });
-    }
-
-    // Carregar notificações, serviços e horários
     this.listarNotificacoes();
     this.carregarServicos();
     this.carregarHorarios();
-
-    // Obter barbeiro via query param (ex: ?barbeiro=felipe)
-    this.route.queryParamMap.subscribe(params => {
+    this.route.queryParamMap.subscribe((params) => {
       const barbeiroParam = params.get('barbeiro')?.toLowerCase();
-
-      if (barbeiroParam === 'felipe') {
-        this.barbeiroSelecionado = 'Felipe';
-      } else if (barbeiroParam === 'ezequiel') {
-        this.barbeiroSelecionado = 'Ezequiel';
-      } else {
-        this.barbeiroSelecionado = ''; // Sem preferência ou nenhum selecionado
-      }
+      this.barbeiroSelecionado =
+        barbeiroParam === 'felipe'
+          ? 'Felipe'
+          : barbeiroParam === 'ezequiel'
+          ? 'Ezequiel'
+          : 'Sem Preferência';
     });
+
+    if (this.usuarioService.isLoggedIn()) {
+      this.usuarioService.getUsuarioLogado().subscribe({
+        next: (user) => {
+          if (user) {
+            this.usuarioService.nomeUsuario = user.nome;
+          } else {
+            console.warn('Usuário não encontrado ao inicializar componente');
+            this.router.navigate(['/login']);
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao carregar usuário no ngOnInit:', err);
+          this.router.navigate(['/login']);
+        },
+      });
+    }
   }
 
-  // ==== MENU ====
   abrirMenu() {
     clearTimeout(this.menuTimeout);
     this.menuAberto = true;
@@ -194,14 +183,16 @@ export class AgendamentoComponent implements OnInit {
     this.menuTimeout = setTimeout(() => (this.menuAberto = false), 150);
   }
 
-  // ==== NOTIFICAÇÕES ====
   abrirNotificacao() {
     clearTimeout(this.notificacaoTimeout);
     this.mostrarNotificacoes = true;
   }
 
   fecharNotificacao() {
-    this.notificacaoTimeout = setTimeout(() => (this.mostrarNotificacoes = false), 150);
+    this.notificacaoTimeout = setTimeout(
+      () => (this.mostrarNotificacoes = false),
+      150
+    );
   }
 
   abrirFormularioNotificacao() {
@@ -228,20 +219,30 @@ export class AgendamentoComponent implements OnInit {
 
   salvarNotificacao() {
     if (this.nova.id) {
-      this.notificacaoService.atualizar(this.nova.id, this.nova).subscribe(() => {
-        this.cancelarFormulario();
-        this.listarNotificacoes();
+      this.notificacaoService.atualizar(this.nova.id, this.nova).subscribe({
+        next: () => {
+          this.cancelarFormulario();
+          this.listarNotificacoes();
+        },
+        error: (err) =>
+          alert('Erro ao atualizar notificação: ' + (err.error || err.message)),
       });
     } else {
-      this.notificacaoService.criar(this.nova).subscribe(() => {
-        this.cancelarFormulario();
-        this.listarNotificacoes();
+      this.notificacaoService.criar(this.nova).subscribe({
+        next: () => {
+          this.cancelarFormulario();
+          this.listarNotificacoes();
+        },
+        error: (err) =>
+          alert('Erro ao criar notificação: ' + (err.error || err.message)),
       });
     }
   }
 
   listarNotificacoes() {
-    this.notificacaoService.listar().subscribe((res) => (this.notificacoes = res));
+    this.notificacaoService
+      .listar()
+      .subscribe((res) => (this.notificacoes = res));
   }
 
   editarNotificacao(n: Notificacao) {
@@ -254,64 +255,61 @@ export class AgendamentoComponent implements OnInit {
     const isAdmin = this.usuarioService.usuarioEhAdmin();
     this.notificacaoService.deletar(notificacao.id!, true, isAdmin).subscribe({
       next: () => this.listarNotificacoes(),
-      error: (err) => alert(err.error || 'Erro ao remover notificação'),
+      error: (err) =>
+        alert('Erro ao remover notificação: ' + (err.error || err.message)),
     });
   }
 
-  // ==== SERVIÇOS ====
   carregarServicos() {
-    this.servicoService.listar().subscribe((res) => (this.servicos = res));
+    this.servicoService.listar().subscribe({
+      next: (res) => {
+        this.servicos = res;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar serviços:', err);
+        alert('Erro ao carregar serviços: ' + (err.error || err.message));
+      },
+    });
   }
 
   toggleServico(id: number, event: Event) {
     const checked = (event.target as HTMLInputElement).checked;
-    if (checked) this.servicosSelecionados.push(id);
-    else this.servicosSelecionados = this.servicosSelecionados.filter((s) => s !== id);
+    if (checked) {
+      this.servicosSelecionados.push(id);
+    } else {
+      this.servicosSelecionados = this.servicosSelecionados.filter(
+        (s) => s !== id
+      );
+    }
     this.atualizarValores();
   }
 
-  onCupomChange() {
-    this.atualizarValores();
-  }
-
-
-  confirmarAgendamento() {
-    const agendamento = {
-      servicosSelecionados: this.servicosSelecionados,
-      barbeiro: this.barbeiroSelecionado,
-      cupomId: this.cupomSelecionadoId,
-      valorTotal: this.valorTotal,
-      desconto: this.descontoAplicado,
-      valorFinal: this.valorFinal,
-    };
-    console.log('Agendamento confirmado:', agendamento);
-    alert('Agendamento confirmado com sucesso!');
-  }
-
-  // ==== DIAS E HORÁRIOS ====
   selecionarDia(dia: string) {
     this.diaSelecionado = dia;
+    this.horarioSelecionadoCliente = null;
+    this.resumo.data = '';
+    this.resumo.horario = '';
     this.carregarHorarios();
   }
 
   carregarHorarios() {
     const dia = this.diasSemana.find((d) => d.sigla === this.diaSelecionado);
     if (!dia) return;
-    this.agendamentoService.listar().subscribe((res) => {
-      this.horarios = res
-        .filter((h) => h.diaSemana === dia.backend)
-        .sort((a, b) => a.horario.localeCompare(b.horario));
-      this.horariosSelecionadosParaBloqueio.clear();
-      this.horariosSelecionadosParaDesbloqueio.clear();
-      this.selecionarTodos = false;
+    this.horarioService.listar().subscribe({
+      next: (res) => {
+        this.horarios = res
+          .filter((h) => h.diaSemana === dia.backend)
+          .sort((a, b) => a.horario.localeCompare(b.horario));
+        this.horariosSelecionadosParaBloqueio.clear();
+        this.horariosSelecionadosParaDesbloqueio.clear();
+        this.horariosSelecionadosParaApagar.clear();
+        this.selecionarTodos = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar horários:', err);
+        alert('Erro ao carregar horários: ' + (err.error || err.message));
+      },
     });
-  }
-
-  // ==== MODO APAGAR HORÁRIO ====
-  ativarModoApagar(): void {
-    this.modoApagarHorario = !this.modoApagarHorario;
-    this.horariosSelecionadosParaApagar.clear();
-    this.selecionarTodos = false;
   }
 
   apagarHorariosSelecionados(): void {
@@ -319,15 +317,13 @@ export class AgendamentoComponent implements OnInit {
       ...this.horariosSelecionadosParaBloqueio,
       ...this.horariosSelecionadosParaDesbloqueio,
     ];
-
     if (todosSelecionados.length === 0) {
       alert('Nenhum horário selecionado para apagar.');
       return;
     }
-
-    if (!confirm('Tem certeza que deseja apagar os horários selecionados?')) return;
-
-    this.agendamentoService.deletarHorarios(todosSelecionados).subscribe({
+    if (!confirm('Tem certeza que deseja apagar os horários selecionados?'))
+      return;
+    this.horarioService.deletarHorarios(todosSelecionados).subscribe({
       next: () => {
         alert('Horários apagados com sucesso!');
         this.carregarHorarios();
@@ -335,16 +331,14 @@ export class AgendamentoComponent implements OnInit {
       error: (err) => {
         alert('Erro ao apagar horários: ' + (err.error || err.message));
         this.carregarHorarios();
-      }
+      },
     });
-
     this.horariosSelecionadosParaBloqueio.clear();
     this.horariosSelecionadosParaDesbloqueio.clear();
     this.selecionarTodos = false;
   }
 
-  // ==== SELEÇÃO DE HORÁRIOS PARA BLOQUEIO/DESBLOQUEIO ====
-  clicarHorario(h: Agendamento) {
+  clicarHorario(h: Horario) {
     if (this.usuarioService.usuarioEhAdmin()) {
       if (!h.bloqueado) {
         if (this.horariosSelecionadosParaBloqueio.has(h.id!)) {
@@ -364,49 +358,11 @@ export class AgendamentoComponent implements OnInit {
     }
   }
 
-  // ==== EXECUTAR BLOQUEIO/DESBLOQUEIO ====
-  executarAcaoBloqueio() {
-    if (this.horariosSelecionadosParaBloqueio.size > 0) {
-      if (!confirm('Confirma o bloqueio dos horários selecionados?')) return;
-      const ids = Array.from(this.horariosSelecionadosParaBloqueio);
-      this.agendamentoService.bloquearHorarios(ids).subscribe({
-        next: () => {
-          this.carregarHorarios();
-          this.horariosSelecionadosParaBloqueio.clear();
-          this.horariosSelecionadosParaDesbloqueio.clear();
-          this.selecionarTodos = false;
-        },
-        error: (err) => {
-          alert('Erro ao bloquear horários: ' + (err.error || err.message));
-          this.carregarHorarios();
-        },
-      });
-    } else if (this.horariosSelecionadosParaDesbloqueio.size > 0) {
-      if (!confirm('Confirma o desbloqueio dos horários selecionados?')) return;
-      const ids = Array.from(this.horariosSelecionadosParaDesbloqueio);
-      this.agendamentoService.desbloquearHorarios(ids).subscribe({
-        next: () => {
-          this.carregarHorarios();
-          this.horariosSelecionadosParaDesbloqueio.clear();
-          this.horariosSelecionadosParaBloqueio.clear();
-          this.selecionarTodos = false;
-        },
-        error: (err) => {
-          alert('Erro ao desbloquear horários: ' + (err.error || err.message));
-          this.carregarHorarios();
-        },
-      });
-    } else {
-      alert('Nenhum horário selecionado para bloquear ou desbloquear.');
-    }
-  }
-
   toggleSelecionarTodos() {
     this.horariosSelecionadosParaBloqueio.clear();
     this.horariosSelecionadosParaDesbloqueio.clear();
-
     if (this.selecionarTodos) {
-      this.horarios.forEach(h => {
+      this.horarios.forEach((h) => {
         if (!h.bloqueado) this.horariosSelecionadosParaBloqueio.add(h.id!);
         else this.horariosSelecionadosParaDesbloqueio.add(h.id!);
       });
@@ -417,7 +373,7 @@ export class AgendamentoComponent implements OnInit {
     if (this.horariosSelecionadosParaBloqueio.size === 0) return;
     const ids = Array.from(this.horariosSelecionadosParaBloqueio);
     if (!confirm('Confirma o bloqueio dos horários selecionados?')) return;
-    this.agendamentoService.bloquearHorarios(ids).subscribe({
+    this.horarioService.bloquearHorarios(ids).subscribe({
       next: () => {
         this.carregarHorarios();
         this.horariosSelecionadosParaBloqueio.clear();
@@ -434,7 +390,7 @@ export class AgendamentoComponent implements OnInit {
     if (this.horariosSelecionadosParaDesbloqueio.size === 0) return;
     const ids = Array.from(this.horariosSelecionadosParaDesbloqueio);
     if (!confirm('Confirma o desbloqueio dos horários selecionados?')) return;
-    this.agendamentoService.desbloquearHorarios(ids).subscribe({
+    this.horarioService.desbloquearHorarios(ids).subscribe({
       next: () => {
         this.carregarHorarios();
         this.horariosSelecionadosParaDesbloqueio.clear();
@@ -447,63 +403,64 @@ export class AgendamentoComponent implements OnInit {
     });
   }
 
-  // ==== FORMULÁRIO DE HORÁRIO ====
   private formatarHoraParaBackend(horario: string): string {
-    if (!horario) return '00:00:00';
-    if (horario.length === 5) return horario + ':00';
-    return horario;
+    if (!horario) return '00:00';
+    if (horario.length === 5) return horario;
+    return horario.slice(0, 5);
   }
 
   criarHorario() {
     if (!this.novoHorario || !this.diaSelecionado) return;
-
     const horaFormatada = this.formatarHoraParaBackend(this.novoHorario);
-
-    const diasUteis = this.diasSemana.filter(d => d.sigla !== 'DOM').map(d => d.sigla);
-
-    this.agendamentoService.listar().subscribe(todosHorarios => {
+    const diasUteis = this.diasSemana
+      .filter((d) => d.sigla !== 'DOM')
+      .map((d) => d.sigla);
+    this.horarioService.listar().subscribe((todosHorarios) => {
       const horariosParaCriar = diasUteis
-        .filter(diaSigla => {
-          const diaBackend = this.diasSemana.find(d => d.sigla === diaSigla)?.backend || 'MONDAY';
-          return !todosHorarios.some(h => h.diaSemana === diaBackend && h.horario === horaFormatada);
+        .filter((diaSigla) => {
+          const diaBackend =
+            this.diasSemana.find((d) => d.sigla === diaSigla)?.backend ||
+            'MONDAY';
+          return !todosHorarios.some(
+            (h) => h.diaSemana === diaBackend && h.horario === horaFormatada
+          );
         })
-        .map(diaSigla => {
+        .map((diaSigla) => {
           return {
-            diaSemana: this.diasSemana.find(d => d.sigla === diaSigla)?.backend || 'MONDAY',
+            diaSemana:
+              this.diasSemana.find((d) => d.sigla === diaSigla)?.backend ||
+              'MONDAY',
             horario: horaFormatada,
             bloqueado: false,
           };
         });
-
       if (horariosParaCriar.length === 0) {
         alert('Este horário já existe em todos os dias disponíveis.');
         this.cancelarFormularioHorario();
         return;
       }
-
-      horariosParaCriar.forEach(horario => {
-        this.agendamentoService.criar(horario).subscribe(() => {
-        });
+      horariosParaCriar.forEach((horario) => {
+        this.horarioService.criar(horario).subscribe(() => {});
       });
-
       setTimeout(() => this.carregarHorarios(), 500);
-
       this.cancelarFormularioHorario();
     });
   }
 
-
   editarHorario() {
     if (!this.horarioEditando || !this.novoHorario) return;
-
-    const atualizado: Agendamento = {
+    const atualizado: Horario = {
       ...this.horarioEditando,
       horario: this.formatarHoraParaBackend(this.novoHorario),
     };
-
-    this.agendamentoService.editar(atualizado).subscribe(() => {
-      this.cancelarFormularioHorario();
-      this.carregarHorarios();
+    this.horarioService.editar(atualizado).subscribe({
+      next: () => {
+        this.cancelarFormularioHorario();
+        this.carregarHorarios();
+      },
+      error: (err) => {
+        alert('Erro ao editar horário: ' + (err.error || err.message));
+      },
     });
   }
 
@@ -514,7 +471,7 @@ export class AgendamentoComponent implements OnInit {
     this.mostrarFormularioHorario = true;
   }
 
-  abrirFormularioEditarHorario(h: Agendamento) {
+  abrirFormularioEditarHorario(h: Horario) {
     this.modoEdicao = true;
     this.horarioEditando = h;
     this.novoHorario = h.horario;
@@ -528,7 +485,6 @@ export class AgendamentoComponent implements OnInit {
     this.modoEdicao = false;
   }
 
-  // ==== FILTROS DE HORÁRIOS POR PERÍODO ====
   obterHorariosPorPeriodo(periodo: 'manha' | 'tarde' | 'noite') {
     const filtro = {
       manha: (h: string) => h >= '06:00' && h < '12:00',
@@ -542,12 +498,10 @@ export class AgendamentoComponent implements OnInit {
     return horario.slice(0, 5);
   }
 
-  // RESUMO AGENGAMENTO
   abrirPopupCupom() {
     this.mostrarPopupCupom = true;
   }
 
-  // Selecionar cupom no pop-up
   selecionarCupomPopup(cupom: Cupom | null) {
     if (cupom) {
       this.cupomSelecionadoId = String(cupom.id);
@@ -560,125 +514,25 @@ export class AgendamentoComponent implements OnInit {
     this.atualizarValores();
   }
 
-
-  // Abrir pop-up de forma de pagamento
-  abrirPopupPagamento() {
-    this.mostrarPopupPagamento = true;
+  resgatarCupom() {
+    const code = (this.codigoCupom || '').trim().toUpperCase();
+    if (!code) {
+      alert('Digite o código do cupom.');
+      return;
+    }
+    const cupom = this.cuponsDisponiveis.find(
+      (c) => (c.codigo || '').toUpperCase() === code
+    );
+    if (!cupom) {
+      alert('Cupom inválido ou não encontrado.');
+      return;
+    }
+    this.selecionarCupomPopup(cupom);
+    this.codigoCupom = '';
   }
 
-  fecharPopupPagamento(event: MouseEvent) {
-    // Fecha o popup
-    this.mostrarPopupPagamento = false;
-  }
   fecharPopupCupom(event: MouseEvent) {
     this.mostrarPopupCupom = false;
-  }
-
-  // Selecionar forma de pagamento no pop-up
-  selecionarFormaPagamento(forma: string) {
-    this.formaPagamentoSelecionada = forma;
-    this.resumo.pagamento = forma;
-    this.mostrarPopupPagamento = false;
-  }
-
-  atualizarValores() {
-    const selecionados = this.servicos.filter(s => this.servicosSelecionados.includes(s.id!));
-    this.resumo.servicos = selecionados;
-
-    this.valorTotal = selecionados.reduce((acc, s) => acc + (s.preco || 0), 0);
-    this.resumo.subtotal = this.valorTotal;
-
-    const cupom = this.cuponsDisponiveis.find(c => c.id === +this.cupomSelecionadoId);
-    this.descontoAplicado = cupom ? (this.valorTotal * cupom.desconto) / 100 : 0;
-    this.resumo.desconto = this.descontoAplicado;
-
-    this.valorFinal = this.valorTotal - this.descontoAplicado;
-    this.resumo.total = this.valorFinal;
-  }
-
-  // Quando o cliente clicar em um horário para selecionar
-  selecionarHorarioCliente(horario: Agendamento) {
-    this.horarioSelecionadoCliente = horario; // <- ESSA LINHA FALTAVA
-
-    const hoje = new Date();
-    const diaMap: { [key: string]: number } = {
-      'DOM': 0, 'SEG': 1, 'TER': 2, 'QUA': 3, 'QUI': 4, 'SEX': 5, 'SAB': 6,
-    };
-
-    const diasExtenso = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-    const diaSemanaNumero = diaMap[this.diaSelecionado];
-
-    const dataSelecionada = new Date(hoje);
-    const distancia = (diaSemanaNumero + 7 - hoje.getDay()) % 7;
-    dataSelecionada.setDate(hoje.getDate() + distancia);
-
-    const dia = String(dataSelecionada.getDate()).padStart(2, '0');
-    const mes = String(dataSelecionada.getMonth() + 1).padStart(2, '0');
-    const diaExtenso = diasExtenso[dataSelecionada.getDay()];
-    const hora = this.formatarHorario(horario.horario);
-
-    this.resumo.dataHora = `${diaExtenso}, ${dia}/${mes} às ${hora}`;
-  }
-
-  confirmar() {
-    const agendamentoFinal = {
-      barbeiro: this.resumo.barbeiro,
-      servicos: this.resumo.servicos.map(s => s.id),
-      dataHora: this.resumo.dataHora,
-      formaPagamento: this.formaPagamentoSelecionada,
-      cupom: this.cupomSelecionadoId || null,
-      subtotal: this.resumo.subtotal,
-      desconto: this.resumo.desconto,
-      total: this.resumo.total,
-    };
-
-    console.log('Agendamento final:', agendamentoFinal);
-    alert('Agendamento confirmado com sucesso!');
-  }
-
-  obterNomesServicos(): string {
-    return this.resumo.servicos.map(s => s.nome).join(', ');
-  }
-
-  getImagemFormaPagamento(): string {
-    switch (this.formaPagamentoSelecionada) {
-      case 'Pix':
-        return 'assets/pix.png';
-      case 'Crédito':
-        return 'assets/mastercard.png';
-      case 'Débito':
-        return 'assets/debito.png'; // Coloque a imagem correspondente
-      case 'Dinheiro':
-        return 'assets/dinheiro.png'; // Coloque a imagem correspondente
-      default:
-        return 'assets/default.png';
-    }
-  }
-  getIconeForma(forma: string): string {
-    const nomeSemAcento = forma
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, ''); // remove acentos
-
-    const mapaNomes: { [key: string]: string } = {
-      'credito': 'mastercard',
-      // outros casos especiais se precisar
-    };
-
-    const arquivo = mapaNomes[nomeSemAcento] || nomeSemAcento;
-
-    return `assets/${arquivo}.png`;
-  }
-
-
-  abrirPopupCartao() {
-    this.mostrarPopupCartao = true;
-  }
-
-  salvarCartao() {
-    // Aqui você pode adicionar lógica para salvar o cartão
-    console.log('Cartão salvo:', this.cartao);
-    this.mostrarPopupCartao = false;
   }
 
   formatarNumeroCartao(event: any) {
@@ -687,23 +541,144 @@ export class AgendamentoComponent implements OnInit {
     this.cartao.numero = valor;
   }
 
-  resgatarCupom() {
-    const code = (this.codigoCupom || '').trim().toUpperCase();
-    if (!code) {
-      alert('Digite o código do cupom.');
-      return;
-    }
-
-    const cupom = this.cuponsDisponiveis.find(
-      c => (c.codigo || '').toUpperCase() === code
+  atualizarValores() {
+    const selecionados = this.servicos.filter((s) =>
+      this.servicosSelecionados.includes(s.id!)
     );
+    this.resumo.servicos = selecionados;
+    this.valorTotal = selecionados.reduce((acc, s) => acc + (s.preco || 0), 0);
+    this.resumo.subtotal = this.valorTotal;
+    const cupom = this.cuponsDisponiveis.find(
+      (c) => c.id === +this.cupomSelecionadoId
+    );
+    this.descontoAplicado = cupom
+      ? (this.valorTotal * cupom.desconto) / 100
+      : 0;
+    this.resumo.desconto = this.descontoAplicado;
+    this.valorFinal = this.valorTotal - this.descontoAplicado;
+    this.resumo.total = this.valorFinal;
+    this.resumo.barbeiro = this.barbeiroSelecionado;
+  }
 
-    if (!cupom) {
-      alert('Cupom inválido ou não encontrado.');
+  selecionarHorarioCliente(horario: Horario) {
+    if (horario.bloqueado) {
+      alert('Este horário não está disponível.');
+      return;
+    }
+    this.horarioSelecionadoCliente = horario;
+    const hoje = new Date();
+    const diaMap: { [key: string]: number } = {
+      DOM: 0,
+      SEG: 1,
+      TER: 2,
+      QUA: 3,
+      QUI: 4,
+      SEX: 5,
+      SAB: 6,
+    };
+    const diaSemanaNumero = diaMap[this.diaSelecionado];
+    const dataSelecionada = new Date(hoje);
+    const distancia = (diaSemanaNumero + 7 - hoje.getDay()) % 7;
+    dataSelecionada.setDate(hoje.getDate() + distancia);
+    const dia = String(dataSelecionada.getDate()).padStart(2, '0');
+    const mes = String(dataSelecionada.getMonth() + 1).padStart(2, '0');
+    const ano = dataSelecionada.getFullYear();
+    const hora = this.formatarHorario(horario.horario);
+    this.resumo.data = `${dia}/${mes}/${ano}`; // Mantém DD/MM/YYYY para exibição e envio
+    this.resumo.horario = hora;
+  }
+
+  confirmar() {
+    if (!this.usuarioService.isLoggedIn()) {
+      alert('Você precisa estar logado para confirmar o agendamento.');
+      this.router.navigate(['/login']);
       return;
     }
 
-    this.selecionarCupomPopup(cupom);
+    if (
+      !this.horarioSelecionadoCliente ||
+      !this.resumo.data ||
+      !this.resumo.horario ||
+      !this.resumo.servicos.length
+    ) {
+      alert('Por favor, selecione um horário, data e pelo menos um serviço.');
+      return;
+    }
+
+    const usuarioLogado = this.usuarioService.getUsuarioLogadoSnapshot();
+    if (!usuarioLogado || !usuarioLogado.id) {
+      alert('Erro: Usuário não identificado. Por favor, faça login novamente.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const agendamento: Agendamento = {
+      usuarioId: usuarioLogado.id,
+      barbeiro:
+        this.resumo.barbeiro === 'Sem Preferência'
+          ? null
+          : this.resumo.barbeiro,
+      servicos: this.resumo.servicos.map((s) => s.id!),
+      data: this.resumo.data, // Já está no formato DD/MM/YYYY
+      horario: this.resumo.horario, // Já está no formato HH:mm
+      subtotal: this.resumo.subtotal,
+      desconto: this.resumo.desconto,
+      total: this.resumo.total,
+      cupomNome: this.resumo.cupomNome || null,
+    };
+
+    console.log('Agendamento enviado:', JSON.stringify(agendamento, null, 2));
+    this.agendamentoService.criar(agendamento).subscribe({
+      next: () => {
+        alert('Agendamento confirmado com sucesso!');
+        this.carregarHorarios();
+        this.resetarFormulario();
+        this.router.navigate(['/meus-horarios']);
+      },
+      error: (err) => {
+        console.error('Erro completo:', err);
+        alert(
+          'Erro ao confirmar agendamento: ' +
+            (err.error?.message || err.message)
+        );
+      },
+    });
+  }
+
+  resetarFormulario() {
+    this.servicosSelecionados = [];
+    this.horarioSelecionadoCliente = null;
+    this.resumo = {
+      barbeiro: this.barbeiroSelecionado,
+      servicos: [],
+      data: '',
+      horario: '',
+      subtotal: 0,
+      desconto: 0,
+      total: 0,
+      cupomNome: '',
+    };
+    this.cupomSelecionadoId = '';
     this.codigoCupom = '';
+    this.atualizarValores();
+  }
+
+  obterNomesServicos(): string {
+    return this.resumo.servicos.length > 0
+      ? this.resumo.servicos.map((s) => s.nome).join(', ')
+      : 'Nenhum serviço';
+  }
+
+  getIconeForma(forma: string): string {
+    const nomeSemAcento = forma
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+    const mapaNomes: { [key: string]: string } = {
+      credito: 'mastercard',
+      cartao: 'mastercard',
+    };
+    const arquivo = mapaNomes[nomeSemAcento] || nomeSemAcento;
+    return `assets/${arquivo}.png`;
   }
 }

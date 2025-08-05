@@ -1,37 +1,25 @@
-package com.stmoneybarber.backend.model;
+package com.stmoneybarber.backend.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@Entity
-public class Agendamento {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class AgendamentoDTO {
     private Long usuarioId;
     private String barbeiro;
-
-    @ElementCollection
     private List<Long> servicos;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate data;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime horario;
+
     private double subtotal;
     private double desconto;
     private double total;
     private String cupomNome;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getUsuarioId() {
         return usuarioId;

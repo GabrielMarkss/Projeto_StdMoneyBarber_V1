@@ -7,7 +7,7 @@ import { Servico } from '../models/servico.model';
 export class ServicoService {
   private apiUrl = `http://${window.location.hostname}:8080/api/servicos`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   listar(): Observable<Servico[]> {
     return this.http.get<Servico[]>(this.apiUrl);

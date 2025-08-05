@@ -20,7 +20,13 @@ import { BarbeiroService } from '../service/barbeiro.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule, GoogleMapsModule, FormsModule, HttpClientModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    GoogleMapsModule,
+    FormsModule,
+    HttpClientModule,
+  ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   menuAberto = false;
@@ -74,7 +80,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   proximoIndexCard = 0;
   intervaloCarrosselCards: any;
 
-
   constructor(
     public usuarioService: UsuarioService,
     private router: Router,
@@ -84,7 +89,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private cardService: CardService,
     private http: HttpClient,
     private barbeiroService: BarbeiroService // 👈 adicionado aqui
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const data = new Date();
@@ -111,26 +116,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
       'nov',
       'dez',
     ];
-    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${meses[data.getMonth()]
-      } ${data.getFullYear()}`;
+    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${
+      meses[data.getMonth()]
+    } ${data.getFullYear()}`;
 
     if (this.usuarioService.isLoggedIn()) {
       this.usuarioService.getUsuarioLogado().subscribe({
-        next: (user) => (this.usuarioService.nomeUsuario = user.nome),
-        error: () => (this.usuarioService.nomeUsuario = ''),
+        next: (user) => {
+          console.log('Usuário carregado:', user);
+          if (user && user.id) {
+            this.usuarioService.nomeUsuario = user.nome;
+            this.listarNotificacoes();
+          } else {
+            console.warn('Usuário retornado sem ID ou nulo:', user);
+            this.router.navigate(['/login']);
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao carregar usuário:', err);
+          this.usuarioService.nomeUsuario = '';
+          this.router.navigate(['/login']);
+        },
       });
+    } else {
+      console.warn('Usuário não está logado. Redirecionando para login.');
+      this.router.navigate(['/login']);
     }
 
-    this.listarNotificacoes();
     this.listarImagens();
-    this.carregarBarbeiros();
     this.listarServicos();
-    this.usuarioService.loadUsuarioLogado();
     this.listarCards();
-
-    window.addEventListener('resize', () => {
-      this.listarCards();
-    });
+    this.carregarBarbeiros();
   }
 
   ngOnDestroy() {
@@ -146,7 +162,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       elemento.scrollIntoView({ behavior: 'smooth' });
     }
   }
-
 
   abrirMenu() {
     clearTimeout(this.menuTimeout);
@@ -472,7 +487,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.iniciarCarrosselCards(quantidade);
     });
   }
-
 
   iniciarCarrosselCards(quantidadeVisivel: number) {
     if (this.intervaloCarrosselCards)
