@@ -74,15 +74,14 @@ export class AgendamentoComponent implements OnInit {
   modoEdicao = false;
   horarioEditando: Horario | null = null;
   novoHorario: string = '';
-  modoApagarHorario = false;
-  horariosSelecionadosParaApagar = new Set<number>();
   selecionarTodos: boolean = false;
+  horariosSelecionados = new Set<number>();
   horariosSelecionadosParaBloqueio = new Set<number>();
   horariosSelecionadosParaDesbloqueio = new Set<number>();
   horarioSelecionadoCliente: Horario | null = null;
   periodos: ('manha' | 'tarde' | 'noite')[] = ['manha', 'tarde', 'noite'];
   resumo = {
-    barbeiro: '',
+    barbeiro: 'Sem Preferência',
     servicos: [] as Servico[],
     data: '',
     horario: '',
@@ -92,12 +91,6 @@ export class AgendamentoComponent implements OnInit {
     cupomNome: '',
   };
   mostrarPopupCupom = false;
-  cartao = {
-    nome: '',
-    numero: '',
-    validade: '',
-    cvv: '',
-  };
 
   constructor(
     public usuarioService: UsuarioService,
@@ -154,6 +147,7 @@ export class AgendamentoComponent implements OnInit {
           : barbeiroParam === 'ezequiel'
           ? 'Ezequiel'
           : 'Sem Preferência';
+      this.resumo.barbeiro = this.barbeiroSelecionado; // Sincroniza o resumo inicial
     });
 
     if (this.usuarioService.isLoggedIn()) {
@@ -172,6 +166,23 @@ export class AgendamentoComponent implements OnInit {
         },
       });
     }
+  }
+
+  // Método para atualizar o barbeiro ao mudar a seleção
+  onBarbeiroChange() {
+    this.resumo.barbeiro = this.barbeiroSelecionado;
+    this.atualizarValores(); // Atualiza os valores para refletir a mudança
+  }
+
+  isHorarioPassado(horario: Horario): boolean {
+    const agora = new Date();
+    const horaAtual = `${String(agora.getHours()).padStart(2, '0')}:${String(
+      agora.getMinutes()
+    ).padStart(2, '0')}`;
+    const isHoje =
+      this.diasSemana.find((d) => d.sigla === this.diaSelecionado)?.backend ===
+      agora.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
+    return isHoje && horario.horario < horaAtual;
   }
 
   abrirMenu() {
@@ -289,6 +300,10 @@ export class AgendamentoComponent implements OnInit {
     this.horarioSelecionadoCliente = null;
     this.resumo.data = '';
     this.resumo.horario = '';
+    this.horariosSelecionados.clear();
+    this.horariosSelecionadosParaBloqueio.clear();
+    this.horariosSelecionadosParaDesbloqueio.clear();
+    this.selecionarTodos = false;
     this.carregarHorarios();
   }
 
@@ -300,9 +315,9 @@ export class AgendamentoComponent implements OnInit {
         this.horarios = res
           .filter((h) => h.diaSemana === dia.backend)
           .sort((a, b) => a.horario.localeCompare(b.horario));
+        this.horariosSelecionados.clear();
         this.horariosSelecionadosParaBloqueio.clear();
         this.horariosSelecionadosParaDesbloqueio.clear();
-        this.horariosSelecionadosParaApagar.clear();
         this.selecionarTodos = false;
       },
       error: (err) => {
@@ -313,10 +328,7 @@ export class AgendamentoComponent implements OnInit {
   }
 
   apagarHorariosSelecionados(): void {
-    const todosSelecionados = [
-      ...this.horariosSelecionadosParaBloqueio,
-      ...this.horariosSelecionadosParaDesbloqueio,
-    ];
+    const todosSelecionados = Array.from(this.horariosSelecionados);
     if (todosSelecionados.length === 0) {
       alert('Nenhum horário selecionado para apagar.');
       return;
@@ -333,49 +345,97 @@ export class AgendamentoComponent implements OnInit {
         this.carregarHorarios();
       },
     });
-    this.horariosSelecionadosParaBloqueio.clear();
-    this.horariosSelecionadosParaDesbloqueio.clear();
+    this.horariosSelecionados.clear();
     this.selecionarTodos = false;
   }
 
   clicarHorario(h: Horario) {
     if (this.usuarioService.usuarioEhAdmin()) {
-      if (!h.bloqueado) {
-        if (this.horariosSelecionadosParaBloqueio.has(h.id!)) {
-          this.horariosSelecionadosParaBloqueio.delete(h.id!);
-        } else {
-          this.horariosSelecionadosParaBloqueio.add(h.id!);
-          this.horariosSelecionadosParaDesbloqueio.delete(h.id!);
-        }
+      if (this.horariosSelecionados.has(h.id!)) {
+        this.horariosSelecionados.delete(h.id!);
+        this.horariosSelecionadosParaBloqueio.delete(h.id!);
+        this.horariosSelecionadosParaDesbloqueio.delete(h.id!);
       } else {
-        if (this.horariosSelecionadosParaDesbloqueio.has(h.id!)) {
-          this.horariosSelecionadosParaDesbloqueio.delete(h.id!);
+        this.horariosSelecionados.add(h.id!);
+        const agora = new Date();
+        const horaAtual = `${String(agora.getHours()).padStart(
+          2,
+          '0'
+        )}:${String(agora.getMinutes()).padStart(2, '0')}`;
+        const isHoje =
+          this.diasSemana.find((d) => d.sigla === this.diaSelecionado)
+            ?.backend ===
+          agora.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
+
+        if (isHoje && h.horario < horaAtual) {
+          // Horários passados podem ser selecionados para apagar, mas não para bloquear/desbloquear
+        } else if (!h.bloqueado) {
+          this.horariosSelecionadosParaBloqueio.add(h.id!);
         } else {
           this.horariosSelecionadosParaDesbloqueio.add(h.id!);
-          this.horariosSelecionadosParaBloqueio.delete(h.id!);
         }
       }
+    } else {
+      this.selecionarHorarioCliente(h);
     }
   }
 
   toggleSelecionarTodos() {
+    this.horariosSelecionados.clear();
     this.horariosSelecionadosParaBloqueio.clear();
     this.horariosSelecionadosParaDesbloqueio.clear();
     if (this.selecionarTodos) {
+      const agora = new Date();
+      const horaAtual = `${String(agora.getHours()).padStart(2, '0')}:${String(
+        agora.getMinutes()
+      ).padStart(2, '0')}`;
+      const isHoje =
+        this.diasSemana.find((d) => d.sigla === this.diaSelecionado)
+          ?.backend ===
+        agora.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
+
       this.horarios.forEach((h) => {
-        if (!h.bloqueado) this.horariosSelecionadosParaBloqueio.add(h.id!);
-        else this.horariosSelecionadosParaDesbloqueio.add(h.id!);
+        this.horariosSelecionados.add(h.id!);
+        if (isHoje && h.horario < horaAtual) {
+          // Horários passados podem ser selecionados para apagar, mas não para bloquear/desbloqueio
+        } else if (!h.bloqueado) {
+          this.horariosSelecionadosParaBloqueio.add(h.id!);
+        } else {
+          this.horariosSelecionadosParaDesbloqueio.add(h.id!);
+        }
       });
     }
   }
 
   bloquearHorariosSelecionados() {
-    if (this.horariosSelecionadosParaBloqueio.size === 0) return;
+    if (this.horariosSelecionadosParaBloqueio.size === 0) {
+      alert('Nenhum horário selecionado para bloquear.');
+      return;
+    }
     const ids = Array.from(this.horariosSelecionadosParaBloqueio);
+    const agora = new Date();
+    const horaAtual = `${String(agora.getHours()).padStart(2, '0')}:${String(
+      agora.getMinutes()
+    ).padStart(2, '0')}`;
+    const isHoje =
+      this.diasSemana.find((d) => d.sigla === this.diaSelecionado)?.backend ===
+      agora.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
+
+    if (isHoje) {
+      const horariosPassados = this.horarios.filter(
+        (h) => ids.includes(h.id!) && h.horario < horaAtual
+      );
+      if (horariosPassados.length > 0) {
+        alert('Não é possível bloquear horários passados no dia atual.');
+        return;
+      }
+    }
+
     if (!confirm('Confirma o bloqueio dos horários selecionados?')) return;
     this.horarioService.bloquearHorarios(ids).subscribe({
       next: () => {
         this.carregarHorarios();
+        this.horariosSelecionados.clear();
         this.horariosSelecionadosParaBloqueio.clear();
         this.selecionarTodos = false;
       },
@@ -387,12 +447,34 @@ export class AgendamentoComponent implements OnInit {
   }
 
   desbloquearHorariosSelecionados() {
-    if (this.horariosSelecionadosParaDesbloqueio.size === 0) return;
+    if (this.horariosSelecionadosParaDesbloqueio.size === 0) {
+      alert('Nenhum horário selecionado para desbloquear.');
+      return;
+    }
     const ids = Array.from(this.horariosSelecionadosParaDesbloqueio);
+    const agora = new Date();
+    const horaAtual = `${String(agora.getHours()).padStart(2, '0')}:${String(
+      agora.getMinutes()
+    ).padStart(2, '0')}`;
+    const isHoje =
+      this.diasSemana.find((d) => d.sigla === this.diaSelecionado)?.backend ===
+      agora.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
+
+    if (isHoje) {
+      const horariosPassados = this.horarios.filter(
+        (h) => ids.includes(h.id!) && h.horario < horaAtual
+      );
+      if (horariosPassados.length > 0) {
+        alert('Não é possível desbloquear horários passados no dia atual.');
+        return;
+      }
+    }
+
     if (!confirm('Confirma o desbloqueio dos horários selecionados?')) return;
     this.horarioService.desbloquearHorarios(ids).subscribe({
       next: () => {
         this.carregarHorarios();
+        this.horariosSelecionados.clear();
         this.horariosSelecionadosParaDesbloqueio.clear();
         this.selecionarTodos = false;
       },
@@ -401,12 +483,6 @@ export class AgendamentoComponent implements OnInit {
         this.carregarHorarios();
       },
     });
-  }
-
-  private formatarHoraParaBackend(horario: string): string {
-    if (!horario) return '00:00';
-    if (horario.length === 5) return horario;
-    return horario.slice(0, 5);
   }
 
   criarHorario() {
@@ -535,12 +611,6 @@ export class AgendamentoComponent implements OnInit {
     this.mostrarPopupCupom = false;
   }
 
-  formatarNumeroCartao(event: any) {
-    let valor = event.target.value.replace(/\D/g, '');
-    valor = valor.replace(/(.{4})/g, '$1 ').trim();
-    this.cartao.numero = valor;
-  }
-
   atualizarValores() {
     const selecionados = this.servicos.filter((s) =>
       this.servicosSelecionados.includes(s.id!)
@@ -557,7 +627,7 @@ export class AgendamentoComponent implements OnInit {
     this.resumo.desconto = this.descontoAplicado;
     this.valorFinal = this.valorTotal - this.descontoAplicado;
     this.resumo.total = this.valorFinal;
-    this.resumo.barbeiro = this.barbeiroSelecionado;
+    this.resumo.barbeiro = this.barbeiroSelecionado; // Atualiza o barbeiro no resumo
   }
 
   selecionarHorarioCliente(horario: Horario) {
@@ -565,8 +635,10 @@ export class AgendamentoComponent implements OnInit {
       alert('Este horário não está disponível.');
       return;
     }
-    this.horarioSelecionadoCliente = horario;
-    const hoje = new Date();
+    const agora = new Date();
+    const horaAtual = `${String(agora.getHours()).padStart(2, '0')}:${String(
+      agora.getMinutes()
+    ).padStart(2, '0')}`;
     const diaMap: { [key: string]: number } = {
       DOM: 0,
       SEG: 1,
@@ -577,20 +649,30 @@ export class AgendamentoComponent implements OnInit {
       SAB: 6,
     };
     const diaSemanaNumero = diaMap[this.diaSelecionado];
-    const dataSelecionada = new Date(hoje);
-    const distancia = (diaSemanaNumero + 7 - hoje.getDay()) % 7;
-    dataSelecionada.setDate(hoje.getDate() + distancia);
+    const isHoje = diaSemanaNumero === agora.getDay();
+
+    if (isHoje && horario.horario < horaAtual) {
+      alert('Este horário já passou e não está disponível.');
+      return;
+    }
+
+    this.horarioSelecionadoCliente = horario;
+    const dataSelecionada = new Date(agora);
+    const distancia = (diaSemanaNumero + 7 - agora.getDay()) % 7;
+    dataSelecionada.setDate(agora.getDate() + distancia);
     const dia = String(dataSelecionada.getDate()).padStart(2, '0');
     const mes = String(dataSelecionada.getMonth() + 1).padStart(2, '0');
     const ano = dataSelecionada.getFullYear();
     const hora = this.formatarHorario(horario.horario);
-    this.resumo.data = `${dia}/${mes}/${ano}`; // Mantém DD/MM/YYYY para exibição e envio
+    this.resumo.data = `${dia}/${mes}/${ano}`;
     this.resumo.horario = hora;
   }
 
   confirmar() {
-    if (!this.usuarioService.isLoggedIn()) {
-      alert('Você precisa estar logado para confirmar o agendamento.');
+    const usuarioLogado = this.usuarioService.getUsuarioLogadoSnapshot();
+    if (!usuarioLogado || !usuarioLogado.id) {
+      console.error('Usuário não logado ou ID ausente');
+      alert('Erro: Usuário não identificado. Por favor, faça login novamente.');
       this.router.navigate(['/login']);
       return;
     }
@@ -601,14 +683,39 @@ export class AgendamentoComponent implements OnInit {
       !this.resumo.horario ||
       !this.resumo.servicos.length
     ) {
+      console.error('Dados incompletos:', {
+        horario: this.horarioSelecionadoCliente,
+        data: this.resumo.data,
+        servicos: this.resumo.servicos,
+      });
       alert('Por favor, selecione um horário, data e pelo menos um serviço.');
       return;
     }
 
-    const usuarioLogado = this.usuarioService.getUsuarioLogadoSnapshot();
-    if (!usuarioLogado || !usuarioLogado.id) {
-      alert('Erro: Usuário não identificado. Por favor, faça login novamente.');
-      this.router.navigate(['/login']);
+    const [dia, mes, ano] = this.resumo.data.split('/').map(Number);
+    const dataFormatada = `${ano}-${String(mes).padStart(2, '0')}-${String(
+      dia
+    ).padStart(2, '0')}`;
+    const horarioFormatado = this.formatarHoraParaBackend(this.resumo.horario);
+
+    const agora = new Date();
+    const dataAgendamento = new Date(`${dataFormatada}T${horarioFormatado}`);
+
+    console.log('Validando agendamento...');
+    console.log('Data formatada:', dataFormatada);
+    console.log('Horário formatado:', horarioFormatado);
+    console.log(
+      'Data do agendamento interpretada pelo JS:',
+      dataAgendamento.toString()
+    );
+    console.log('Agora:', agora.toString());
+
+    if (dataAgendamento <= agora) {
+      console.error('Tentativa de agendar horário passado ou atual:', {
+        data: dataFormatada,
+        horario: horarioFormatado,
+      });
+      alert('Não é possível agendar em horários passados ou atuais.');
       return;
     }
 
@@ -618,38 +725,51 @@ export class AgendamentoComponent implements OnInit {
         this.resumo.barbeiro === 'Sem Preferência'
           ? null
           : this.resumo.barbeiro,
-      servicos: this.resumo.servicos.map((s) => s.id!),
-      data: this.resumo.data, // Já está no formato DD/MM/YYYY
-      horario: this.resumo.horario, // Já está no formato HH:mm
+      servicos: this.resumo.servicos
+        .map((s) => s.id!)
+        .filter((id) => id !== undefined),
+      data: dataFormatada,
+      horario: horarioFormatado,
       subtotal: this.resumo.subtotal,
       desconto: this.resumo.desconto,
       total: this.resumo.total,
       cupomNome: this.resumo.cupomNome || null,
+      status: 'PENDENTE',
     };
 
-    console.log('Agendamento enviado:', JSON.stringify(agendamento, null, 2));
+    console.log('Payload enviado:', JSON.stringify(agendamento, null, 2));
     this.agendamentoService.criar(agendamento).subscribe({
-      next: () => {
+      next: (novoAgendamento) => {
+        console.log(
+          'Agendamento criado:',
+          JSON.stringify(novoAgendamento, null, 2)
+        );
         alert('Agendamento confirmado com sucesso!');
         this.carregarHorarios();
         this.resetarFormulario();
         this.router.navigate(['/meus-horarios']);
       },
       error: (err) => {
-        console.error('Erro completo:', err);
-        alert(
-          'Erro ao confirmar agendamento: ' +
-            (err.error?.message || err.message)
-        );
+        console.error('Erro ao criar agendamento:', err);
+        const mensagemErro =
+          err.error?.message || err.message || 'Erro desconhecido';
+        alert(`Erro ao confirmar agendamento: ${mensagemErro}`);
       },
     });
+  }
+
+  private formatarHoraParaBackend(hora: string): string {
+    const partes = hora.split(':');
+    const h = partes[0]?.padStart(2, '0') || '00';
+    const m = partes[1]?.padStart(2, '0') || '00';
+    return `${h}:${m}:00`;
   }
 
   resetarFormulario() {
     this.servicosSelecionados = [];
     this.horarioSelecionadoCliente = null;
     this.resumo = {
-      barbeiro: this.barbeiroSelecionado,
+      barbeiro: this.barbeiroSelecionado, // Mantém o barbeiro selecionado ao resetar
       servicos: [],
       data: '',
       horario: '',
@@ -667,18 +787,5 @@ export class AgendamentoComponent implements OnInit {
     return this.resumo.servicos.length > 0
       ? this.resumo.servicos.map((s) => s.nome).join(', ')
       : 'Nenhum serviço';
-  }
-
-  getIconeForma(forma: string): string {
-    const nomeSemAcento = forma
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-    const mapaNomes: { [key: string]: string } = {
-      credito: 'mastercard',
-      cartao: 'mastercard',
-    };
-    const arquivo = mapaNomes[nomeSemAcento] || nomeSemAcento;
-    return `assets/${arquivo}.png`;
   }
 }

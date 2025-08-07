@@ -1,6 +1,6 @@
 package com.stmoneybarber.backend.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.stmoneybarber.backend.model.Agendamento;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -9,18 +9,15 @@ public class AgendamentoDTO {
     private Long usuarioId;
     private String barbeiro;
     private List<Long> servicos;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate data;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime horario;
-
     private double subtotal;
     private double desconto;
     private double total;
     private String cupomNome;
+    private Agendamento.StatusAgendamento status;
 
+    // Getters e Setters
     public Long getUsuarioId() {
         return usuarioId;
     }
@@ -91,5 +88,29 @@ public class AgendamentoDTO {
 
     public void setCupomNome(String cupomNome) {
         this.cupomNome = cupomNome;
+    }
+
+    public Agendamento.StatusAgendamento getStatus() {
+        return status;
+    }
+
+    public void setStatus(Agendamento.StatusAgendamento status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "AgendamentoDTO{" +
+                "usuarioId=" + usuarioId +
+                ", barbeiro='" + barbeiro + '\'' +
+                ", servicos=" + servicos +
+                ", data=" + data +
+                ", horario=" + horario +
+                ", subtotal=" + subtotal +
+                ", desconto=" + desconto +
+                ", total=" + total +
+                ", cupomNome='" + cupomNome + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

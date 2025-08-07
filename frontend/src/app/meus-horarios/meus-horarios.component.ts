@@ -347,6 +347,7 @@ export class MeusHorariosComponent implements OnInit {
     if (this.usuarioService.usuarioEhAdmin()) {
       this.agendamentoService.listarTodos().subscribe({
         next: (agendamentos) => {
+          console.log('Agendamentos retornados:', agendamentos);
           this.agendamentos = agendamentos.map((agendamento) => ({
             ...agendamento,
             data: this.formatarData(agendamento.data),
@@ -363,6 +364,7 @@ export class MeusHorariosComponent implements OnInit {
     } else {
       this.agendamentoService.listarPorUsuario(usuarioId).subscribe({
         next: (agendamentos) => {
+          console.log('Agendamentos retornados:', agendamentos);
           this.agendamentos = agendamentos.map((agendamento) => ({
             ...agendamento,
             data: this.formatarData(agendamento.data),
@@ -385,12 +387,12 @@ export class MeusHorariosComponent implements OnInit {
       const [ano, mes, dia] = data.split('-');
       return `${dia}/${mes}/${ano}`;
     }
-    return data; // Já está no formato DD/MM/YYYY
+    return data;
   }
 
   formatarHorario(horario: string): string {
     if (!horario) return 'Não informado';
-    return horario.slice(0, 5); // Garante o formato HH:mm
+    return horario.slice(0, 5);
   }
 
   carregarNomesServicos() {
@@ -458,5 +460,37 @@ export class MeusHorariosComponent implements OnInit {
     agendamento: Agendamento & { servicosNomes?: string }
   ): string {
     return agendamento.servicosNomes || 'Nenhum serviço';
+  }
+
+  corStatus(status: string): string {
+    switch (status) {
+      case 'PENDENTE':
+        return 'orange';
+      case 'ATIVO':
+        return 'green';
+      case 'FINALIZADO':
+        return 'blue';
+      default:
+        return 'black';
+    }
+  }
+
+  isEditableOrCancelable(
+    status: string,
+    data: string,
+    horario: string
+  ): boolean {
+    const agora = new Date();
+    const [dia, mes, ano] = data.split('/').map(Number);
+    const [hora, minuto] = horario.split(':').map(Number);
+    const dataAgendamento = new Date(ano, mes - 1, dia, hora, minuto);
+
+    // Permitir edição/cancelamento para "PENDENTE" ou "ATIVO" se dentro de 15 minutos antes do horário
+    if (status === 'PENDENTE' || status === 'ATIVO') {
+      const diffMinutes =
+        (dataAgendamento.getTime() - agora.getTime()) / (1000 * 60);
+      return diffMinutes > 15; // Permitir até 15 minutos antes do horário
+    }
+    return false; // Bloquear para "FINALIZADO" ou outros status
   }
 }

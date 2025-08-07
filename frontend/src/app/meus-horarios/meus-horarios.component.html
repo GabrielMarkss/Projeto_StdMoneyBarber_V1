@@ -1,62 +1,32 @@
-<!-- Navbar Superior -->
-<nav
-  class="navbar"
-  style="
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-  "
->
-  <div class="left" style="display: flex; align-items: center">
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="left">
     <img
       src="assets/user-profile.png"
       alt="Perfil"
       routerLink="/dashteste"
       class="profile-img"
-      style="width: 85px; height: 85px; border-radius: 50%; cursor: pointer"
     />
-    <div class="greeting" style="color: white">
-      <div style="font-size: 20px; font-weight: bold">
-        Olá, {{ usuarioService.nomeUsuario || "..." }}
-      </div>
-      <small style="font-size: 14px">{{ dataHoje }}</small>
+    <div class="greeting">
+      <div>Olá, {{ usuarioService.nomeUsuario || "..." }}</div>
+      <small>{{ dataHoje }}</small>
     </div>
   </div>
-
-  <div
-    class="right"
-    style="
-      display: flex;
-      align-items: flex-end;
-      gap: 0.5rem;
-      padding-bottom: 0.25px;
-      margin-top: 20px;
-    "
-  >
-    <!-- Ícone Notificação com pop-up -->
+  <div class="right">
     <div
       class="notificacao-wrapper"
       (mouseenter)="abrirNotificacao()"
       (mouseleave)="fecharNotificacao()"
-      style="margin-right: 0.625rem"
     >
       <img
         src="assets/notificacao.png"
         alt="Notificações"
         class="notificacao"
-        style="width: 2.25rem; cursor: pointer; transform: translateY(2px)"
       />
-
-      <!-- Pop-up dinâmico -->
       <div class="notificacao-popup" *ngIf="mostrarNotificacoes">
         <div *ngFor="let n of notificacoes" class="notificacao-card">
           <div class="notificacao-imagem">
-            <img
-              [src]="n.imagemUrl"
-              alt="Imagem"
-              style="width: 100%; height: 100%"
-            />
+            <img [src]="n.imagemUrl" alt="Imagem" />
           </div>
           <div class="notificacao-conteudo">
             <strong>{{ n.titulo }}</strong>
@@ -87,7 +57,6 @@
             >
           </div>
         </div>
-
         <div
           class="nova-notificacao"
           *ngIf="usuarioService.usuarioEhAdmin()"
@@ -96,65 +65,7 @@
           + Nova notificação
         </div>
       </div>
-
-      <!-- Formulário de criação (modal) -->
-      <div
-        class="formulario-modal"
-        *ngIf="mostrarFormulario"
-        style="
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: white;
-          padding: 20px;
-          border-radius: 12px;
-          z-index: 999;
-          width: 400px;
-          box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-        "
-      >
-        <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
-
-        <input
-          type="text"
-          [(ngModel)]="nova.titulo"
-          class="form-control"
-          placeholder="Título da notificação"
-          style="width: 100%"
-        />
-        <textarea
-          [(ngModel)]="nova.descricao"
-          class="form-control"
-          placeholder="Descrição da notificação"
-          style="width: 100%; resize: none"
-          rows="3"
-        ></textarea>
-
-        <input
-          style="color: black"
-          type="file"
-          (change)="onFileChange($event)"
-        />
-
-        <div class="botoes-container">
-          <button class="cancelar" (click)="cancelarFormulario()">
-            Cancelar
-          </button>
-          <button
-            class="salvar"
-            (click)="salvarNotificacao()"
-            [disabled]="
-              !nova.titulo.trim() || !nova.descricao.trim() || !nova.imagemUrl
-            "
-          >
-            Salvar
-          </button>
-        </div>
-      </div>
     </div>
-
-    <!-- Botão de menu -->
     <div
       class="dropdown"
       (mouseenter)="abrirMenu()"
@@ -171,7 +82,54 @@
   </div>
 </nav>
 
-<!-- Formulário de Edição (Modal) -->
+<!-- Formulário de Notificação -->
+<div
+  class="formulario-modal"
+  *ngIf="mostrarFormulario"
+  style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    z-index: 999;
+    width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  "
+>
+  <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
+  <input
+    type="text"
+    [(ngModel)]="nova.titulo"
+    class="form-control"
+    placeholder="Título da notificação"
+    style="width: 100%"
+  />
+  <textarea
+    [(ngModel)]="nova.descricao"
+    class="form-control"
+    placeholder="Descrição da notificação"
+    style="width: 100%; resize: none"
+    rows="3"
+  ></textarea>
+  <input style="color: black" type="file" (change)="onFileChange($event)" />
+  <div class="botoes-container">
+    <button class="cancelar" (click)="cancelarFormulario()">Cancelar</button>
+    <button
+      class="salvar"
+      (click)="salvarNotificacao()"
+      [disabled]="
+        !nova.titulo.trim() || !nova.descricao.trim() || !nova.imagemUrl
+      "
+    >
+      Salvar
+    </button>
+  </div>
+</div>
+
+<!-- Formulário de Edição -->
 <div
   class="formulario-modal"
   *ngIf="mostrarFormularioEdicao"
@@ -189,7 +147,6 @@
   "
 >
   <h3 style="color: black; margin-top: 0">Editar Agendamento</h3>
-
   <div style="margin-bottom: 10px">
     <label style="color: black">Barbeiro:</label>
     <select [(ngModel)]="barbeiroSelecionado" style="width: 100%">
@@ -198,7 +155,6 @@
       </option>
     </select>
   </div>
-
   <div style="margin-bottom: 10px">
     <label style="color: black">Serviços:</label>
     <div *ngFor="let servico of servicos">
@@ -212,7 +168,6 @@
       </label>
     </div>
   </div>
-
   <div style="margin-bottom: 10px">
     <label style="color: black">Dia:</label>
     <select
@@ -225,7 +180,6 @@
       </option>
     </select>
   </div>
-
   <div style="margin-bottom: 10px">
     <label style="color: black">Data:</label>
     <input
@@ -235,7 +189,6 @@
       style="width: 100%"
     />
   </div>
-
   <div style="margin-bottom: 10px">
     <label style="color: black">Horário:</label>
     <select [(ngModel)]="horarioSelecionado" style="width: 100%">
@@ -249,7 +202,6 @@
       </option>
     </select>
   </div>
-
   <div class="botoes-container">
     <button class="cancelar" (click)="cancelarFormularioEdicao()">
       Cancelar
@@ -275,6 +227,14 @@
     </div>
     <div *ngFor="let agendamento of agendamentos" class="agendamento-card">
       <div class="linha">
+        <strong>Status:</strong>
+        <b
+          ><span [ngStyle]="{ color: corStatus(agendamento.status || '') }">
+            {{ agendamento.status || "" }}
+          </span></b
+        >
+      </div>
+      <div class="linha">
         <strong>Barbeiro:</strong>
         <span>{{ agendamento.barbeiro || "Sem Preferência" }}</span>
       </div>
@@ -283,8 +243,8 @@
         <span>{{ obterNomesServicos(agendamento) }}</span>
       </div>
       <div class="linha">
-        <strong>Data e horario:</strong>
-        <span>{{ agendamento.data }} ás {{ agendamento.horario }}</span>
+        <strong>Data e horário:</strong>
+        <span>{{ agendamento.data }} às {{ agendamento.horario }}</span>
       </div>
       <div class="linha">
         <strong>Subtotal:</strong>
@@ -304,13 +264,17 @@
         <span>R$ {{ agendamento.total.toFixed(2) }}</span>
       </div>
       <br />
-
       <div
         class="botoes-agendamento"
         *ngIf="
-          usuarioService.usuarioEhAdmin() ||
-          agendamento.usuarioId ===
-            usuarioService.getUsuarioLogadoSnapshot()?.id
+          (usuarioService.usuarioEhAdmin() ||
+            agendamento.usuarioId ===
+              usuarioService.getUsuarioLogadoSnapshot()?.id) &&
+          isEditableOrCancelable(
+            agendamento.status || '',
+            agendamento.data,
+            agendamento.horario
+          )
         "
       >
         <button

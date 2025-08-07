@@ -1,4 +1,4 @@
-<!-- NAVBAR SUPERIOR -->
+<!-- Navbar -->
 <nav class="navbar" id="navbar">
   <div class="left" style="display: flex; align-items: center">
     <img
@@ -24,7 +24,6 @@
       margin-top: 20px;
     "
   >
-    <!-- Ícone Notificação com pop-up -->
     <div
       class="notificacao-wrapper"
       (mouseenter)="abrirNotificacao()"
@@ -37,8 +36,6 @@
         class="notificacao"
         style="width: 2.25rem; cursor: pointer; transform: translateY(2px)"
       />
-
-      <!-- Pop-up dinâmico -->
       <div class="notificacao-popup" *ngIf="mostrarNotificacoes">
         <div *ngFor="let n of notificacoes" class="notificacao-card">
           <div class="notificacao-imagem">
@@ -68,7 +65,6 @@
               (click)="editarNotificacao(n)"
               >✎</span
             >
-
             <span
               class="icone-acao apagar notificacao"
               title="Remover notificação"
@@ -78,7 +74,6 @@
             >
           </div>
         </div>
-
         <div
           class="nova-notificacao"
           *ngIf="usuarioService.usuarioEhAdmin()"
@@ -87,14 +82,11 @@
           + Nova notificação
         </div>
       </div>
-
-      <!-- Formulário de criação (modal) -->
       <div
         class="formulario-modal"
         *ngIf="mostrarFormulario && usuarioService.usuarioEhAdmin()"
       >
         <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
-
         <input
           type="text"
           [(ngModel)]="nova.titulo"
@@ -109,13 +101,11 @@
           style="width: 100%; resize: none"
           rows="3"
         ></textarea>
-
         <input
           style="color: black"
           type="file"
           (change)="onFileChange($event)"
         />
-
         <div class="botoes-container">
           <button class="cancelar" (click)="cancelarFormulario()">
             Cancelar
@@ -132,8 +122,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Botão de menu ☰ -->
     <div
       class="dropdown"
       (mouseenter)="abrirMenu()"
@@ -172,7 +160,11 @@
   <div class="coluna-direita">
     <h3 style="display: flex; align-items: center; gap: 8px">
       Horários Disponíveis -
-      <select [(ngModel)]="barbeiroSelecionado" class="seletor-barbeiro">
+      <select
+        [(ngModel)]="barbeiroSelecionado"
+        (change)="onBarbeiroChange()"
+        class="seletor-barbeiro"
+      >
         <option *ngFor="let b of barbeiros" [ngValue]="b">{{ b }}</option>
       </select>
     </h3>
@@ -190,7 +182,6 @@
 
     <!-- Painel Admin -->
     <div *ngIf="usuarioService.usuarioEhAdmin()" style="margin-top: 10px">
-      <!-- Selecionar todos e ações -->
       <div
         style="
           display: flex;
@@ -205,40 +196,31 @@
             [(ngModel)]="selecionarTodos"
             (change)="toggleSelecionarTodos()"
           />
-          Selecionar Todos
+          Selecionar todos
         </label>
-
         <button
           (click)="bloquearHorariosSelecionados()"
-          [disabled]="!horariosSelecionadosParaBloqueio.size"
+          [disabled]="horariosSelecionadosParaBloqueio.size === 0"
           class="des-blok"
         >
           Bloquear
         </button>
-
         <button
           (click)="desbloquearHorariosSelecionados()"
-          [disabled]="!horariosSelecionadosParaDesbloqueio.size"
+          [disabled]="horariosSelecionadosParaDesbloqueio.size === 0"
           class="des-blok"
         >
           Desbloquear
         </button>
       </div>
-
-      <!-- Botões principais -->
       <div class="acoes" style="margin-bottom: 15px">
         <button (click)="abrirFormularioHorario()">+ Adicionar Horário</button>
-
         <button
           (click)="apagarHorariosSelecionados()"
-          [disabled]="
-            horariosSelecionadosParaBloqueio.size +
-              horariosSelecionadosParaDesbloqueio.size ===
-            0
-          "
-          style="padding: 5px 12px; cursor: pointer"
+          [disabled]="horariosSelecionados.size === 0"
+          class="apagar"
         >
-          Apagar Horários
+          Apagar
         </button>
       </div>
     </div>
@@ -254,7 +236,7 @@
       </p>
     </div>
 
-    <!-- PERÍODOS (Somente se não for DOMINGO) -->
+    <!-- PERÍODOS -->
     <ng-container *ngIf="diaSelecionado !== 'DOM'">
       <ng-container *ngFor="let periodo of periodos">
         <div class="periodo" style="margin-top: 25px">
@@ -269,28 +251,27 @@
                   type="button"
                   [ngClass]="{
                     selecionado: usuarioService.usuarioEhAdmin()
-                      ? horariosSelecionadosParaBloqueio.has(horario.id!) ||
-                        horariosSelecionadosParaApagar.has(horario.id!)
+                      ? horariosSelecionados.has(horario.id!) ||
+                        horariosSelecionadosParaBloqueio.has(horario.id!) ||
+                        horariosSelecionadosParaDesbloqueio.has(horario.id!)
                       : horarioSelecionadoCliente?.id === horario.id,
                     'admin-bloqueio':
                       usuarioService.usuarioEhAdmin() &&
                       (horariosSelecionadosParaBloqueio.has(horario.id!) ||
-                        horariosSelecionadosParaApagar.has(horario.id!)),
-                    bloqueado: horario.bloqueado
+                        horariosSelecionadosParaDesbloqueio.has(horario.id!)),
+                    bloqueado: horario.bloqueado,
+                    passado: isHorarioPassado(horario)
                   }"
-                  (click)="
-                    usuarioService.usuarioEhAdmin()
-                      ? clicarHorario(horario)
-                      : selecionarHorarioCliente(horario)
+                  [disabled]="
+                    !usuarioService.usuarioEhAdmin() &&
+                    (horario.bloqueado || isHorarioPassado(horario))
                   "
+                  (click)="clicarHorario(horario)"
                 >
                   {{ formatarHorario(horario.horario) }}
-
                   <span
                     class="editar"
-                    *ngIf="
-                      usuarioService.usuarioEhAdmin() && !modoApagarHorario
-                    "
+                    *ngIf="usuarioService.usuarioEhAdmin()"
                     (click)="
                       abrirFormularioEditarHorario(horario);
                       $event.stopPropagation()
@@ -362,10 +343,8 @@
   >
     <div class="popup-conteudo" (click)="$event.stopPropagation()">
       <h3>Cupons fidelidade</h3>
-
-      <!-- Barra de código + botão Resgatar -->
       <div class="cupom-resgatar-container">
-        <input
+        <inputIn
           type="text"
           class="cupom-input"
           placeholder="Digite o código"
@@ -375,8 +354,6 @@
           Resgatar
         </button>
       </div>
-
-      <!-- Lista de cupons -->
       <ul>
         <li
           *ngFor="let cupom of cuponsDisponiveis"
@@ -391,8 +368,6 @@
           </div>
           <span class="icone-info">i</span>
         </li>
-
-        <!-- Opção de não adicionar cupom -->
         <li
           class="cupom-opcao nenhum"
           (click)="selecionarCupomPopup(null)"
@@ -403,33 +378,33 @@
       </ul>
     </div>
   </div>
-</div>
 
-<!-- ===== BARRA INFERIOR MOBILE ===== -->
-<nav class="bottom-nav">
-  <a routerLink="/dashteste" class="nav-item">
-    <img src="assets/inicio.png" alt="Início" width="38" height="32" />
-    <span>Início</span>
-  </a>
-  <a routerLink="/galeria" class="nav-item">
-    <img src="assets/galeria-ativa.png" alt="Galeria" width="34" height="33" />
-    <span style="color: #f46d25; font-weight: bold">Galeria</span>
-  </a>
-  <a routerLink="/agendamento" class="nav-item">
-    <img
-      src="assets/agendamento.png"
-      alt="Agendamentos"
-      width="34"
-      height="34"
-    />
-    <span>Agendamentos</span>
-  </a>
-  <a routerLink="/produtos" class="nav-item">
-    <img src="assets/produto.png" alt="Produtos" width="30" height="30" />
-    <span>Produtos</span>
-  </a>
-  <a routerLink="/menu" class="nav-item">
-    <img src="assets/user-profile.png" alt="Menu" width="40" height="40" />
-    <span>Menu</span>
-  </a>
-</nav>
+  <!-- ===== BARRA INFERIOR MOBILE ===== -->
+  <nav class="bottom-nav">
+    <a routerLink="/dashteste" class="nav-item">
+      <img src="assets/inicio.png" alt="Início" width="38" height="32" />
+      <span>Início</span>
+    </a>
+    <a routerLink="/galeria" class="nav-item">
+      <img src="assets/galeria.png" alt="Galeria" width="34" height="33" />
+      <span>Galeria</span>
+    </a>
+    <a routerLink="/agendamento" class="nav-item">
+      <img
+        src="assets/agendamento-ativa.png"
+        alt="Agendamentos"
+        width="34"
+        height="34"
+      />
+      <span style="color: #f46d25; font-weight: bold">Agendamentos</span>
+    </a>
+    <a routerLink="/produtos" class="nav-item">
+      <img src="assets/produto.png" alt="Produtos" width="30" height="30" />
+      <span>Produtos</span>
+    </a>
+    <a routerLink="/menu" class="nav-item">
+      <img src="assets/user-profile.png" alt="Menu" width="40" height="40" />
+      <span>Menu</span>
+    </a>
+  </nav>
+</div>

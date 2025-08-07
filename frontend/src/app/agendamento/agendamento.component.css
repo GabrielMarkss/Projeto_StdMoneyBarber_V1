@@ -418,13 +418,6 @@ h3 {
   background-color: #d35400;
 }
 
-/* ===== MENSAGEM FECHADO ===== */
-.mensagem-fechado {
-  color: red;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
 /* ===== PERÍODOS E HORÁRIOS ===== */
 .periodo {
   margin-top: 25px;
@@ -433,7 +426,10 @@ h3 {
 .periodo h4 {
   font-size: 18px;
   margin: 8px 0;
+  text-align: center;
+  width: 100%;
 }
+
 
 .periodo .horarios {
   display: flex;
@@ -458,20 +454,21 @@ h3 {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.horario.bloqueado {
+.horario.bloqueado,
+.horario.passado {
   background-color: #ccc !important;
   color: #666 !important;
   cursor: not-allowed;
   font-style: italic;
 }
 
-.horario:hover:not(:has(.editar)) {
+.horario:hover:not(.bloqueado):not(.passado):not(:has(.editar)) {
   background-color: #f46d25 !important;
   color: white !important;
   font-weight: bold;
 }
 
-.horario:hover:has(.editar) {
+.horario:hover:not(.bloqueado):not(.passado):has(.editar) {
   background-color: #f46d25 !important;
   color: white !important;
   font-weight: bold;
@@ -494,106 +491,80 @@ h3 {
   opacity: 1;
 }
 
-/* === CLIENTE SELECIONADO === */
 .horario.selecionado {
   background-color: #f46d25 !important;
   color: white !important;
   font-weight: bold;
-  outline: 2px solid #f46d25;
 }
 
-/* === ADMIN SELECIONADO PARA BLOQUEIO === */
-.horario.selecionado.admin-bloqueio {
-  background-color: #f44336 !important;
-  outline: 2px solid #f46d25;
+.horario.admin-bloqueio {
+  background-color: red !important;
+  border: 1px solid red;
+  color: white !important;
 }
 
 /* ===== FORMULÁRIO POPUP DE HORÁRIO ===== */
 .formulario-horario-popup {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 90vw;
-  padding: 20px 25px;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 280px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  font-family: Arial, sans-serif;
-  box-sizing: border-box;
 }
 
 .formulario-horario-popup form {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .formulario-horario-popup label {
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #333;
+  font-weight: bold;
 }
 
 .formulario-horario-popup input[type="time"] {
-  border: 1.5px solid #f46d25;
-  border-radius: 5px;
-  box-sizing: border-box;
-  font-size: 1rem;
-  margin-bottom: 18px;
-  outline: none;
-  padding: 8px 12px;
-  transition: border-color 0.3s ease;
-  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-.formulario-horario-popup input[type="time"]:focus {
-  border-color: #d35400;
-  box-shadow: 0 0 5px rgba(244, 109, 37, 0.5);
-}
-
-.formulario-botoes {
+.formulario-horario-popup .formulario-botoes {
   display: flex;
-  gap: 12px;
   justify-content: flex-end;
+  gap: 10px;
 }
 
-.btn-cancelar {
-  background-color: white;
-  border: 2px solid #f46d25;
-  border-radius: 5px;
+.formulario-horario-popup .btn-cancelar {
+  background: white;
   color: #f46d25;
+  border: 2px solid #f46d25;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: bold;
   cursor: pointer;
-  font-weight: 600;
-  padding: 8px 18px;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.btn-cancelar:hover {
+.formulario-horario-popup .btn-cancelar:hover {
   background-color: #f46d25;
   color: white;
 }
 
-.btn-salvar {
+.formulario-horario-popup .btn-salvar {
   background-color: #f46d25;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
+  padding: 8px 16px;
   color: white;
+  font-weight: bold;
   cursor: pointer;
-  font-weight: 600;
-  padding: 8px 18px;
-  transition: background-color 0.3s ease;
 }
 
-.btn-salvar:hover {
-  background-color: #d35400;
-}
-
-/* ===== BOTÕES DIVERSOS ===== */
-button[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
+.formulario-horario-popup .btn-salvar:hover {
+  background-color: #d05e20;
 }
 
 /* RESUMO AGENDAMENTO */
@@ -818,69 +789,6 @@ button[disabled] {
   font-style: italic;
   color: #666;
   justify-content: center;
-}
-
-.botao-adicionar-cartao {
-  margin: 20px auto;
-  display: block;
-  background-color: #f46d25;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.botao-adicionar-cartao:hover {
-  background-color: #d35400;
-}
-
-/* ===== CARTÃO ===== */
-.campo {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 14px;
-}
-
-.campo label {
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.campo input {
-  padding: 8px 12px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  box-sizing: border-box;
-}
-
-.campo-duplo {
-  display: flex;
-  gap: 12px;
-}
-
-.botoes-formulario {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 18px;
-}
-
-.botoes-formulario button {
-  background-color: #f46d25;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: background-color 0.3s ease;
-}
-
-.botoes-formulario button:hover {
-  background-color: #d35400;
 }
 
 /* MOBILE */
