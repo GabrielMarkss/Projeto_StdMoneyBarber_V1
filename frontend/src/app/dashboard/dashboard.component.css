@@ -386,7 +386,7 @@
 /* ====== BOTÃO REMOVER (X) ====== */
 .btn-remover-x {
   position: absolute;
-  top: 1.2rem;
+  top: 1rem;
   /* alinhado com o nome */
   right: 10px;
   background: transparent;
@@ -850,7 +850,7 @@
 
 /* Setinha */
 .tooltip::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 115%;
   left: 50%;
@@ -869,7 +869,6 @@
 .tooltip:hover::before {
   opacity: 1;
 }
-
 
 /* ====== CARDS ====== */
 .cards-wrapper {
@@ -1189,7 +1188,7 @@
 
   .imagem-wrapper {
     width: 100vw !important;
-    height: 200px !important;
+    height: 225px !important;
     background-color: #000;
     overflow: hidden;
     position: relative;
@@ -1197,23 +1196,35 @@
 
   .carrossel-img {
     width: 100%;
-    height: 200px;
+    height: 225px;
     object-fit: cover;
     object-position: center;
     border-radius: 0;
     display: block;
   }
 
+  .titulo {
+    font-size: 2rem;
+    margin: -10px 0px 5px;
+  }
+
+  .btn-adicionar-barbeiro {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
   .barbeiro-card {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 1rem;
     max-width: 100%;
   }
 
   .imagem-container {
-    margin: 0 auto 1rem;
+    width: 130px;
+    height: 130px;
+    margin: 0 auto;
   }
 
   .barbeiro-info {
@@ -1223,14 +1234,14 @@
 
   .barbeiro-info h3 {
     font-size: 20px;
-    margin: -0.7rem 0 -0.3rem;
+    margin: 0.1rem 0 -0.3rem;
   }
 
   .barbeiro-info p {
     font-size: 15px;
     margin: 2px 0;
     line-height: 1.2;
-    width: 200PX;
+    width: 200px;
   }
 
   .contato {
@@ -1251,9 +1262,10 @@
   }
 
   .btn-remover-x {
-    top: 0.6rem;
-    right: 0.6rem;
-    font-size: 18px;
+    top: 0rem;
+    right: 0.3rem;
+    font-size: 16px;
+    font-weight: bold;
   }
 
   .layout-servicos {
@@ -1448,7 +1460,6 @@
     padding: 8px 36px;
     align-self: center;
   }
-
 
   .mapa-container {
     height: 220px;

@@ -430,7 +430,6 @@ h3 {
   width: 100%;
 }
 
-
 .periodo .horarios {
   display: flex;
   flex-wrap: wrap;
@@ -791,11 +790,16 @@ h3 {
   justify-content: center;
 }
 
-/* MOBILE */
+/* ====== MEDIA QUERIES ====== */
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
     padding: 0.8rem 0 0.5rem 1rem !important;
-    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -806,8 +810,9 @@ h3 {
     justify-content: space-between;
   }
 
-  .navbar .dropdown,
-  .profile-img {
+  .dropdown,
+  .profile-img,
+  .icone-acao {
     display: none !important;
   }
 
@@ -832,7 +837,7 @@ h3 {
   }
 
   .notificacao-popup {
-    border-radius: 5px;
+    border-radius: 3px;
     width: 12.5rem;
     top: 1.5rem;
     right: 0.25rem;
@@ -871,6 +876,145 @@ h3 {
     display: none;
   }
 
+  .formulario-modal {
+    width: 90%;
+    max-width: 320px;
+    padding: 15px;
+  }
+
+  .formulario-modal input[type="text"],
+  .formulario-modal textarea {
+    font-size: 13px;
+  }
+
+  .formulario-modal button {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .container-horarios {
+    flex-direction: column;
+    padding: 0.5rem;
+    padding-bottom: 5rem; /* Space for bottom nav */
+  }
+
+  .coluna-esquerda,
+  .coluna-direita {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .coluna-esquerda {
+    order: 1; /* Services appear first */
+  }
+
+  .coluna-direita {
+    order: 2; /* Schedules and summary below */
+    align-items: flex-start;
+  }
+
+  .servico-item {
+    padding: 6px 0;
+  }
+
+  .checkbox-container {
+    font-size: 15px;
+  }
+
+  .servico-nome {
+    font-size: 15px;
+  }
+
+  .servico-preco {
+    font-size: 14px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  .dias-semana button {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+
+  .periodo h4 {
+    font-size: 16px;
+  }
+
+  .horario-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .horario {
+    font-size: 15px;
+    min-width: 70px;
+    min-height: 30px;
+  }
+
+  .resumo-agendamento {
+    padding: 20px;
+    font-size: 15px;
+    margin-top: 20px;
+  }
+
+  .resumo-agendamento h3 {
+    font-size: 20px;
+  }
+
+  .resumo-agendamento p {
+    font-size: 15px;
+  }
+
+  .resumo-agendamento button {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .formulario-horario-popup {
+    width: 90%;
+    max-width: 300px;
+    padding: 15px;
+  }
+
+  .formulario-horario-popup input[type="time"],
+  .formulario-horario-popup select {
+    font-size: 14px;
+  }
+
+  .formulario-horario-popup .btn-cancelar,
+  .formulario-horario-popup .btn-salvar {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .popup-conteudo {
+    max-width: 90%;
+    padding: 15px;
+  }
+
+  .cupom-input {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .botao-resgatar {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .cupom-opcao .titulo {
+    font-size: 16px;
+  }
+
+  .cupom-opcao .descricao {
+    font-size: 12px;
+  }
+
   .bottom-nav {
     display: flex;
     justify-content: space-around;
@@ -904,46 +1048,4 @@ h3 {
     font-size: 11px;
     line-height: 1;
   }
-}
-
-@media (min-width: 769px) {
-  .bottom-nav {
-    display: none !important;
-  }
-}
-
-.seletor-barbeiro {
-  border: none;
-  background: transparent;
-  color: #333;
-  font-size: 1.3rem;
-  font-weight: bold;
-  cursor: pointer;
-  appearance: none;
-  text-decoration: underline 1px;
-  padding-right: 25px;
-  position: relative;
-}
-
-.seletor-barbeiro::after {
-  content: "▼";
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.seletor-barbeiro option {
-  font-size: 1rem !important;
-  font-weight: normal !important;
-  color: #555;
-  background-color: #f9f9f9;
-}
-
-.seletor-barbeiro option:hover {
-  background-color: #eee;
-  color: #222;
 }
