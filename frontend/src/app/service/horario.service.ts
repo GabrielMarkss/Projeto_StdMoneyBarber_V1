@@ -7,7 +7,7 @@ import { Horario } from '../models/horario.model';
   providedIn: 'root',
 })
 export class HorarioService {
-  private apiUrl = 'http://localhost:8080/api/horarios';
+  private apiUrl = `http://${window.location.hostname}:8080/api/horarios`;
 
   constructor(private http: HttpClient) {}
 
@@ -15,8 +15,14 @@ export class HorarioService {
     return this.http.get<Horario[]>(this.apiUrl);
   }
 
-  criar(horario: Horario): Observable<Horario> {
-    return this.http.post<Horario>(this.apiUrl, horario);
+  listarDisponiveis(data: string, barbeiro: string): Observable<Horario[]> {
+    return this.http.get<Horario[]>(
+      `${this.apiUrl}/disponiveis?data=${data}&barbeiro=${barbeiro}`
+    );
+  }
+
+  criar(horario: Horario): Observable<Horario[]> {
+    return this.http.post<Horario[]>(this.apiUrl, horario);
   }
 
   editar(horario: Horario): Observable<Horario> {

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class HorarioController {
     }
 
     @PostMapping
-    public Horario criar(@RequestBody Horario horario) {
+    public List<Horario> criar(@RequestBody Horario horario) {
         return horarioService.criar(horario);
     }
 
@@ -48,5 +49,12 @@ public class HorarioController {
     @GetMapping("/verificar-dia")
     public boolean isDiaBloqueado(@RequestParam("dia") DayOfWeek dia) {
         return horarioService.isDiaBloqueado(dia);
+    }
+
+    @GetMapping("/disponiveis")
+    public List<Horario> listarHorariosDisponiveis(
+            @RequestParam("data") LocalDate data,
+            @RequestParam("barbeiro") String barbeiro) {
+        return horarioService.listarHorariosDisponiveis(data, barbeiro);
     }
 }

@@ -169,23 +169,11 @@
     </div>
   </div>
   <div style="margin-bottom: 10px">
-    <label style="color: black">Dia:</label>
-    <select
-      [(ngModel)]="diaSelecionado"
-      (change)="selecionarDia(diaSelecionado)"
-      style="width: 100%"
-    >
-      <option *ngFor="let dia of diasSemana" [value]="dia.sigla">
-        {{ dia.nome }}
-      </option>
-    </select>
-  </div>
-  <div style="margin-bottom: 10px">
     <label style="color: black">Data:</label>
     <input
-      type="text"
+      type="date"
       [(ngModel)]="dataSelecionada"
-      placeholder="DD/MM/YYYY"
+      (change)="carregarHorarios()"
       style="width: 100%"
     />
   </div>
@@ -228,11 +216,9 @@
     <div *ngFor="let agendamento of agendamentos" class="agendamento-card">
       <div class="linha">
         <strong>Status:</strong>
-        <b
-          ><span [ngStyle]="{ color: corStatus(agendamento.status || '') }">
-            {{ agendamento.status || "" }}
-          </span></b
-        >
+        <span [ngStyle]="{ color: corStatus(agendamento.status || '') }">
+          {{ agendamento.status || "" }}
+        </span>
       </div>
       <div class="linha">
         <strong>Barbeiro:</strong>
@@ -258,12 +244,10 @@
         <strong>Desconto:</strong>
         <span>- R$ {{ agendamento.desconto.toFixed(2) }}</span>
       </div>
-      <br />
       <div class="linha">
         <strong>Total:</strong>
         <span>R$ {{ agendamento.total.toFixed(2) }}</span>
       </div>
-      <br />
       <div
         class="botoes-agendamento"
         *ngIf="
@@ -291,39 +275,39 @@
         </button>
       </div>
     </div>
-
-    <!-- ===== BARRA INFERIOR MOBILE ===== -->
-    <nav class="bottom-nav">
-      <a routerLink="/dashteste" class="nav-item">
-        <img src="assets/inicio.png" alt="Início" width="38" height="32" />
-        <span>Início</span>
-      </a>
-      <a routerLink="/galeria" class="nav-item">
-        <img
-          src="assets/galeria-ativa.png"
-          alt="Galeria"
-          width="34"
-          height="33"
-        />
-        <span style="color: #f46d25; font-weight: bold">Galeria</span>
-      </a>
-      <a routerLink="/agendamento" class="nav-item">
-        <img
-          src="assets/agendamento.png"
-          alt="Agendamentos"
-          width="34"
-          height="34"
-        />
-        <span>Agendamentos</span>
-      </a>
-      <a routerLink="/produtos" class="nav-item">
-        <img src="assets/produto.png" alt="Produtos" width="30" height="30" />
-        <span>Produtos</span>
-      </a>
-      <a routerLink="/menu" class="nav-item">
-        <img src="assets/user-profile.png" alt="Menu" width="40" height="40" />
-        <span>Menu</span>
-      </a>
-    </nav>
   </div>
+
+  <!-- Barra Inferior Mobile -->
+  <nav class="bottom-nav">
+    <a routerLink="/dashteste" class="nav-item">
+      <img src="assets/inicio.png" alt="Início" width="38" height="32" />
+      <span>Início</span>
+    </a>
+    <a routerLink="/galeria" class="nav-item">
+      <img
+        src="assets/galeria-ativa.png"
+        alt="Galeria"
+        width="34"
+        height="33"
+      />
+      <span style="color: #f46d25; font-weight: bold">Galeria</span>
+    </a>
+    <a routerLink="/agendamento" class="nav-item">
+      <img
+        src="assets/agendamento.png"
+        alt="Agendamentos"
+        width="34"
+        height="34"
+      />
+      <span>Agendamentos</span>
+    </a>
+    <a routerLink="/produtos" class="nav-item">
+      <img src="assets/produto.png" alt="Produtos" width="30" height="30" />
+      <span>Produtos</span>
+    </a>
+    <a routerLink="/menu" class="nav-item">
+      <img src="assets/user-profile.png" alt="Menu" width="40" height="40" />
+      <span>Menu</span>
+    </a>
+  </nav>
 </div>

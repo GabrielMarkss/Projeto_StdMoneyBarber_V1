@@ -89,6 +89,8 @@
         <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
         <input
           type="text"
+          2025-08-18
+          10:48:33
           [(ngModel)]="nova.titulo"
           class="form-control"
           placeholder="Título da notificação"
@@ -132,7 +134,7 @@
         <li><a routerLink="/menu">Perfil</a></li>
         <li><a routerLink="/galeria">Galeria</a></li>
         <li><a routerLink="/produtos">Produtos</a></li>
-        <li><a routerLink="/meus-horarios">Meus Horarios</a></li>
+        <li><a routerLink="/meus-horarios">Meus Horários</a></li>
       </ul>
     </div>
   </div>
@@ -251,16 +253,15 @@
                   type="button"
                   [ngClass]="{
                     selecionado: usuarioService.usuarioEhAdmin()
-                      ? horariosSelecionados.has(horario.id!) ||
-                        horariosSelecionadosParaBloqueio.has(horario.id!) ||
-                        horariosSelecionadosParaDesbloqueio.has(horario.id!)
-                      : horarioSelecionadoCliente?.id === horario.id,
+                      ? horariosSelecionados.has(horario.id!)
+                      : horarioSelecionadoCliente?.id === horario.id &&
+                        horario.id != null,
+                    bloqueado: horario.bloqueado,
+                    passado: isHorarioPassado(horario),
                     'admin-bloqueio':
                       usuarioService.usuarioEhAdmin() &&
                       (horariosSelecionadosParaBloqueio.has(horario.id!) ||
-                        horariosSelecionadosParaDesbloqueio.has(horario.id!)),
-                    bloqueado: horario.bloqueado,
-                    passado: isHorarioPassado(horario)
+                        horariosSelecionadosParaDesbloqueio.has(horario.id!))
                   }"
                   [disabled]="
                     !usuarioService.usuarioEhAdmin() &&
@@ -311,6 +312,16 @@
       class="formulario-horario-popup"
     >
       <form (ngSubmit)="modoEdicao ? editarHorario() : criarHorario()">
+        <label for="barbeiro">Barbeiro:</label>
+        <select
+          id="barbeiro"
+          [(ngModel)]="barbeiroFormulario"
+          name="barbeiro"
+          required
+        >
+          <option value="Felipe">Felipe</option>
+          <option value="Ezequiel">Ezequiel</option>
+        </select>
         <label for="horario">Horário:</label>
         <input
           type="time"
@@ -333,78 +344,78 @@
         </div>
       </form>
     </div>
-  </div>
 
-  <!-- POPUP DE CUPOM -->
-  <div
-    class="popup"
-    *ngIf="mostrarPopupCupom"
-    (click)="fecharPopupCupom($event)"
-  >
-    <div class="popup-conteudo" (click)="$event.stopPropagation()">
-      <h3>Cupons fidelidade</h3>
-      <div class="cupom-resgatar-container">
-        <inputIn
-          type="text"
-          class="cupom-input"
-          placeholder="Digite o código"
-          [(ngModel)]="codigoCupom"
-        />
-        <button class="botao-resgatar" (click)="resgatarCupom()">
-          Resgatar
-        </button>
+    <!-- POPUP DE CUPOM -->
+    <div
+      class="popup"
+      *ngIf="mostrarPopupCupom"
+      (click)="fecharPopupCupom($event)"
+    >
+      <div class="popup-conteudo" (click)="$event.stopPropagation()">
+        <h3>Cupons fidelidade</h3>
+        <div class="cupom-resgatar-container">
+          <input
+            type="text"
+            class="cupom-input"
+            placeholder="Digite o código"
+            [(ngModel)]="codigoCupom"
+          />
+          <button class="botao-resgatar" (click)="resgatarCupom()">
+            Resgatar
+          </button>
+        </div>
+        <ul>
+          <li
+            *ngFor="let cupom of cuponsDisponiveis"
+            (click)="selecionarCupomPopup(cupom)"
+            [class.selecionado]="cupomSelecionadoId === '' + cupom.id"
+            class="cupom-opcao"
+          >
+            <img [src]="cupom.imagem" alt="Cupom" />
+            <div class="conteudo">
+              <p class="titulo">{{ cupom.nome }}</p>
+              <p class="descricao">{{ cupom.descricao }}</p>
+            </div>
+            <span class="icone-info">i</span>
+          </li>
+          <li
+            class="cupom-opcao nenhum"
+            (click)="selecionarCupomPopup(null)"
+            [class.selecionado]="!cupomSelecionadoId"
+          >
+            Não adicionar cupom
+          </li>
+        </ul>
       </div>
-      <ul>
-        <li
-          *ngFor="let cupom of cuponsDisponiveis"
-          (click)="selecionarCupomPopup(cupom)"
-          [class.selecionado]="cupomSelecionadoId === '' + cupom.id"
-          class="cupom-opcao"
-        >
-          <img [src]="cupom.imagem" alt="Cupom" />
-          <div class="conteudo">
-            <p class="titulo">{{ cupom.nome }}</p>
-            <p class="descricao">{{ cupom.descricao }}</p>
-          </div>
-          <span class="icone-info">i</span>
-        </li>
-        <li
-          class="cupom-opcao nenhum"
-          (click)="selecionarCupomPopup(null)"
-          [class.selecionado]="!cupomSelecionadoId"
-        >
-          Não adicionar cupom
-        </li>
-      </ul>
     </div>
-  </div>
 
-  <!-- ===== BARRA INFERIOR MOBILE ===== -->
-  <nav class="bottom-nav">
-    <a routerLink="/dashteste" class="nav-item">
-      <img src="assets/inicio.png" alt="Início" width="38" height="32" />
-      <span>Início</span>
-    </a>
-    <a routerLink="/galeria" class="nav-item">
-      <img src="assets/galeria.png" alt="Galeria" width="34" height="33" />
-      <span>Galeria</span>
-    </a>
-    <a routerLink="/agendamento" class="nav-item">
-      <img
-        src="assets/agendamento-ativa.png"
-        alt="Agendamentos"
-        width="34"
-        height="34"
-      />
-      <span style="color: #f46d25; font-weight: bold">Agendamentos</span>
-    </a>
-    <a routerLink="/produtos" class="nav-item">
-      <img src="assets/produto.png" alt="Produtos" width="30" height="30" />
-      <span>Produtos</span>
-    </a>
-    <a routerLink="/menu" class="nav-item">
-      <img src="assets/user-profile.png" alt="Menu" width="40" height="40" />
-      <span>Menu</span>
-    </a>
-  </nav>
+    <!-- BARRA INFERIOR MOBILE -->
+    <nav class="bottom-nav">
+      <a routerLink="/dashteste" class="nav-item">
+        <img src="assets/inicio.png" alt="Início" width="38" height="32" />
+        <span>Início</span>
+      </a>
+      <a routerLink="/galeria" class="nav-item">
+        <img src="assets/galeria.png" alt="Galeria" width="34" height="33" />
+        <span>Galeria</span>
+      </a>
+      <a routerLink="/agendamento" class="nav-item">
+        <img
+          src="assets/agendamento-ativa.png"
+          alt="Agendamentos"
+          width="34"
+          height="34"
+        />
+        <span style="color: #f46d25; font-weight: bold">Agendamentos</span>
+      </a>
+      <a routerLink="/produtos" class="nav-item">
+        <img src="assets/produto.png" alt="Produtos" width="30" height="30" />
+        <span>Produtos</span>
+      </a>
+      <a routerLink="/menu" class="nav-item">
+        <img src="assets/user-profile.png" alt="Menu" width="40" height="40" />
+        <span>Menu</span>
+      </a>
+    </nav>
+  </div>
 </div>

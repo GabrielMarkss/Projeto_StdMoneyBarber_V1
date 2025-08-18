@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AgendamentoService {
@@ -59,12 +59,26 @@ public class AgendamentoService {
             throw new IllegalArgumentException("Não é possível agendar em horários passados no dia atual: " + horario);
         }
 
-        Optional<Horario> horarioExistente = horarioRepository.findByDiaSemanaAndHora(diaSemana, horario);
-        if (horarioExistente.isEmpty()) {
-            throw new IllegalArgumentException("Horário não cadastrado: " + horario);
-        }
-        if (horarioExistente.get().isBloqueado()) {
-            throw new IllegalArgumentException("Horário já está bloqueado: " + horario);
+        String barbeiro = agendamento.getBarbeiro();
+        Optional<Horario> horarioExistente = java.util.Optional.empty();
+        if ("Sem Preferência".equals(barbeiro)) {
+            // Para "Sem Preferência", verificamos se há pelo menos um horário disponível
+            // para algum barbeiro
+            List<Horario> horariosDisponiveis = horarioRepository.findByDiaSemana(diaSemana).stream()
+                    .filter(h -> h.getBarbeiro() != null && !h.isBloqueado() && h.getHora().equals(horario))
+                    .collect(Collectors.toList());
+            if (horariosDisponiveis.isEmpty()) {
+                throw new IllegalArgumentException("Nenhum horário disponível para 'Sem Preferência' em: " + horario);
+            }
+        } else {
+            // Para barbeiro específico, verificamos o horário associado ao barbeiro
+            horarioExistente = horarioRepository.findByDiaSemanaAndHoraAndBarbeiro(diaSemana, horario, barbeiro);
+            if (horarioExistente.isEmpty()) {
+                throw new IllegalArgumentException("Horário não cadastrado para " + barbeiro + ": " + horario);
+            }
+            if (horarioExistente.get().isBloqueado()) {
+                throw new IllegalArgumentException("Horário já está bloqueado para " + barbeiro + ": " + horario);
+            }
         }
 
         for (Long servicoId : agendamento.getServicos()) {
@@ -73,13 +87,16 @@ public class AgendamentoService {
             }
         }
 
-        // Garante que o status inicial seja PENDENTE
         agendamento.setStatus(Agendamento.StatusAgendamento.PENDENTE);
         Agendamento novoAgendamento = agendamentoRepository.save(agendamento);
 
-        Horario horarioToBlock = horarioExistente.get();
-        horarioToBlock.setBloqueado(true);
-        horarioRepository.save(horarioToBlock);
+        // Bloquear horário apenas para barbeiro específico
+        if (!"Sem Preferência".equals(barbeiro)) {
+            horarioExistente.ifPresent(horarioToBlock -> {
+                horarioToBlock.setBloqueado(true);
+                horarioRepository.save(horarioToBlock);
+            });
+        }
 
         logger.info("Agendamento criado com sucesso: ID={}, status={}",
                 novoAgendamento.getId(), novoAgendamento.getStatus());
@@ -116,12 +133,27 @@ public class AgendamentoService {
                     "Não é possível agendar em horários passados no dia atual: " + novoHorario);
         }
 
-        Optional<Horario> novoHorarioExistente = horarioRepository.findByDiaSemanaAndHora(novoDiaSemana, novoHorario);
-        if (novoHorarioExistente.isEmpty()) {
-            throw new IllegalArgumentException("Novo horário não cadastrado: " + novoHorario);
-        }
-        if (novoHorarioExistente.get().isBloqueado()) {
-            throw new IllegalArgumentException("Novo horário já está bloqueado: " + novoHorario);
+        String novoBarbeiro = agendamentoAtualizado.getBarbeiro();
+        Optional<Horario> novoHorarioExistente = java.util.Optional.empty();
+        if ("Sem Preferência".equals(novoBarbeiro)) {
+            List<Horario> horariosDisponiveis = horarioRepository.findByDiaSemana(novoDiaSemana).stream()
+                    .filter(h -> h.getBarbeiro() != null && !h.isBloqueado() && h.getHora().equals(novoHorario))
+                    .collect(Collectors.toList());
+            if (horariosDisponiveis.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Nenhum horário disponível para 'Sem Preferência' em: " + novoHorario);
+            }
+        } else {
+            novoHorarioExistente = horarioRepository.findByDiaSemanaAndHoraAndBarbeiro(novoDiaSemana, novoHorario,
+                    novoBarbeiro);
+            if (novoHorarioExistente.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Novo horário não cadastrado para " + novoBarbeiro + ": " + novoHorario);
+            }
+            if (novoHorarioExistente.get().isBloqueado()) {
+                throw new IllegalArgumentException(
+                        "Novo horário já está bloqueado para " + novoBarbeiro + ": " + novoHorario);
+            }
         }
 
         for (Long servicoId : agendamentoAtualizado.getServicos()) {
@@ -133,24 +165,31 @@ public class AgendamentoService {
         Agendamento agendamentoAntigo = agendamentoExistente.get();
         LocalDate dataAntiga = agendamentoAntigo.getData();
         LocalTime horarioAntigo = agendamentoAntigo.getHorario();
-        if (!dataAntiga.equals(novaData) || !horarioAntigo.equals(novoHorario)) {
+        String barbeiroAntigo = agendamentoAntigo.getBarbeiro();
+
+        // Desbloquear horário antigo se for barbeiro específico
+        if (!"Sem Preferência".equals(barbeiroAntigo)
+                && (!dataAntiga.equals(novaData) || !horarioAntigo.equals(novoHorario))) {
             Optional<Horario> horarioAntigoExistente = horarioRepository
-                    .findByDiaSemanaAndHora(dataAntiga.getDayOfWeek(), horarioAntigo);
-            if (horarioAntigoExistente.isPresent()) {
-                Horario horarioToUnblock = horarioAntigoExistente.get();
+                    .findByDiaSemanaAndHoraAndBarbeiro(dataAntiga.getDayOfWeek(), horarioAntigo, barbeiroAntigo);
+            horarioAntigoExistente.ifPresent(horarioToUnblock -> {
                 horarioToUnblock.setBloqueado(false);
                 horarioRepository.save(horarioToUnblock);
                 logger.info("Horário antigo desbloqueado: {}", horarioAntigo);
-            }
+            });
         }
 
         agendamentoAtualizado.setId(id);
-        agendamentoAtualizado.setStatus(agendamentoAntigo.getStatus()); // Preserva o status existente
+        agendamentoAtualizado.setStatus(agendamentoAntigo.getStatus());
         Agendamento agendamentoSalvo = agendamentoRepository.save(agendamentoAtualizado);
 
-        Horario horarioToBlock = novoHorarioExistente.get();
-        horarioToBlock.setBloqueado(true);
-        horarioRepository.save(horarioToBlock);
+        // Bloquear novo horário apenas para barbeiro específico
+        if (!"Sem Preferência".equals(novoBarbeiro)) {
+            novoHorarioExistente.ifPresent(horarioToBlock -> {
+                horarioToBlock.setBloqueado(true);
+                horarioRepository.save(horarioToBlock);
+            });
+        }
 
         logger.info("Agendamento atualizado com sucesso: ID={}, status={}",
                 agendamentoSalvo.getId(), agendamentoSalvo.getStatus());
@@ -167,12 +206,17 @@ public class AgendamentoService {
         Agendamento agendamento = agendamentoExistente.get();
         LocalDate data = agendamento.getData();
         LocalTime horario = agendamento.getHorario();
-        Optional<Horario> horarioExistente = horarioRepository.findByDiaSemanaAndHora(data.getDayOfWeek(), horario);
-        if (horarioExistente.isPresent()) {
-            Horario horarioToUnblock = horarioExistente.get();
-            horarioToUnblock.setBloqueado(false);
-            horarioRepository.save(horarioToUnblock);
-            logger.info("Horário desbloqueado: {}", horario);
+        String barbeiro = agendamento.getBarbeiro();
+
+        // Desbloquear horário apenas se for barbeiro específico
+        if (!"Sem Preferência".equals(barbeiro)) {
+            Optional<Horario> horarioExistente = horarioRepository
+                    .findByDiaSemanaAndHoraAndBarbeiro(data.getDayOfWeek(), horario, barbeiro);
+            horarioExistente.ifPresent(horarioToUnblock -> {
+                horarioToUnblock.setBloqueado(false);
+                horarioRepository.save(horarioToUnblock);
+                logger.info("Horário desbloqueado: {}", horario);
+            });
         }
 
         agendamentoRepository.deleteById(id);
@@ -189,7 +233,7 @@ public class AgendamentoService {
         return agendamentoRepository.findAll();
     }
 
-    @Scheduled(fixedRate = 30000, initialDelay = 0) // Check every 30 seconds
+    @Scheduled(fixedRate = 30000) // Executa a cada 30 segundos
     public void atualizarStatusAgendamentos() {
         LocalDateTime agora = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         logger.info("Atualizando status dos agendamentos em: {}", agora.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
@@ -211,43 +255,35 @@ public class AgendamentoService {
                     fimJanelaAtivo.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                     agora.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
-            // 1. PENDENTE: antes do horário agendado
             if (agora.isBefore(dataHoraAgendamento)) {
                 if (agendamento.getStatus() != Agendamento.StatusAgendamento.PENDENTE) {
                     agendamento.setStatus(Agendamento.StatusAgendamento.PENDENTE);
                     agendamentoRepository.save(agendamento);
                     logger.info("Agendamento {} mudado para PENDENTE", agendamento.getId());
                 }
-            }
-            // 2. ATIVO: no horário agendado até 15 minutos após
-            else if (!agora.isBefore(dataHoraAgendamento) && !agora.isAfter(fimJanelaAtivo)) {
+            } else if (!agora.isBefore(dataHoraAgendamento) && !agora.isAfter(fimJanelaAtivo)) {
                 if (agendamento.getStatus() != Agendamento.StatusAgendamento.ATIVO) {
                     agendamento.setStatus(Agendamento.StatusAgendamento.ATIVO);
                     agendamentoRepository.save(agendamento);
                     logger.info("Agendamento {} mudado para ATIVO", agendamento.getId());
                 }
-            }
-            // 3. FINALIZADO: após 15 minutos do horário agendado
-            else if (agora.isAfter(fimJanelaAtivo)) {
+            } else if (agora.isAfter(fimJanelaAtivo)) {
                 if (agendamento.getStatus() != Agendamento.StatusAgendamento.FINALIZADO) {
                     agendamento.setStatus(Agendamento.StatusAgendamento.FINALIZADO);
-                    Optional<Horario> horarioExistente = horarioRepository.findByDiaSemanaAndHora(
-                            data.getDayOfWeek(), horario);
-                    if (horarioExistente.isPresent()) {
-                        Horario horarioToUnblock = horarioExistente.get();
-                        horarioToUnblock.setBloqueado(false);
-                        horarioRepository.save(horarioToUnblock);
-                        logger.info("Horário {} desbloqueado para agendamento {}", horario, agendamento.getId());
+                    String barbeiro = agendamento.getBarbeiro();
+                    if (!"Sem Preferência".equals(barbeiro)) {
+                        Optional<Horario> horarioExistente = horarioRepository.findByDiaSemanaAndHoraAndBarbeiro(
+                                data.getDayOfWeek(), horario, barbeiro);
+                        horarioExistente.ifPresent(horarioToUnblock -> {
+                            horarioToUnblock.setBloqueado(false);
+                            horarioRepository.save(horarioToUnblock);
+                            logger.info("Horário {} desbloqueado para agendamento {}", horario, agendamento.getId());
+                        });
                     }
                     agendamentoRepository.save(agendamento);
                     logger.info("Agendamento {} mudado para FINALIZADO", agendamento.getId());
                 }
             }
         }
-    }
-
-    @PostMapping("/forcar-atualizacao-status")
-    public void forcarAtualizacaoStatus() {
-        atualizarStatusAgendamentos();
     }
 }

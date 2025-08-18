@@ -13,7 +13,9 @@ import java.util.Optional;
 public interface HorarioRepository extends JpaRepository<Horario, Long> {
     List<Horario> findByDiaSemana(DayOfWeek diaSemana);
 
-    Optional<Horario> findByDiaSemanaAndHora(DayOfWeek diaSemana, LocalTime hora); // Updated method name and types
+    Optional<Horario> findByDiaSemanaAndHoraAndBarbeiro(DayOfWeek diaSemana, LocalTime hora, String barbeiro);
+
+    List<Horario> findByDiaSemanaAndBarbeiro(DayOfWeek diaSemana, String barbeiro);
 
     List<Horario> findByDiaSemanaNot(DayOfWeek diaSemana);
 }

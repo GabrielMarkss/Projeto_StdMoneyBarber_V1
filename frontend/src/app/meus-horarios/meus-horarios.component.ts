@@ -20,6 +20,7 @@ import { Horario } from '../models/horario.model';
   imports: [CommonModule, RouterModule, FormsModule],
 })
 export class MeusHorariosComponent implements OnInit {
+  // ======== PROPRIEDADES GERAIS ========
   menuAberto = false;
   mostrarNotificacoes = false;
   mostrarFormulario = false;
@@ -28,31 +29,23 @@ export class MeusHorariosComponent implements OnInit {
   notificacaoTimeout: any;
   dataHoje: string = '';
   notificacoes: Notificacao[] = [];
-  agendamentos: (Agendamento & { servicosNomes?: string })[] = [];
-  nova: Notificacao = {
-    titulo: '',
-    descricao: '',
-    imagemUrl: '',
-  };
-  agendamentoEditando: Agendamento | null = null;
+  nova: Notificacao = { titulo: '', descricao: '', imagemUrl: '' };
   imagemSelecionada: File | null = null;
+
+  // ======== AGENDAMENTOS ========
+  agendamentos: (Agendamento & { servicosNomes?: string })[] = [];
+  agendamentoEditando: Agendamento | null = null;
+
+  // ======== SERVIÇOS ========
   servicos: Servico[] = [];
-  barbeiros: string[] = ['Felipe', 'Ezequiel', 'Sem Preferência'];
-  diasSemana = [
-    { nome: 'DOM', sigla: 'DOM', backend: 'SUNDAY' },
-    { nome: 'SEG', sigla: 'SEG', backend: 'MONDAY' },
-    { nome: 'TER', sigla: 'TER', backend: 'TUESDAY' },
-    { nome: 'QUA', sigla: 'QUA', backend: 'WEDNESDAY' },
-    { nome: 'QUI', sigla: 'QUI', backend: 'THURSDAY' },
-    { nome: 'SEX', sigla: 'SEX', backend: 'FRIDAY' },
-    { nome: 'SAB', sigla: 'SAB', backend: 'SATURDAY' },
-  ];
-  diaSelecionado = 'SEG';
-  horarios: Horario[] = [];
   servicosSelecionados: number[] = [];
+
+  // ======== BARBEIROS E HORARIOS ========
+  barbeiros: string[] = ['Felipe', 'Ezequiel', 'Sem Preferência'];
+  dataSelecionada: string = '';
+  horarios: Horario[] = [];
   barbeiroSelecionado: string = 'Sem Preferência';
   horarioSelecionado: string = '';
-  dataSelecionada: string = '';
 
   constructor(
     public usuarioService: UsuarioService,
@@ -63,7 +56,36 @@ export class MeusHorariosComponent implements OnInit {
     private router: Router
   ) {}
 
+  // ======== INICIALIZAÇÃO ========
   ngOnInit(): void {
+    this.inicializarDataHoje();
+    if (this.usuarioService.isLoggedIn()) {
+      const usuarioLogado = this.usuarioService.getUsuarioLogadoSnapshot();
+      if (usuarioLogado && usuarioLogado.id) {
+        this.usuarioService.nomeUsuario = usuarioLogado.nome;
+        this.listarAgendamentos(usuarioLogado.id);
+        this.carregarServicos();
+      } else {
+        this.usuarioService.getUsuarioLogado().subscribe({
+          next: (user) => {
+            if (user && user.id) {
+              this.usuarioService.nomeUsuario = user.nome;
+              this.listarAgendamentos(user.id);
+              this.carregarServicos();
+            } else {
+              this.router.navigate(['/login']);
+            }
+          },
+          error: () => this.router.navigate(['/login']),
+        });
+      }
+      this.listarNotificacoes();
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  inicializarDataHoje(): void {
     const data = new Date();
     const dias = [
       'Domingo',
@@ -91,93 +113,125 @@ export class MeusHorariosComponent implements OnInit {
     this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${
       meses[data.getMonth()]
     } ${data.getFullYear()}`;
-
-    if (this.usuarioService.isLoggedIn()) {
-      const usuarioLogado = this.usuarioService.getUsuarioLogadoSnapshot();
-      if (usuarioLogado && usuarioLogado.id) {
-        this.usuarioService.nomeUsuario = usuarioLogado.nome;
-        this.listarAgendamentos(usuarioLogado.id);
-        this.carregarServicos();
-        this.carregarHorarios();
-      } else {
-        this.usuarioService.getUsuarioLogado().subscribe({
-          next: (user) => {
-            if (user && user.id) {
-              this.usuarioService.nomeUsuario = user.nome;
-              this.listarAgendamentos(user.id);
-              this.carregarServicos();
-              this.carregarHorarios();
-            } else {
-              console.warn('Usuário retornado sem ID ou nulo:', user);
-              this.router.navigate(['/login']);
-            }
-          },
-          error: (err) => {
-            console.error('Erro ao carregar usuário:', err);
-            this.usuarioService.nomeUsuario = '';
-            this.router.navigate(['/login']);
-          },
-        });
-      }
-      this.listarNotificacoes();
-    } else {
-      console.warn('Usuário não está logado. Redirecionando para login.');
-      this.router.navigate(['/login']);
-    }
+    this.dataSelecionada = `${data.getFullYear()}-${String(
+      data.getMonth() + 1
+    ).padStart(2, '0')}-${String(data.getDate()).padStart(2, '0')}`;
   }
 
-  abrirMenu() {
+  // ======== NAVEGAÇÃO ========
+  abrirMenu(): void {
     clearTimeout(this.menuTimeout);
     this.menuAberto = true;
   }
 
-  fecharMenu() {
-    this.menuTimeout = setTimeout(() => {
-      this.menuAberto = false;
-    }, 150);
+  fecharMenu(): void {
+    this.menuTimeout = setTimeout(() => (this.menuAberto = false), 150);
   }
 
-  abrirNotificacao() {
+  abrirNotificacao(): void {
     clearTimeout(this.notificacaoTimeout);
     this.mostrarNotificacoes = true;
   }
 
-  fecharNotificacao() {
-    this.notificacaoTimeout = setTimeout(() => {
-      this.mostrarNotificacoes = false;
-    }, 150);
+  fecharNotificacao(): void {
+    this.notificacaoTimeout = setTimeout(
+      () => (this.mostrarNotificacoes = false),
+      150
+    );
   }
 
-  abrirFormularioNotificacao() {
+  // ======== NOTIFICAÇÕES ========
+  abrirFormularioNotificacao(): void {
     this.mostrarFormulario = true;
   }
 
-  cancelarFormulario() {
+  cancelarFormulario(): void {
     this.mostrarFormulario = false;
     this.nova = { titulo: '', descricao: '', imagemUrl: '' };
     this.imagemSelecionada = null;
   }
 
-  abrirFormularioEdicao(agendamento: Agendamento & { servicosNomes?: string }) {
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.imagemSelecionada = file;
+      const reader = new FileReader();
+      reader.onload = () => (this.nova.imagemUrl = reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  }
+
+  salvarNotificacao(): void {
+    const action = this.nova.id
+      ? this.notificacaoService.atualizar(this.nova.id, this.nova)
+      : this.notificacaoService.criar(this.nova);
+    action.subscribe({
+      next: () => {
+        this.cancelarFormulario();
+        this.listarNotificacoes();
+      },
+      error: (err) =>
+        alert('Erro ao salvar notificação: ' + (err.error || err.message)),
+    });
+  }
+
+  listarNotificacoes(): void {
+    this.notificacaoService.listar().subscribe({
+      next: (res) => (this.notificacoes = res),
+      error: (err) =>
+        alert('Erro ao carregar notificações: ' + (err.error || err.message)),
+    });
+  }
+
+  editarNotificacao(n: Notificacao): void {
+    this.nova = { ...n };
+    this.mostrarFormulario = true;
+  }
+
+  confirmarRemocao(notificacao: Notificacao): void {
+    if (!confirm('Você deseja remover esta notificação?')) return;
+    this.notificacaoService
+      .deletar(notificacao.id!, true, this.usuarioService.usuarioEhAdmin())
+      .subscribe({
+        next: () => this.listarNotificacoes(),
+        error: (err) =>
+          alert('Erro ao remover notificação: ' + (err.error || err.message)),
+      });
+  }
+
+  // ======== AGENDAMENTOS ========
+  listarAgendamentos(usuarioId: number): void {
+    const action = this.usuarioService.usuarioEhAdmin()
+      ? this.agendamentoService.listarTodos()
+      : this.agendamentoService.listarPorUsuario(usuarioId);
+    action.subscribe({
+      next: (agendamentos) => {
+        this.agendamentos = agendamentos.map((agendamento) => ({
+          ...agendamento,
+          data: this.formatarData(agendamento.data),
+          horario: this.formatarHorario(agendamento.horario),
+          servicos: agendamento.servicos,
+        }));
+        this.carregarNomesServicos();
+      },
+      error: (err) =>
+        alert('Erro ao carregar agendamentos: ' + (err.error || err.message)),
+    });
+  }
+
+  abrirFormularioEdicao(
+    agendamento: Agendamento & { servicosNomes?: string }
+  ): void {
     this.agendamentoEditando = { ...agendamento };
     this.servicosSelecionados = agendamento.servicos || [];
     this.barbeiroSelecionado = agendamento.barbeiro || 'Sem Preferência';
     this.horarioSelecionado = agendamento.horario || '';
-    const [dia, mes, ano] = agendamento.data.split('/');
-    this.dataSelecionada = `${dia}/${mes}/${ano}`;
-    this.diaSelecionado =
-      this.diasSemana.find(
-        (d) =>
-          d.backend ===
-          new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia))
-            .toLocaleString('en-US', { weekday: 'long' })
-            .toUpperCase()
-      )?.sigla || 'SEG';
+    this.dataSelecionada = agendamento.data.split('/').reverse().join('-');
     this.carregarHorarios();
     this.mostrarFormularioEdicao = true;
   }
 
-  cancelarFormularioEdicao() {
+  cancelarFormularioEdicao(): void {
     this.mostrarFormularioEdicao = false;
     this.agendamentoEditando = null;
     this.servicosSelecionados = [];
@@ -186,19 +240,17 @@ export class MeusHorariosComponent implements OnInit {
     this.dataSelecionada = '';
   }
 
-  salvarEdicao() {
+  salvarEdicao(): void {
     if (!this.agendamentoEditando || !this.agendamentoEditando.id) {
       alert('Erro: Agendamento inválido para edição.');
       return;
     }
-
     const usuarioLogado = this.usuarioService.getUsuarioLogadoSnapshot();
     if (!usuarioLogado || !usuarioLogado.id) {
       alert('Erro: Usuário não identificado. Por favor, faça login novamente.');
       this.router.navigate(['/login']);
       return;
     }
-
     if (
       !this.servicosSelecionados.length ||
       !this.dataSelecionada ||
@@ -207,7 +259,6 @@ export class MeusHorariosComponent implements OnInit {
       alert('Por favor, selecione serviços, data e horário.');
       return;
     }
-
     const agendamentoAtualizado: Agendamento = {
       id: this.agendamentoEditando.id,
       usuarioId: this.agendamentoEditando.usuarioId,
@@ -217,13 +268,12 @@ export class MeusHorariosComponent implements OnInit {
           : this.barbeiroSelecionado,
       servicos: this.servicosSelecionados,
       data: this.dataSelecionada,
-      horario: this.horarioSelecionado,
+      horario: this.formatarHoraParaBackend(this.horarioSelecionado),
       subtotal: this.calcularSubtotal(),
       desconto: this.agendamentoEditando.desconto,
       total: this.calcularSubtotal() - this.agendamentoEditando.desconto,
       cupomNome: this.agendamentoEditando.cupomNome,
     };
-
     this.agendamentoService
       .atualizar(this.agendamentoEditando.id, agendamentoAtualizado)
       .subscribe({
@@ -232,17 +282,15 @@ export class MeusHorariosComponent implements OnInit {
           this.cancelarFormularioEdicao();
           this.listarAgendamentos(usuarioLogado.id);
         },
-        error: (err) => {
-          console.error('Erro ao atualizar agendamento:', err);
+        error: (err) =>
           alert(
             'Erro ao atualizar agendamento: ' +
               (err.error?.message || err.message)
-          );
-        },
+          ),
       });
   }
 
-  confirmarRemocaoAgendamento(id: number) {
+  confirmarRemocaoAgendamento(id: number): void {
     if (!confirm('Você deseja cancelar este agendamento?')) return;
     const usuarioLogado = this.usuarioService.getUsuarioLogadoSnapshot();
     if (!usuarioLogado || !usuarioLogado.id) {
@@ -250,167 +298,90 @@ export class MeusHorariosComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
-
+    // Find the appointment to get its date and time
+    const agendamento = this.agendamentos.find((a) => a.id === id);
+    if (!agendamento) {
+      alert('Erro: Agendamento não encontrado.');
+      return;
+    }
     this.agendamentoService.deletar(id).subscribe({
       next: () => {
-        alert('Agendamento cancelado com sucesso!');
-        this.listarAgendamentos(usuarioLogado.id);
+        // Unblock the corresponding time slot
+        this.horarioService
+          .listarDisponiveis(
+            agendamento.data.split('/').reverse().join('-'),
+            agendamento.barbeiro || 'Sem Preferência'
+          )
+          .subscribe({
+            next: (horarios) => {
+              const horario = horarios.find(
+                (h) => h.horario === agendamento.horario && h.bloqueado
+              );
+              if (horario && horario.id) {
+                this.horarioService
+                  .desbloquearHorarios([horario.id])
+                  .subscribe({
+                    next: () => {
+                      alert(
+                        'Agendamento cancelado e horário desbloqueado com sucesso!'
+                      );
+                      this.listarAgendamentos(usuarioLogado.id);
+                    },
+                    error: (err) =>
+                      alert(
+                        'Erro ao desbloquear horário: ' +
+                          (err.error || err.message)
+                      ),
+                  });
+              } else {
+                alert('Agendamento cancelado com sucesso!');
+                this.listarAgendamentos(usuarioLogado.id);
+              }
+            },
+            error: (err) =>
+              alert(
+                'Erro ao verificar horários: ' + (err.error || err.message)
+              ),
+          });
       },
-      error: (err) => {
-        console.error('Erro ao cancelar agendamento:', err);
+      error: (err) =>
         alert(
           'Erro ao cancelar agendamento: ' + (err.error?.message || err.message)
-        );
-      },
+        ),
     });
   }
-
-  toggleServico(servicoId: number, event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.checked) {
-      this.servicosSelecionados = [...this.servicosSelecionados, servicoId];
-    } else {
-      this.servicosSelecionados = this.servicosSelecionados.filter(
-        (id) => id !== servicoId
-      );
-    }
-  }
-
-  selecionarDia(dia: string) {
-    this.diaSelecionado = dia;
-    this.horarioSelecionado = '';
-    this.carregarHorarios();
-  }
-
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.imagemSelecionada = file;
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.nova.imagemUrl = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  salvarNotificacao() {
-    if (this.nova.id) {
-      this.notificacaoService.atualizar(this.nova.id, this.nova).subscribe({
-        next: () => {
-          this.cancelarFormulario();
-          this.listarNotificacoes();
-        },
-        error: (err) =>
-          alert('Erro ao atualizar notificação: ' + (err.error || err.message)),
-      });
-    } else {
-      this.notificacaoService.criar(this.nova).subscribe({
-        next: () => {
-          this.cancelarFormulario();
-          this.listarNotificacoes();
-        },
-        error: (err) =>
-          alert('Erro ao criar notificação: ' + (err.error || err.message)),
-      });
-    }
-  }
-
-  listarNotificacoes() {
-    this.notificacaoService.listar().subscribe({
-      next: (res) => {
-        this.notificacoes = res;
-      },
-      error: (err) => {
-        console.error('Erro ao carregar notificações:', err);
-        alert('Erro ao carregar notificações: ' + (err.error || err.message));
-      },
-    });
-  }
-
-  confirmarRemocao(notificacao: Notificacao) {
-    if (!confirm('Você deseja remover esta notificação?')) return;
-    const isAdmin = this.usuarioService.usuarioEhAdmin();
-    this.notificacaoService.deletar(notificacao.id!, true, isAdmin).subscribe({
-      next: () => this.listarNotificacoes(),
+  // ======== SERVIÇOS ========
+  carregarServicos(): void {
+    this.servicoService.listar().subscribe({
+      next: (servicos) => (this.servicos = servicos),
       error: (err) =>
-        alert('Erro ao remover notificação: ' + (err.error || err.message)),
+        alert('Erro ao carregar serviços: ' + (err.error || err.message)),
     });
   }
 
-  editarNotificacao(n: Notificacao) {
-    this.nova = { ...n };
-    this.mostrarFormulario = true;
+  toggleServico(servicoId: number, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.servicosSelecionados = input.checked
+      ? [...this.servicosSelecionados, servicoId]
+      : this.servicosSelecionados.filter((id) => id !== servicoId);
   }
 
-  listarAgendamentos(usuarioId: number) {
-    if (this.usuarioService.usuarioEhAdmin()) {
-      this.agendamentoService.listarTodos().subscribe({
-        next: (agendamentos) => {
-          console.log('Agendamentos retornados:', agendamentos);
-          this.agendamentos = agendamentos.map((agendamento) => ({
-            ...agendamento,
-            data: this.formatarData(agendamento.data),
-            horario: this.formatarHorario(agendamento.horario),
-            servicos: agendamento.servicos,
-          }));
-          this.carregarNomesServicos();
-        },
-        error: (err) => {
-          console.error('Erro ao carregar agendamentos:', err);
-          alert('Erro ao carregar agendamentos: ' + (err.error || err.message));
-        },
-      });
-    } else {
-      this.agendamentoService.listarPorUsuario(usuarioId).subscribe({
-        next: (agendamentos) => {
-          console.log('Agendamentos retornados:', agendamentos);
-          this.agendamentos = agendamentos.map((agendamento) => ({
-            ...agendamento,
-            data: this.formatarData(agendamento.data),
-            horario: this.formatarHorario(agendamento.horario),
-            servicos: agendamento.servicos,
-          }));
-          this.carregarNomesServicos();
-        },
-        error: (err) => {
-          console.error('Erro ao carregar agendamentos:', err);
-          alert('Erro ao carregar agendamentos: ' + (err.error || err.message));
-        },
-      });
-    }
-  }
-
-  formatarData(data: string): string {
-    if (!data) return 'Não informada';
-    if (data.includes('-')) {
-      const [ano, mes, dia] = data.split('-');
-      return `${dia}/${mes}/${ano}`;
-    }
-    return data;
-  }
-
-  formatarHorario(horario: string): string {
-    if (!horario) return 'Não informado';
-    return horario.slice(0, 5);
-  }
-
-  carregarNomesServicos() {
+  carregarNomesServicos(): void {
     this.servicoService.listar().subscribe({
       next: (servicos) => {
         this.agendamentos = this.agendamentos.map((agendamento) => ({
           ...agendamento,
           servicosNomes: agendamento.servicos
-            .map((id) => {
-              const servico = servicos.find((s) => s.id === id);
-              return servico ? servico.nome : 'Serviço desconhecido';
-            })
+            .map(
+              (id) =>
+                servicos.find((s) => s.id === id)?.nome ||
+                'Serviço desconhecido'
+            )
             .filter((nome) => nome !== 'Serviço desconhecido')
             .join(', '),
         }));
       },
       error: (err) => {
-        console.error('Erro ao carregar nomes dos serviços:', err);
         this.agendamentos = this.agendamentos.map((agendamento) => ({
           ...agendamento,
           servicosNomes:
@@ -422,32 +393,39 @@ export class MeusHorariosComponent implements OnInit {
     });
   }
 
-  carregarServicos() {
-    this.servicoService.listar().subscribe({
-      next: (servicos) => {
-        this.servicos = servicos;
-      },
-      error: (err) => {
-        console.error('Erro ao carregar serviços:', err);
-        alert('Erro ao carregar serviços: ' + (err.error || err.message));
-      },
-    });
+  // ======== HORARIOS ========
+  carregarHorarios(): void {
+    if (!this.dataSelecionada) return;
+    this.horarioService
+      .listarDisponiveis(this.dataSelecionada, this.barbeiroSelecionado)
+      .subscribe({
+        next: (res) => {
+          this.horarios = res.sort((a, b) =>
+            a.horario.localeCompare(b.horario)
+          );
+        },
+        error: (err) =>
+          alert('Erro ao carregar horários: ' + (err.error || err.message)),
+      });
   }
 
-  carregarHorarios() {
-    const dia = this.diasSemana.find((d) => d.sigla === this.diaSelecionado);
-    if (!dia) return;
-    this.horarioService.listar().subscribe({
-      next: (res) => {
-        this.horarios = res
-          .filter((h) => h.diaSemana === dia.backend)
-          .sort((a, b) => a.horario.localeCompare(b.horario));
-      },
-      error: (err) => {
-        console.error('Erro ao carregar horários:', err);
-        alert('Erro ao carregar horários: ' + (err.error || err.message));
-      },
-    });
+  // ======== UTILITÁRIOS ========
+  formatarData(data: string): string {
+    if (!data) return 'Não informada';
+    if (data.includes('-')) {
+      const [ano, mes, dia] = data.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+    return data;
+  }
+
+  formatarHorario(horario: string): string {
+    return horario ? horario.slice(0, 5) : 'Não informado';
+  }
+
+  formatarHoraParaBackend(hora: string): string {
+    const [h, m] = hora.split(':');
+    return `${h.padStart(2, '0')}:${m.padStart(2, '0')}:00`;
   }
 
   calcularSubtotal(): number {
@@ -480,17 +458,21 @@ export class MeusHorariosComponent implements OnInit {
     data: string,
     horario: string
   ): boolean {
+    // Admins can cancel/edit at any time if status is PENDENTE or ATIVO
+    if (this.usuarioService.usuarioEhAdmin()) {
+      return status === 'PENDENTE' || status === 'ATIVO';
+    }
+
+    // Regular users can only cancel/edit if more than 60 minutes remain
     const agora = new Date();
     const [dia, mes, ano] = data.split('/').map(Number);
     const [hora, minuto] = horario.split(':').map(Number);
     const dataAgendamento = new Date(ano, mes - 1, dia, hora, minuto);
-
-    // Permitir edição/cancelamento para "PENDENTE" ou "ATIVO" se dentro de 15 minutos antes do horário
     if (status === 'PENDENTE' || status === 'ATIVO') {
       const diffMinutes =
         (dataAgendamento.getTime() - agora.getTime()) / (1000 * 60);
-      return diffMinutes > 15; // Permitir até 15 minutos antes do horário
+      return diffMinutes > 60; // Regular users need at least 60 minutes
     }
-    return false; // Bloquear para "FINALIZADO" ou outros status
+    return false;
   }
 }
