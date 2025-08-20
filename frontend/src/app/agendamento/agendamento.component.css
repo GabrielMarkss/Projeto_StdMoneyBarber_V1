@@ -246,7 +246,7 @@
 }
 
 .dropdown-menu li a:hover {
-  background-color: #444;
+  background-color: #111;
 }
 
 /* ===== CONTAINER GERAL ===== */
@@ -357,9 +357,23 @@
 }
 
 /* ===== TÍTULOS ===== */
-h3 {
-  font-size: 25px;
-  margin-bottom: 0.5rem;
+.seletor-barbeiro {
+  padding: 4px 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 1px solid #f46d25;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #222;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.seletor-barbeiro option {
+  padding: 8px;
+  background-color: #fff;
+  color: #222;
+  font-size: 16px;
 }
 
 /* ===== DIAS DA SEMANA ===== */
@@ -421,11 +435,12 @@ h3 {
 /* ===== PERÍODOS E HORÁRIOS ===== */
 .periodo {
   margin-top: 25px;
+  text-align: center;
 }
 
 .periodo h4 {
   font-size: 18px;
-  margin: 8px 0;
+  margin: -5px 0 5px 0;
   text-align: center;
   width: 100%;
 }
@@ -434,6 +449,7 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
+  justify-content: center;
 }
 
 .horario {
@@ -484,22 +500,6 @@ h3 {
   right: 5px;
   transition: opacity 0.2s ease;
   user-select: none;
-}
-
-.horario:hover .editar {
-  opacity: 1;
-}
-
-.horario.selecionado {
-  background-color: #f46d25 !important;
-  color: white !important;
-  font-weight: bold;
-}
-
-.horario.admin-bloqueio {
-  background-color: red !important;
-  border: 1px solid red;
-  color: white !important;
 }
 
 /* ===== FORMULÁRIO POPUP DE HORÁRIO ===== */
@@ -607,7 +607,7 @@ h3 {
   color: white;
   border: none;
   padding: 14px 32px;
-  border-radius: 8px;
+  border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
   font-size: 16px;
@@ -912,7 +912,7 @@ h3 {
 
   .coluna-direita {
     order: 2; /* Schedules and summary below */
-    align-items: flex-start;
+    align-items: center;
   }
 
   .servico-item {
@@ -931,17 +931,63 @@ h3 {
     font-size: 14px;
   }
 
-  h3 {
-    font-size: 20px;
+  .seletor-barbeiro {
+    padding: 2px 2px;
+    font-size: 16px;
+    border-radius: 4px;
+    font-weight: normal;
+  }
+
+  .seletor-barbeiro option {
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  .dias-semana {
+    display: flex;
+    gap: 0.312rem;
+    flex-wrap: wrap;
+    margin-bottom: -0.5rem;
   }
 
   .dias-semana button {
-    font-size: 16px;
-    padding: 10px 15px;
+    background-color: #eee;
+    border: none;
+    border-radius: 4px;
+    color: #f46d25;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 10px; /* Reduced by 2px */
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dias-semana button:hover {
+    background-color: #f26c1e;
+    color: white;
+  }
+
+  .dias-semana .ativo {
+    background-color: #f26c1e;
+    color: white;
+  }
+
+  .acoes button {
+    padding: 8px 25px;
   }
 
   .periodo h4 {
     font-size: 16px;
+    margin: 8px 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .periodo .horarios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    justify-content: center;
   }
 
   .horario-container {
@@ -967,12 +1013,13 @@ h3 {
   }
 
   .resumo-agendamento p {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .resumo-agendamento button {
-    padding: 12px 24px;
-    font-size: 14px;
+    padding: 10px 25px;
+    font-size: 15px;
+    border-radius: 5px;
   }
 
   .formulario-horario-popup {
@@ -986,10 +1033,36 @@ h3 {
     font-size: 14px;
   }
 
+  .formulario-horario-popup .formulario-botoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
   .formulario-horario-popup .btn-cancelar,
   .formulario-horario-popup .btn-salvar {
-    padding: 6px 12px;
-    font-size: 14px;
+    background: white;
+    color: #f46d25;
+    border: 2px solid #f46d25;
+    border-radius: 6px;
+    padding: 7px 15px; /* Reduced by 1px */
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .formulario-horario-popup .btn-cancelar:hover {
+    background-color: #f46d25;
+    color: white;
+  }
+
+  .formulario-horario-popup .btn-salvar {
+    background-color: #f46d25;
+    border: none;
+    color: white;
+  }
+
+  .formulario-horario-popup .btn-salvar:hover {
+    background-color: #d05e20;
   }
 
   .popup-conteudo {

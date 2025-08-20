@@ -376,11 +376,10 @@
           (click)="abrirFormularioServico()"
           class="botao-criar"
         >
-          Criar serviço
+          <span class="botao-criar-texto">Criar serviço</span>
         </button>
       </div>
 
-      <div class="estrelas">★★★★★</div>
       <small class="subtitulo">Serviços de qualidade e preços justos.</small>
 
       <table class="tabela-servicos">
@@ -388,28 +387,25 @@
           <tr *ngFor="let servico of servicosPaginados">
             <td>{{ servico.nome }}</td>
             <td class="coluna-acoes">
+              <span class="preco"
+                >R$ {{ servico.preco | number : "1.2-2" }}</span
+              >
               <ng-container *ngIf="usuarioService.usuarioEhAdmin()">
                 <button
                   class="icone-acao editar"
                   title="Editar servico"
-                  style="font-size: 17px"
                   (click)="abrirFormularioServico(servico)"
                 >
                   ✎
                 </button>
-
                 <button
                   class="icone-acao apagar"
                   title="Remover servico"
-                  style="font-weight: bold"
                   (click)="deletarServico(servico.id!)"
                 >
                   ✕
                 </button>
               </ng-container>
-              <span class="preco">
-                R$ {{ servico.preco | number : "1.2-2" }}
-              </span>
             </td>
           </tr>
 
@@ -418,7 +414,7 @@
             <button class="botao-agendar" [routerLink]="['/agendamento']">
               AGENDAR HORÁRIO
             </button>
-            <div class="paginacao" *ngIf="totalPaginas > 1">
+            <div class="c" *ngIf="totalPaginas > 1">
               <span
                 class="pagina"
                 [class.ativa]="paginaAtual === pagina"
@@ -495,7 +491,7 @@
   <!-- LISTAGEM DE CARDS -->
   <div class="cards-wrapper">
     <div class="card" *ngFor="let c of cardsVisiveis">
-      <img [src]="c.imagemPath" alt="Imagem" style="width: 55px" />
+      <img [src]="c.imagemPath" alt="Imagem" class="card-img" />
       <p class="card-descricao">{{ c.descricao }}</p>
       <div class="card-acoes" *ngIf="usuarioService.usuarioEhAdmin()">
         <button class="editar-card" (click)="abrirFormularioCard(c)">✎</button>

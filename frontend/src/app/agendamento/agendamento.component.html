@@ -167,7 +167,9 @@
         (change)="onBarbeiroChange()"
         class="seletor-barbeiro"
       >
-        <option *ngFor="let b of barbeiros" [ngValue]="b">{{ b }}</option>
+        <option *ngFor="let b of barbeiros" [ngValue]="b">
+          {{ b }}
+        </option>
       </select>
     </h3>
 
@@ -215,7 +217,7 @@
           Desbloquear
         </button>
       </div>
-      <div class="acoes" style="margin-bottom: 15px">
+      <div class="acoes" style="margin-bottom: 5px">
         <button (click)="abrirFormularioHorario()">+ Adicionar Horário</button>
         <button
           (click)="apagarHorariosSelecionados()"
@@ -292,17 +294,22 @@
     <div class="resumo-agendamento">
       <h3>Resumo do Agendamento</h3>
       <p><strong>Barbeiro:</strong> {{ resumo.barbeiro }}</p>
-      <p><strong>Serviços:</strong> {{ obterNomesServicos() }}</p>
+      <p style="margin-left: -2px">
+        <strong>Serviços:</strong> {{ obterNomesServicos() }}
+      </p>
       <p><strong>Data:</strong> {{ resumo.data || "Não selecionada" }}</p>
       <p><strong>Horário:</strong> {{ resumo.horario || "Não selecionado" }}</p>
-      <p>
+      <br />
+      <p style="margin-left: -2px">
         <strong>Subtotal:</strong> R$ {{ resumo.subtotal | number : "1.2-2" }}
       </p>
-      <p>
+      <!-- <p>
         <strong>Desconto:</strong> R$ {{ resumo.desconto | number : "1.2-2" }}
+      </p> -->
+      <p style="margin-left: -2px">
+        <strong>Total:</strong> R$ {{ resumo.total | number : "1.2-2" }}
       </p>
-      <p><strong>Total:</strong> R$ {{ resumo.total | number : "1.2-2" }}</p>
-      <p><strong>Cupom:</strong> {{ resumo.cupomNome || "Nenhum" }}</p>
+      <!-- <p><strong>Cupom:</strong> {{ resumo.cupomNome || "Nenhum" }}</p> -->
       <button (click)="confirmar()">Confirmar Agendamento</button>
     </div>
 

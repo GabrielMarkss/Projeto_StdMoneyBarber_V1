@@ -1,4 +1,4 @@
-/* ====== NAVBAR ====== */
+/* ===== NAVBAR ===== */
 .navbar {
   background-color: #111;
   color: white;
@@ -18,7 +18,7 @@
   font-size: 14px;
 }
 
-/* ====== NOTIFICAÇÃO - POPUP E ÍCONES ====== */
+/* ===== NOTIFICAÇÃO - POPUP E ÍCONES ===== */
 .notificacao-wrapper {
   position: relative;
   cursor: pointer;
@@ -31,7 +31,7 @@
   width: 20rem;
   background: white;
   color: black;
-  border-radius: 6px;
+  border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   font-family: sans-serif;
@@ -72,7 +72,7 @@
   color: #888;
 }
 
-/* ====== NOTIFICAÇÃO - CONTEUDO ====== */
+/* ===== NOTIFICAÇÃO - CONTEUDO ===== */
 .notificacao-card {
   display: flex;
   padding: 10px;
@@ -85,7 +85,7 @@
 
 .notificacao-card:hover {
   background-color: #eee;
-  border-radius: 6px;
+  border-radius: 5px;
 }
 
 .notificacao-imagem {
@@ -137,7 +137,7 @@
   background-color: #f0f0f0;
 }
 
-/* ====== FORMULÁRIO DE NOTIFICAÇÃO ====== */
+/* ===== FORMULÁRIO DE NOTIFICAÇÃO ===== */
 .formulario-modal {
   position: fixed;
   top: 50%;
@@ -158,7 +158,7 @@
   padding: 8px 10px;
   margin-bottom: 12px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 5px;
   font-size: 14px;
   box-sizing: border-box;
 }
@@ -182,7 +182,7 @@
   background: white;
   color: #f46d25;
   border: 2px solid #f46d25;
-  border-radius: 6px;
+  border-radius: 5px;
   padding: 8px 16px;
   font-weight: bold;
   cursor: pointer;
@@ -197,7 +197,7 @@
 .formulario-modal button.salvar {
   background-color: #f46d25;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   padding: 8px 16px;
   color: white;
   font-weight: bold;
@@ -214,7 +214,7 @@
   background-color: #d05e20;
 }
 
-/* ====== MENU DROPDOWN ====== */
+/* ===== MENU DROPDOWN ===== */
 .dropdown {
   position: relative;
   z-index: 9999;
@@ -234,7 +234,7 @@
   right: 0;
   top: 2.5rem;
   background-color: #222;
-  border-radius: 6px;
+  border-radius: 5px;
   list-style: none;
   padding: 2px;
   margin: 10px;
@@ -254,7 +254,7 @@
   background-color: #444;
 }
 
-/* ====== CARROSSEL ====== */
+/* ===== CARROSSEL ===== */
 .carrossel-container {
   width: 100%;
   margin: 0;
@@ -292,7 +292,7 @@
   display: block;
 }
 
-/* ====== BOTÕES DO CARROSSEL ====== */
+/* ===== BOTÕES DO CARROSSEL ===== */
 .botoes-hover {
   position: absolute;
   top: 12px;
@@ -355,15 +355,14 @@
   display: flex;
 }
 
-/* ====== SESSÃO BARBEIROS ====== */
+/* ===== SESSÃO BARBEIROS ===== */
 .barbeiros-section {
-  padding: 40px 20px;
   text-align: center;
 }
 
 .titulo {
   font-size: 2.5rem;
-  margin-bottom: 40px;
+  margin-bottom: 0.625rem;
 }
 
 .barbeiros-wrapper {
@@ -373,7 +372,7 @@
   gap: 40px;
 }
 
-/* ====== CARD DO BARBEIRO ====== */
+/* ===== CARD DO BARBEIRO ===== */
 .barbeiro-card {
   position: relative;
   display: flex;
@@ -383,11 +382,10 @@
   text-align: center;
 }
 
-/* ====== BOTÃO REMOVER (X) ====== */
+/* ===== BOTÃO REMOVER (X) ===== */
 .btn-remover-x {
   position: absolute;
   top: 1rem;
-  /* alinhado com o nome */
   right: 10px;
   background: transparent;
   color: #888;
@@ -402,7 +400,7 @@
   color: red;
 }
 
-/* ====== IMAGEM DO BARBEIRO COM EDIÇÃO ====== */
+/* ===== IMAGEM DO BARBEIRO COM EDIÇÃO ===== */
 .imagem-container {
   position: relative;
   width: 150px;
@@ -421,7 +419,7 @@
   border-radius: 50%;
 }
 
-/* BOTÃO ✎ SOBRE A IMAGEM */
+/* ===== BOTÃO ✎ SOBRE A IMAGEM ===== */
 .btn-editar-img {
   position: absolute;
   top: 0;
@@ -445,7 +443,7 @@
   opacity: 1;
 }
 
-/* ====== INFO DO BARBEIRO ====== */
+/* ===== INFO DO BARBEIRO ===== */
 .barbeiro-info {
   text-align: left;
 }
@@ -461,7 +459,7 @@
   line-height: 1.25;
 }
 
-/* ====== LINKS DE CONTATO E AGENDAMENTO ====== */
+/* ===== LINKS DE CONTATO E AGENDAMENTO ===== */
 .contato,
 .agendar-link {
   font-weight: bold;
@@ -481,17 +479,17 @@
   text-decoration: 1.5px underline;
 }
 
-/* ====== BOTÃO ADICIONAR BARBEIRO ====== */
+/* ===== BOTÃO ADICIONAR BARBEIRO ===== */
 .btn-adicionar-barbeiro {
   background-color: #f46d25;
   color: white;
   border: none;
-  padding: 0.6rem 1.5rem;
-  font-size: 1.1rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 17px;
   font-weight: bold;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   transition: background-color 0.3s ease;
 }
 
@@ -499,11 +497,11 @@
   background-color: #d65b1d;
 }
 
-/* ====== FORMULÁRIO EM POPUP ====== */
+/* ===== FORMULÁRIO EM POPUP ===== */
 .popup-form-barbeiro {
   background: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-  padding: 2rem 2.5rem;
+  padding: 2rem 2rem;
   border-radius: 12px;
   max-width: 420px;
   margin: 0 auto 3rem;
@@ -511,20 +509,20 @@
   z-index: 1500;
 }
 
-/* FORMULÁRIO INTERNO */
+/* ===== FORMULÁRIO INTERNO ===== */
 .formulario-barbeiro {
   display: flex;
   flex-direction: column;
 }
 
-/* CAMPOS DE INPUT E SELECT */
+/* ===== CAMPOS DE INPUT E SELECT ===== */
 .form-input-barbeiro {
   width: 100%;
   padding: 0.5rem 0.9rem;
   margin-bottom: 1.1rem;
   font-size: 1rem;
   border: 1.5px solid #ccc;
-  border-radius: 6px;
+  border-radius: 5px;
   box-sizing: border-box;
   transition: border-color 0.3s ease;
 }
@@ -534,7 +532,7 @@
   border-color: #f46d25;
 }
 
-/* BOTÕES SALVAR E CANCELAR EM LINHA CENTRALIZADA */
+/* ===== BOTÕES SALVAR E CANCELAR EM LINHA CENTRALIZADA ===== */
 .botoes-form-barbearia {
   display: flex;
   justify-content: center;
@@ -549,7 +547,7 @@
   border: none;
   padding: 0.7rem 1.5rem;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -570,7 +568,7 @@
   border: none;
   padding: 0.7rem 1.5rem;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -580,7 +578,7 @@
   color: #000;
 }
 
-/* ====== TABELA DE SERVIÇOS ====== */
+/* ===== TABELA DE SERVIÇOS ===== */
 .layout-servicos {
   display: flex;
   flex-direction: row;
@@ -600,7 +598,6 @@
   width: 100%;
   height: 700px;
   object-fit: cover;
-  border-radius: 8px 0 0 8px;
 }
 
 .tabela-wrapper {
@@ -609,22 +606,19 @@
   display: flex;
   flex-direction: column;
   background: #fff;
-  border-radius: 0 8px 8px 0;
   padding: 20px;
   box-sizing: border-box;
   overflow: hidden;
 }
 
 .cabecalho-tabela {
-  margin-bottom: -10px;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 50px;
 }
 
 .cabecalho-tabela h2 {
-  margin-bottom: 0px;
+  margin: 0;
   font-size: 25px;
   line-height: 1.2;
 }
@@ -638,18 +632,21 @@
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.estrelas {
-  margin-top: 0;
-  font-size: 22px;
-  color: #f46d25;
+.botao-criar:hover {
+  background-color: #d65b1d;
 }
 
 .subtitulo {
-  color: #626262;
+  color: #888;
+  font-size: 14px;
+  font-style: italic;
   font-weight: bold;
-  margin: 0 5px 10px;
+  margin: 2px 2px 20px;
 }
 
 .tabela-servicos {
@@ -680,12 +677,27 @@
 .coluna-acoes {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-end; /* joga tudo para a direita */
   gap: 8px;
+}
+
+.icone-acao.editar,
+.icone-acao.apagar {
+  font-size: 17px;
+}
+
+.icone-acao.editar:hover {
+  color: blue;
+}
+
+.icone-acao.apagar:hover {
+  color: red;
 }
 
 .preco {
   font-weight: bold;
+  font-size: 16px;
+  margin-right: 5px; /* espaço entre preço e ícones */
 }
 
 .rodape-tabela {
@@ -693,7 +705,7 @@
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
-  padding-top: 10px;
+  padding: 100px 0 0 0;
 }
 
 .botao-agendar {
@@ -716,12 +728,13 @@
 
 .pagina {
   padding: 6px 12px;
-  border: 2px solid #f46d25;
-  border-radius: 100%;
+  margin-right: 5px;
+  border: 1px solid #f46d25;
+  border-radius: 50%;
   cursor: pointer;
   color: #f46d25;
   background-color: white;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -756,9 +769,11 @@
   gap: 10px;
 }
 
+/* ===== PLANO DE FIDELIDADE ===== */
 .fidelidade-box {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 20px;
   background-color: white;
   padding: 40px;
@@ -773,8 +788,7 @@
 }
 
 .fidelidade-img {
-  width: 330px;
-  height: auto;
+  width: 300px;
 }
 
 .fidelidade-conteudo {
@@ -782,6 +796,7 @@
   flex-direction: column;
   gap: 8px;
   max-width: 400px;
+  text-align: center;
 }
 
 .fidelidade-conteudo h3 {
@@ -799,11 +814,11 @@
   margin-top: 8px;
   font-weight: 700;
   font-size: 20px;
+  text-align: center;
 }
 
 .planos {
   display: inline-block;
-  /* muito importante! resolve tooltips não aparecendo :contentReference[oaicite:1]{index=1} */
   position: relative;
   cursor: pointer;
 }
@@ -813,23 +828,20 @@
   color: #aaa;
 }
 
-/* BOTÃO */
 .fidelidade-botao {
   margin-top: 12px;
   background-color: #f3741c;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
+  padding: 10px 40px;
+  border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
   font-size: 18px;
-  align-self: flex-start;
+  align-self: center;
 }
 
-/* TOOLTIPS */
-
-/* Conteúdo do balão */
+/* ===== TOOLTIPS ===== */
 .tooltip::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -839,7 +851,7 @@
   background: #333;
   color: white;
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: 5px;
   font-size: 13px;
   white-space: nowrap;
   opacity: 0;
@@ -848,7 +860,6 @@
   z-index: 100;
 }
 
-/* Setinha */
 .tooltip::before {
   content: "";
   position: absolute;
@@ -864,13 +875,12 @@
   z-index: 99;
 }
 
-/* Exibe no hover */
 .tooltip:hover::after,
 .tooltip:hover::before {
   opacity: 1;
 }
 
-/* ====== CARDS ====== */
+/* ===== CARDS ===== */
 .cards-wrapper {
   display: flex;
   flex-wrap: nowrap;
@@ -882,13 +892,16 @@
 
 .card {
   position: relative;
-  /* importante para o posicionamento absoluto dos botões */
   background-color: #fff;
   border-radius: 8px;
   padding: 16px;
   width: 200px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   text-align: center;
+}
+
+.card-img {
+  width: 50px;
 }
 
 .card-descricao {
@@ -922,15 +935,14 @@
 }
 
 .botao-adicionar-card {
-  padding: 10px 20px;
+  padding: 10px 25px;
   background-color: #f46d25;
   color: white;
   font-weight: bold;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
   align-self: center;
-  margin-top: 20px;
 }
 
 .adicionar-card-container {
@@ -939,14 +951,14 @@
   margin-top: 20px;
 }
 
-/* ====== FORMULÁRIO DE CARD ====== */
+/* ===== FORMULÁRIO DE CARD ===== */
 .textarea-descricao {
   width: 100%;
   padding: 10px;
   font-size: 16px;
   margin-bottom: 12px;
   resize: vertical;
-  border-radius: 6px;
+  border-radius: 5px;
   border: 1px solid #ccc;
 }
 
@@ -965,7 +977,7 @@
 .btn-salvar {
   padding: 8px 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -980,7 +992,7 @@
   color: white;
 }
 
-/* ====== MAPA ====== */
+/* ===== MAPA ===== */
 .mapa-container {
   width: 100%;
   height: 400px;
@@ -995,7 +1007,7 @@
   border: none;
 }
 
-/* ====== RODAPE ====== */
+/* ===== RODAPE ===== */
 .rodape {
   background-color: #000;
   color: white;
@@ -1024,7 +1036,7 @@
 
 .rodape-coluna h4 {
   font-size: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .rodape-coluna p,
@@ -1039,7 +1051,6 @@
   text-decoration: underline;
 }
 
-/* LOGO + TÍTULO + LINKS ABAIXO DO TÍTULO */
 .logo-wrapper {
   display: flex;
   align-items: flex-start;
@@ -1057,7 +1068,6 @@
   display: flex;
   flex-direction: column;
   white-space: nowrap;
-  /* força o título a não quebrar */
 }
 
 .logo-titulo {
@@ -1076,7 +1086,7 @@
   font-size: 15px;
   color: #ccc;
   text-decoration: none;
-  margin-bottom: 0;
+  margin-left: 2px;
   display: inline-block;
 }
 
@@ -1084,7 +1094,6 @@
   text-decoration: underline;
 }
 
-/* COPYRIGHT CENTRALIZADO E FORA DO BLOCO PRINCIPAL */
 .rodape-direitos {
   text-align: center;
   font-size: 11px;
@@ -1092,7 +1101,7 @@
   margin-top: 40px;
 }
 
-/* ====== MEDIA QUERIES ====== */
+/* ===== MEDIA QUERIES ===== */
 @media (min-width: 769px) {
   .bottom-nav {
     display: none !important;
@@ -1120,9 +1129,7 @@
   .botao-editar,
   .botao-remover,
   .botao-navegacao,
-  .botoes-hover,
-  .botao-criar,
-  .icone-acao {
+  .botoes-hover {
     display: none !important;
   }
 
@@ -1147,7 +1154,7 @@
   }
 
   .notificacao-popup {
-    border-radius: 3px;
+    border-radius: 4px;
     width: 12.5rem;
     top: 1.5rem;
     right: 0.25rem;
@@ -1203,15 +1210,18 @@
     display: block;
   }
 
+  .barbeiros-section {
+    text-align: center;
+  }
+
   .titulo {
-    font-size: 2rem;
-    margin: -10px 0px 5px;
+    font-size: 1.7rem;
   }
 
   .btn-adicionar-barbeiro {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    margin-bottom: 1rem;
+    padding: 0.4rem 0.625rem;
+    border-radius: 4px;
+    font-size: 14px;
   }
 
   .barbeiro-card {
@@ -1284,37 +1294,54 @@
     height: auto;
     max-height: 250px;
     object-fit: cover;
-    border-radius: 8px 8px 0 0;
+    border-radius: 16px 16px 0 0;
   }
 
   .tabela-wrapper {
     width: 100%;
     height: auto;
-    border-radius: 0 0 8px 8px;
     padding: 16px;
     box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
   }
 
   .cabecalho-tabela {
-    flex-direction: column;
+    display: flex;
+    justify-content: center; /* centraliza os dois */
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+  }
+
+  .cabecalho-tabela h2 {
+    font-size: 20px;
     text-align: center;
   }
 
   .botao-criar {
-    display: none !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+
+  .botao-criar .botao-criar-texto {
+    display: none; /* esconde o texto no mobile */
+  }
+
+  .botao-criar::before {
+    content: "+";
+    color: #fff;
+    font-weight: bold;
   }
 
   .tabela-servicos {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-  }
-
-  .estrelas {
-    padding-top: 0.625rem;
-    text-align: center;
   }
 
   .subtitulo {
@@ -1364,12 +1391,16 @@
   }
 
   .coluna-acoes {
-    justify-content: space-between;
-    gap: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-right: 10px; /* Garante 10px de distância do preço */
   }
 
   .icone-acao {
-    display: none !important;
+    display: flex !important;
+    font-size: 15px;
   }
 
   .preco {
@@ -1378,32 +1409,36 @@
     font-size: 15px;
     width: 100%;
     padding-right: 0;
+    margin-left: 10px; /* Adiciona espaçamento à esquerda para separar do ícone */
   }
 
   .rodape-tabela {
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 25px 5px 5px 10px;
   }
 
   .botao-agendar {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
+    width: auto;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 4px;
   }
 
   .paginacao {
-    justify-content: center;
-    margin-top: 10px;
-    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
   }
 
   .pagina {
     font-size: 15px;
-    padding: 4px 8px;
+    padding: 6px 10px;
   }
 
-  /* CARDS MOBILE */
+  /* ===== CARDS MOBILE ===== */
   .cards-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -1415,18 +1450,22 @@
   .card {
     width: 150px;
     padding: 12px;
-    border-radius: 6px;
+    border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .card img {
-    width: 25px;
-    height: auto;
+  .card-img {
+    width: 40px;
   }
 
   .card-descricao {
     font-size: 14px;
     margin: 6px 0;
+  }
+
+  .botao-adicionar-card {
+    padding: 8px 25px;
+    border-radius: 4px;
   }
 
   .fidelidade-box {
@@ -1436,7 +1475,8 @@
   }
 
   .fidelidade-img {
-    width: 150px;
+    width: 145px;
+    margin-bottom: 55px;
   }
 
   .fidelidade-conteudo {
@@ -1444,7 +1484,7 @@
   }
 
   .fidelidade-conteudo h3 {
-    font-size: 20px;
+    font-size: 19px;
   }
 
   .fidelidade-conteudo p {
@@ -1452,13 +1492,14 @@
   }
 
   .fidelidade-planos {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .fidelidade-botao {
-    font-size: 15px;
-    padding: 8px 36px;
+    font-size: 13px;
+    padding: 7px 25px;
     align-self: center;
+    border-radius: 4px;
   }
 
   .mapa-container {
@@ -1505,5 +1546,12 @@
 
   .rodape-coluna {
     margin-bottom: -20px;
+  }
+  .rodape-coluna h4 {
+    font-size: 17px;
+  }
+  .rodape-coluna p,
+  .rodape-coluna a {
+    font-size: 15px;
   }
 }

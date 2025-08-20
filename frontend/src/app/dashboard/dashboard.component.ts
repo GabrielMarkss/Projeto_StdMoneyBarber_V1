@@ -474,7 +474,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   listarCards() {
     this.cardService.listar().subscribe((res) => {
       const largura = window.innerWidth;
-      const quantidade = largura <= 768 ? 4 : 5;
+      const quantidade = largura <= 1000 ? 4 : 4;
 
       this.cards = res.map((c) => ({
         ...c,

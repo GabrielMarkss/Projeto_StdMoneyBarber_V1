@@ -4,9 +4,10 @@ body {
   background-color: #f1edec;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #222;
 }
 
 body {
   margin: 0;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
