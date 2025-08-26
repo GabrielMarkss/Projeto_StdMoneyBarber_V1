@@ -5,7 +5,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 12px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.profile-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.greeting {
+  padding: -15px;
 }
 
 .greeting div {
@@ -18,10 +34,24 @@
   font-size: 14px;
 }
 
+.right {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding-bottom: 0.25px;
+  margin-top: 20px;
+}
+
 /* ===== NOTIFICAÇÃO - POPUP E ÍCONES ===== */
 .notificacao-wrapper {
   position: relative;
   cursor: pointer;
+}
+
+.notificacao {
+  width: 2.25rem;
+  cursor: pointer;
+  transform: translateY(2px);
 }
 
 .notificacao-popup {
@@ -37,42 +67,6 @@
   font-family: sans-serif;
 }
 
-.icone-acao {
-  font-size: 16px;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  user-select: none;
-  background: none;
-  border: none;
-}
-
-.icone-acao.notificacao {
-  position: absolute;
-  top: 6px;
-}
-
-.icone-acao.notificacao[title="Editar notificação"] {
-  right: 32px;
-}
-
-.icone-acao.notificacao[title="Remover notificação"] {
-  right: 8px;
-}
-
-.icone-acao.editar:hover {
-  color: blue;
-}
-
-.icone-acao.apagar:hover {
-  color: red;
-}
-
-.icone-acao.tabela {
-  position: relative;
-  color: #888;
-}
-
-/* ===== NOTIFICAÇÃO - CONTEUDO ===== */
 .notificacao-card {
   display: flex;
   padding: 10px;
@@ -120,6 +114,36 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.icone-acao {
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  user-select: none;
+  background: none;
+  border: none;
+}
+
+.icone-acao.notificacao {
+  position: absolute;
+  top: 6px;
+}
+
+.icone-acao.notificacao[title="Editar notificação"] {
+  right: 32px;
+}
+
+.icone-acao.notificacao[title="Remover notificação"] {
+  right: 8px;
+}
+
+.icone-acao.editar:hover {
+  color: blue;
+}
+
+.icone-acao.apagar:hover {
+  color: red;
 }
 
 .nova-notificacao {
@@ -172,7 +196,7 @@
   margin-bottom: 12px;
 }
 
-.formulario-modal .botoes-container {
+.botoes-container {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -292,7 +316,28 @@
   display: block;
 }
 
-/* ===== BOTÕES DO CARROSSEL ===== */
+.botao-navegacao {
+  display: none;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  color: white;
+  font-size: 60px;
+  cursor: pointer;
+}
+
+.botao-navegacao.esquerdo {
+  left: 20px;
+}
+
+.botao-navegacao.direito {
+  right: 20px;
+}
+
+.imagem-wrapper:hover .botao-navegacao {
+  display: flex;
+}
+
 .botoes-hover {
   position: absolute;
   top: 12px;
@@ -333,26 +378,24 @@
   background-color: #e74c3c;
 }
 
-.botao-navegacao.esquerdo {
-  left: 20px;
+.carrossel-vazio {
+  text-align: center;
 }
 
-.botao-navegacao.direito {
-  right: 20px;
-}
-
-.botao-navegacao {
-  display: none;
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0);
-  border: none;
+.botao-central {
+  padding: 10px 25px;
+  background-color: #f46d25;
   color: white;
-  font-size: 60px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  align-self: center;
 }
 
-.imagem-wrapper:hover .botao-navegacao {
-  display: flex;
+/* ===== FORMULÁRIO DE IMAGEM ===== */
+.formulario-modal {
+  /* Already defined above, reused for image form */
 }
 
 /* ===== SESSÃO BARBEIROS ===== */
@@ -365,121 +408,6 @@
   margin-bottom: 0.625rem;
 }
 
-.barbeiros-wrapper {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 40px;
-}
-
-/* ===== CARD DO BARBEIRO ===== */
-.barbeiro-card {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  max-width: 450px;
-  border-radius: 12px;
-  text-align: center;
-}
-
-/* ===== BOTÃO REMOVER (X) ===== */
-.btn-remover-x {
-  position: absolute;
-  top: 1rem;
-  right: 10px;
-  background: transparent;
-  color: #888;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  z-index: 10;
-  transition: color 0.3s ease;
-}
-
-.btn-remover-x:hover {
-  color: red;
-}
-
-/* ===== IMAGEM DO BARBEIRO COM EDIÇÃO ===== */
-.imagem-container {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 20px;
-  flex-shrink: 0;
-}
-
-.barbeiro-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 50%;
-}
-
-/* ===== BOTÃO ✎ SOBRE A IMAGEM ===== */
-.btn-editar-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 1.8rem;
-  opacity: 0;
-  transition: background 0.3s ease, opacity 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.imagem-container:hover .btn-editar-img {
-  background: #00000025;
-  opacity: 1;
-}
-
-/* ===== INFO DO BARBEIRO ===== */
-.barbeiro-info {
-  text-align: left;
-}
-
-.barbeiro-info h3 {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-
-.barbeiro-info p {
-  font-size: 16px;
-  margin: 4px 0;
-  line-height: 1.25;
-}
-
-/* ===== LINKS DE CONTATO E AGENDAMENTO ===== */
-.contato,
-.agendar-link {
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.contato {
-  color: #49c85a;
-}
-
-.agendar-link {
-  color: black;
-}
-
-.contato:hover,
-.agendar-link:hover {
-  text-decoration: 1.5px underline;
-}
-
-/* ===== BOTÃO ADICIONAR BARBEIRO ===== */
 .btn-adicionar-barbeiro {
   background-color: #f46d25;
   color: white;
@@ -497,7 +425,6 @@
   background-color: #d65b1d;
 }
 
-/* ===== FORMULÁRIO EM POPUP ===== */
 .popup-form-barbeiro {
   background: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
@@ -509,13 +436,11 @@
   z-index: 1500;
 }
 
-/* ===== FORMULÁRIO INTERNO ===== */
 .formulario-barbeiro {
   display: flex;
   flex-direction: column;
 }
 
-/* ===== CAMPOS DE INPUT E SELECT ===== */
 .form-input-barbeiro {
   width: 100%;
   padding: 0.5rem 0.9rem;
@@ -532,7 +457,6 @@
   border-color: #f46d25;
 }
 
-/* ===== BOTÕES SALVAR E CANCELAR EM LINHA CENTRALIZADA ===== */
 .botoes-form-barbearia {
   display: flex;
   justify-content: center;
@@ -578,7 +502,124 @@
   color: #000;
 }
 
+.barbeiros-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.barbeiro-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  max-width: 450px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.btn-remover-x {
+  position: absolute;
+  top: 1rem;
+  right: 10px;
+  background: transparent;
+  color: #888;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.3s ease;
+}
+
+.btn-remover-x:hover {
+  color: red;
+}
+
+.imagem-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.barbeiro-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+
+.btn-editar-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  opacity: 0;
+  transition: background 0.3s ease, opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.imagem-container:hover .btn-editar-img {
+  background: #00000025;
+  opacity: 1;
+}
+
+.barbeiro-info {
+  text-align: left;
+}
+
+.barbeiro-info h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.barbeiro-info p {
+  font-size: 16px;
+  margin: 4px 0;
+  line-height: 1.25;
+}
+
+.contato {
+  color: #49c85a;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline;
+}
+
+.btn-agendar {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.contato:hover,
+.btn-agendar:hover {
+  text-decoration: 1.5px underline;
+}
+
+.contato-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 /* ===== TABELA DE SERVIÇOS ===== */
+.container-centralizado {
+  padding-top: 6.25rem;
+}
+
 .layout-servicos {
   display: flex;
   flex-direction: row;
@@ -678,8 +719,13 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  /* joga tudo para a direita */
   gap: 8px;
+}
+
+.preco {
+  font-weight: bold;
+  font-size: 16px;
+  margin-right: 5px;
 }
 
 .icone-acao.editar,
@@ -693,13 +739,6 @@
 
 .icone-acao.apagar:hover {
   color: red;
-}
-
-.preco {
-  font-weight: bold;
-  font-size: 16px;
-  margin-right: 5px;
-  /* espaço entre preço e ícones */
 }
 
 .rodape-tabela {
@@ -721,13 +760,6 @@
   cursor: pointer;
 }
 
-.paginacao {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-  justify-content: center;
-}
-
 .pagina {
   padding: 6px 12px;
   margin-right: 5px;
@@ -746,29 +778,121 @@
   color: white;
 }
 
-.formulario-servico {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+/* ===== FORMULÁRIO DE SERVIÇO ===== */
+.formulario-modal {
+  /* Already defined above, reused for service form */
 }
 
-.formulario-servico label {
-  display: block;
-  margin-top: 8px;
-  font-weight: bold;
-}
-
-.formulario-servico input {
-  width: 100%;
-  padding: 6px;
-  margin-top: 4px;
-}
-
-.botoes-formulario {
-  margin-top: 10px;
+/* ===== CARDS ===== */
+.cards-wrapper {
   display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  margin-top: 40px;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+.card {
+  position: relative;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.card-img {
+  width: 50px;
+}
+
+.card-descricao {
+  font-size: 16px;
+  color: #333;
+  margin: 10px 0;
+}
+
+.card-acoes {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.card-acoes button {
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 6px;
+  padding: 0;
+  line-height: 1;
+}
+
+.editar-card:hover {
+  color: blue;
+}
+
+.apagar-card:hover {
+  color: red;
+}
+
+.adicionar-card-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.botao-adicionar-card {
+  padding: 10px 25px;
+  background-color: #f46d25;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+}
+
+/* ===== FORMULÁRIO DE CARD ===== */
+.textarea-descricao {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 12px;
+  resize: vertical;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.input-file {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.botoes-formulario-card {
+  display: flex;
+  justify-content: flex-end;
   gap: 10px;
+}
+
+.btn-cancelar,
+.btn-salvar {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-cancelar {
+  background-color: #ccc;
+  color: #000;
+}
+
+.btn-salvar {
+  background-color: #f46d25;
+  color: white;
 }
 
 /* ===== PLANO DE FIDELIDADE ===== */
@@ -843,7 +967,6 @@
   align-self: center;
 }
 
-/* ===== TOOLTIPS ===== */
 .tooltip::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -882,118 +1005,6 @@
   opacity: 1;
 }
 
-/* ===== CARDS ===== */
-.cards-wrapper {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 20px;
-  margin-top: 40px;
-  justify-content: center;
-  overflow-x: hidden;
-}
-
-.card {
-  position: relative;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  width: 200px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  text-align: center;
-}
-
-.card-img {
-  width: 50px;
-}
-
-.card-descricao {
-  font-size: 16px;
-  color: #333;
-  margin: 10px 0;
-}
-
-.card-acoes {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-}
-
-.card-acoes button {
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  margin-left: 6px;
-  padding: 0;
-  line-height: 1;
-}
-
-.editar-card:hover {
-  color: blue;
-}
-
-.apagar-card:hover {
-  color: red;
-}
-
-.botao-adicionar-card {
-  padding: 10px 25px;
-  background-color: #f46d25;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  align-self: center;
-}
-
-.adicionar-card-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-/* ===== FORMULÁRIO DE CARD ===== */
-.textarea-descricao {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  margin-bottom: 12px;
-  resize: vertical;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.input-file {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.botoes-formulario-card {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.btn-cancelar,
-.btn-salvar {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-cancelar {
-  background-color: #ccc;
-  color: #000;
-}
-
-.btn-salvar {
-  background-color: #f46d25;
-  color: white;
-}
-
 /* ===== MAPA ===== */
 .mapa-container {
   width: 100%;
@@ -1009,17 +1020,12 @@
   border: none;
 }
 
-/* ===== RODAPE ===== */
+/* ===== RODAPÉ ===== */
 .rodape {
   background-color: #000;
   color: white;
   padding: 40px 20px 20px;
   font-family: Arial, sans-serif;
-}
-
-.rede-social {
-  width: 18px;
-  margin-bottom: -3.5px;
 }
 
 .rodape-conteudo {
@@ -1034,23 +1040,6 @@
 .rodape-coluna {
   flex: 1;
   min-width: 200px;
-}
-
-.rodape-coluna h4 {
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-
-.rodape-coluna p,
-.rodape-coluna a {
-  font-size: 16px;
-  margin: 4px 0;
-  color: #ccc;
-  text-decoration: none;
-}
-
-.rodape-coluna a:hover {
-  text-decoration: underline;
 }
 
 .logo-wrapper {
@@ -1096,11 +1085,69 @@
   text-decoration: underline;
 }
 
+.rodape-coluna h4 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.rodape-coluna p,
+.rodape-coluna a {
+  font-size: 16px;
+  margin: 4px 0;
+  color: #ccc;
+  text-decoration: none;
+}
+
+.rodape-coluna a:hover {
+  text-decoration: underline;
+}
+
+.rede-social {
+  width: 18px;
+  margin-bottom: -3.5px;
+}
+
 .rodape-direitos {
   text-align: center;
   font-size: 11px;
   color: #aaa;
   margin-top: 40px;
+}
+
+/* ===== BARRA INFERIOR MOBILE ===== */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: end;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #000;
+  padding: 5px 0 15px 0;
+  z-index: 1000;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 0 12px;
+  height: 3.5rem;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.nav-item img {
+  max-height: 42px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.nav-item span {
+  font-size: 11px;
+  line-height: 1;
 }
 
 /* ===== POP-UP DE MENU MOBILE ===== */
@@ -1166,11 +1213,6 @@
 
 .menu-mobile-lista li a:hover {
   background-color: #444;
-}
-
-/* Ajustar a barra inferior para garantir que o item Menu seja clicável */
-.bottom-nav .nav-item {
-  cursor: pointer;
 }
 
 /* ===== MEDIA QUERIES ===== */
@@ -1286,10 +1328,6 @@
     display: block;
   }
 
-  .barbeiros-section {
-    text-align: center;
-  }
-
   .titulo {
     font-size: 1.7rem;
   }
@@ -1331,11 +1369,14 @@
   }
 
   .contato {
-    display: block;
     font-size: 16px;
     font-weight: bold;
     color: #28a745;
-    margin: 4px 0;
+    margin: 2px 0;
+  }
+
+  .contato-container strong {
+    margin-left: 8px;
   }
 
   .agendar-link {
@@ -1384,7 +1425,6 @@
   .cabecalho-tabela {
     display: flex;
     justify-content: center;
-    /* centraliza os dois */
     align-items: center;
     gap: 10px;
   }
@@ -1407,7 +1447,6 @@
 
   .botao-criar .botao-criar-texto {
     display: none;
-    /* esconde o texto no mobile */
   }
 
   .botao-criar::before {
@@ -1474,7 +1513,6 @@
     justify-content: flex-end;
     gap: 8px;
     padding-right: 10px;
-    /* Garante 10px de distância do preço */
   }
 
   .icone-acao {
@@ -1489,7 +1527,6 @@
     width: 100%;
     padding-right: 0;
     margin-left: 10px;
-    /* Adiciona espaçamento à esquerda para separar do ícone */
   }
 
   .rodape-tabela {
@@ -1518,7 +1555,6 @@
     padding: 6px 10px;
   }
 
-  /* ===== CARDS MOBILE ===== */
   .cards-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -1618,10 +1654,6 @@
   .bottom-nav .nav-item span {
     font-size: 11px;
     line-height: 1;
-  }
-
-  .mapa-container {
-    height: 200px;
   }
 
   .rodape-logo {

@@ -101,7 +101,7 @@ export class AgendamentoComponent implements OnInit {
     private agendamentoService: AgendamentoService,
     private route: ActivatedRoute,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const data = new Date();
@@ -128,8 +128,9 @@ export class AgendamentoComponent implements OnInit {
       'nov',
       'dez',
     ];
-    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${meses[data.getMonth()]
-      } ${data.getFullYear()}`;
+    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${
+      meses[data.getMonth()]
+    } ${data.getFullYear()}`;
     const hojeNum = data.getDay();
     this.diaSelecionado =
       hojeNum === 0
@@ -155,8 +156,8 @@ export class AgendamentoComponent implements OnInit {
         barbeiroParam === 'felipe'
           ? 'Felipe'
           : barbeiroParam === 'ezequiel'
-            ? 'Ezequiel'
-            : 'Sem Preferência';
+          ? 'Ezequiel'
+          : 'Sem Preferência';
       this.resumo.barbeiro = this.barbeiroSelecionado;
       console.log(
         'Inicializando com barbeiro:',
@@ -331,10 +332,10 @@ export class AgendamentoComponent implements OnInit {
     const data = new Date();
     data.setDate(
       data.getDate() +
-      ((this.diasSemana.findIndex((d) => d.sigla === this.diaSelecionado) +
-        7 -
-        data.getDay()) %
-        7)
+        ((this.diasSemana.findIndex((d) => d.sigla === this.diaSelecionado) +
+          7 -
+          data.getDay()) %
+          7)
     );
 
     const dataFormatada = `${data.getFullYear()}-${String(
@@ -623,7 +624,6 @@ export class AgendamentoComponent implements OnInit {
     };
     return this.horarios.filter((h) => filtro[periodo](h.horario));
   }
-
 
   formatarHorario(horario: string): string {
     return horario.slice(0, 5);

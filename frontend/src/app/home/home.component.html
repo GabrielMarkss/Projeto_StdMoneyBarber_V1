@@ -1,15 +1,14 @@
 <!-- NAVBAR SUPERIOR -->
-<nav class="navbar">
+<nav class="navbar" id="navbar">
   <div class="left" style="display: flex; align-items: center">
     <img
-      src="assets/user-profile.png"
+      src="assets/logo.png"
       alt="Perfil"
-      routerLink="/home"
+      routerLink="/login"
       class="profile-img"
-      style="width: 85px; height: 85px; border-radius: 50%; cursor: pointer"
     />
     <div class="greeting">
-      <div>Olá, {{ usuarioService.nomeUsuario || "..." }}</div>
+      <div>Studio Money Barber</div>
       <small>{{ dataHoje }}</small>
     </div>
   </div>
@@ -17,23 +16,10 @@
   <div class="right home-navbar-right">
     <!-- Botão de Login -->
     <button class="login-button" routerLink="/login">Login</button>
-
-    <!-- Botão de menu ☰ -->
-    <div
-      class="dropdown"
-      (mouseenter)="abrirMenu()"
-      (mouseleave)="fecharMenu()"
-    >
-      <div class="dropdown-toggle">☰</div>
-      <ul class="dropdown-menu" *ngIf="menuAberto">
-        <li><a routerLink="/galeria">Galeria</a></li>
-        <li><a routerLink="/produtos">Produtos</a></li>
-      </ul>
-    </div>
   </div>
 </nav>
 
-<div class="carrossel-container" *ngIf="imagens.length > 0; else vazio">
+<div class="carrossel-container">
   <div class="carrossel">
     <div class="imagem-wrapper" *ngIf="imagemAtual">
       <!-- BOTÃO PREV -->
@@ -48,19 +34,6 @@
       <!-- IMAGEM -->
       <img [src]="imagemAtual.url" alt="Imagem" class="carrossel-img" />
 
-      <!-- BOTÕES DE AÇÃO (admin) -->
-      <div class="botoes-hover" *ngIf="usuarioService.usuarioEhAdmin()">
-        <button class="botao-adicionar" (click)="abrirFormularioImagem()">
-          ＋
-        </button>
-        <button class="botao-editar" (click)="editarImagem(imagemAtual)">
-          ✎
-        </button>
-        <button class="botao-remover" (click)="removerImagem(imagemAtual)">
-          🗑
-        </button>
-      </div>
-
       <!-- BOTÃO NEXT -->
       <button
         class="botao-navegacao direito"
@@ -73,427 +46,239 @@
   </div>
 </div>
 
-<ng-template #vazio>
-  <div class="carrossel-vazio">
-    <p
-      style="color: gray; text-align: center"
-      *ngIf="usuarioService.usuarioEhAdmin()"
-    >
-      Nenhuma imagem adicionada ainda.
-    </p>
-    <div style="display: flex; justify-content: center; margin-top: 10px">
-      <button
-        *ngIf="usuarioService.usuarioEhAdmin()"
-        class="botao-central"
-        (click)="abrirFormularioImagem()"
-      >
-        ＋ Adicionar imagem
-      </button>
-    </div>
-  </div>
-</ng-template>
-
-<!-- Modal de formulário -->
-<div
-  class="formulario-modal"
-  *ngIf="mostrarFormularioImagem"
-  style="z-index: 1000"
->
-  <h3 style="color: black; margin-top: 0">Imagem do Carrossel</h3>
-
-  <input
-    type="file"
-    accept="image/*"
-    (change)="onFileChangeImagem($event)"
-    style="margin-bottom: 10px"
-  />
-
-  <div *ngIf="novaImagem.url" style="margin-bottom: 10px">
-    <img
-      [src]="novaImagem.url"
-      alt="Preview da imagem"
-      style="max-width: 100%; max-height: 200px"
-    />
-  </div>
-
-  <div class="botoes-container">
-    <button class="cancelar" (click)="cancelarFormularioImagem()">
-      Cancelar
-    </button>
-    <button
-      class="salvar"
-      (click)="salvarImagem()"
-      [disabled]="!novaImagemArquivo"
-    >
-      Salvar
-    </button>
-  </div>
-</div>
-
 <section class="barbeiros-section">
-  <h2 class="titulo">Barbeiros</h2>
-
+  <h2 class="titulo" id="barbeiros">Barbeiros</h2>
   <div class="barbeiros-wrapper">
-    <!-- Felipe -->
-    <div class="barbeiro-card">
-      <img src="assets/felipe.png" alt="Felipe" class="barbeiro-img" />
-      <div class="barbeiro-info">
-        <h3>Felipe</h3>
-        <small>&#64;felipe_franca_12</small>
-        <p>
-          <strong>Contato: </strong>
-          <a class="contato" href="https://wa.me/5562999361327"
-            >(62) 99936-1327</a
-          >
-        </p>
-        <p>
-          Você pode agendar com Felipe pelo WhatsApp ou
-          <a class="agendar-link" href="#">Agende Online por aqui</a>
-        </p>
+    <div class="barbeiro-card" *ngFor="let b of barbeiros">
+      <div class="imagem-container">
+        <img [src]="b.imagemUrl" [alt]="b.nome" class="barbeiro-img" />
       </div>
-    </div>
-
-    <!-- Ezequiel -->
-    <div class="barbeiro-card">
-      <img src="assets/ezequiel.png" alt="Ezequiel" class="barbeiro-img" />
       <div class="barbeiro-info">
-        <h3>Ezequiel</h3>
-        <small>&#64;ezequiel_sntsss</small>
-        <p>
-          <strong>Contato: </strong>
-          <a class="contato" href="https://wa.me/5562991145896"
-            >(62) 99114-5896</a
+        <h3>{{ b.nome }}</h3>
+        <small>{{ b.instagram }}</small>
+        <p class="contato-container">
+          <strong>Contato:</strong>
+          <a
+            class="contato"
+            [href]="formatarWhatsapp(b.telefone)"
+            target="_blank"
           >
+            {{ b.telefone }}
+          </a>
         </p>
         <p>
-          Você pode agendar com Ezequiel pelo WhatsApp ou
-          <a class="agendar-link" href="#">Agende Online por aqui</a>
+          Você pode agendar com o &nbsp; {{ b.nome }} pelo WhatsApp ou
+          <a routerLink="/login" class="btn-agendar">
+            Agendar Online por aqui
+          </a>
         </p>
       </div>
     </div>
   </div>
 </section>
-<br /><br /><br />
 
-<div class="container-centralizado">
-  <div class="layout-servicos">
-    <!-- Imagem -->
+<div class="container-centralizado" style="padding-top: 6.25rem">
+  <div class="layout-servicos" id="servico">
     <div class="imagem-servicos">
       <img src="assets/cortecanvas.png" alt="Imagem" />
     </div>
-
     <div class="tabela-wrapper">
       <div class="cabecalho-tabela">
         <h2>Tabela de Serviços</h2>
-        <button
-          *ngIf="usuarioService.usuarioEhAdmin()"
-          (click)="abrirFormulario()"
-          class="botao-criar"
-        >
-          Criar serviço
-        </button>
       </div>
-
-      <div class="estrelas">★★★★★</div>
       <small class="subtitulo">Serviços de qualidade e preços justos.</small>
-
       <table class="tabela-servicos">
         <tbody>
           <tr *ngFor="let servico of servicosPaginados">
             <td>{{ servico.nome }}</td>
             <td class="coluna-acoes">
-              <ng-container *ngIf="usuarioService.usuarioEhAdmin()">
-                <button
-                  class="icone-acao editar"
-                  title="Editar servico"
-                  style="font-size: 17px"
-                  (click)="abrirFormulario(servico)"
-                >
-                  ✎
-                </button>
-
-                <button
-                  class="icone-acao apagar"
-                  title="Remover servico"
-                  style="font-weight: bold"
-                  (click)="deletarServico(servico.id!)"
-                >
-                  ✕
-                </button>
-              </ng-container>
-              <span class="preco">
-                R$ {{ servico.preco | number : "1.2-2" }}
-              </span>
+              <span class="preco"
+                >R$ {{ servico.preco | number : "1.2-2" }}</span
+              >
             </td>
           </tr>
-
-          <!-- Rodapé da Tabela -->
-          <div class="rodape-tabela">
-            <button class="botao-agendar">AGENDAR HORÁRIO</button>
-            <div class="paginacao" *ngIf="totalPaginas > 1">
-              <span
-                class="pagina"
-                [class.ativa]="paginaAtual === pagina"
-                *ngFor="let pagina of paginas"
-                (click)="irParaPagina(pagina)"
-              >
-                {{ pagina }}
-              </span>
-            </div>
-          </div>
         </tbody>
       </table>
-    </div>
-
-    <!-- Formulário Modal -->
-    <div class="formulario-modal" *ngIf="mostrarFormularioServico">
-      <h3 style="color: black; margin-top: 0">
-        {{ novoServico.id ? "Editar Serviço" : "Novo Serviço" }}
-      </h3>
-
-      <form (ngSubmit)="salvarServico()">
-        <label style="color: black; font-weight: bold">Nome</label>
-        <input
-          [(ngModel)]="novoServico.nome"
-          name="nome"
-          required
-          class="form-control"
-          style="width: 100%; margin-bottom: 10px"
-        />
-
-        <label style="color: black; font-weight: bold">Preço</label>
-        <input
-          type="number"
-          [(ngModel)]="novoServico.preco"
-          name="preco"
-          required
-          class="form-control"
-          style="width: 100%; margin-bottom: 15px"
-        />
-
-        <div style="display: flex; justify-content: flex-end; gap: 0.5rem">
-          <button
-            type="button"
-            (click)="cancelarFormularioServico()"
-            style="
-              background-color: #ccc;
-              border: none;
-              padding: 8px 14px;
-              border-radius: 6px;
-              cursor: pointer;
-            "
+      <div class="rodape-tabela">
+        <button class="botao-agendar" routerLink="/login">
+          AGENDAR HORÁRIO
+        </button>
+        <div class="paginacao" *ngIf="totalPaginas > 1">
+          <span
+            class="pagina"
+            [class.ativa]="paginaAtual === pagina"
+            *ngFor="let pagina of paginas"
+            (click)="irParaPagina(pagina)"
           >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            style="
-              background-color: #f46d25;
-              font-weight: bold;
-              color: white;
-              border: none;
-              padding: 8px 14px;
-              border-radius: 6px;
-              cursor: pointer;
-            "
-          >
-            Salvar
-          </button>
+            {{ pagina }}
+          </span>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 
   <!-- LISTAGEM DE CARDS -->
   <div class="cards-wrapper">
     <div class="card" *ngFor="let c of cardsVisiveis">
-      <img [src]="c.imagemPath" alt="Imagem" style="width: 55px" />
+      <img [src]="c.imagemPath" alt="Imagem" class="card-img" />
       <p class="card-descricao">{{ c.descricao }}</p>
-      <div class="card-acoes" *ngIf="usuarioService.usuarioEhAdmin()">
-        <button class="editar-card" (click)="abrirFormularioCard(c)">✎</button>
-        <button
-          class="apagar-card"
-          style="font-weight: bold"
-          (click)="deletarCard(c.id!)"
-        >
-          ✕
-        </button>
-      </div>
     </div>
   </div>
 
-  <!-- BOTÃO CENTRALIZADO ABAIXO DOS CARDS -->
-  <div class="adicionar-card-container" *ngIf="usuarioService.usuarioEhAdmin()">
-    <button class="botao-adicionar-card" (click)="abrirFormularioCard()">
-      + Adicionar Card
-    </button>
-  </div>
-
-  <!-- FORMULÁRIO DE CARD -->
-  <div class="formulario-modal" *ngIf="mostrarFormularioCard">
-    <h3>{{ cardEditando ? "Editar Card" : "Novo Card" }}</h3>
-
-    <label for="descricao">Descrição:</label>
-    <textarea
-      id="descricao"
-      [(ngModel)]="novoCardDescricao"
-      placeholder="Digite a descrição do card..."
-      rows="4"
-      class="textarea-descricao"
-    ></textarea>
-
-    <label for="imagem">Imagem:</label>
-    <input
-      id="imagem"
-      type="file"
-      (change)="onFileChangeCard($event)"
-      class="input-file"
-    />
-
-    <div class="botoes-formulario-card">
-      <button class="btn-cancelar" (click)="cancelarFormularioCard()">
-        Cancelar
-      </button>
-      <button
-        class="btn-salvar"
-        (click)="salvarCard()"
-        [disabled]="!novoCardDescricao || (!novoCardImagem && !cardEditando)"
-      >
-        Salvar
-      </button>
-    </div>
-  </div>
-
-  <!-- PLANO DE FIDELIDADE -->
-  <div class="fidelidade-box">
+  <div class="fidelidade-box" id="planos">
     <img src="assets/fidelidade.png" alt="Plano" class="fidelidade-img" />
-
     <div class="fidelidade-conteudo">
       <h3>Plano de Fidelidade Mensal</h3>
       <p>
         Assine nosso plano de fidelidade todo mês e aproveite benefícios
         exclusivos!
       </p>
-
       <div class="fidelidade-planos">
-        <span class="planos">Plano Padrão</span>
-        <span style="margin: 0 8px">|</span>
-        <span class="planos">Plano Premium</span>
+        <span
+          class="planos tooltip"
+          data-tooltip="Inclui 2 cortes por mês com agendamento prioritário"
+          routerLink="/login"
+        >
+          Plano Padrão
+        </span>
+        <span style="margin: 0 3px" class="separador">|</span>
+        <span
+          class="planos tooltip"
+          data-tooltip="Cortes ilimitados + barba e sobrancelha inclusos"
+          routerLink="/login"
+        >
+          Plano Premium
+        </span>
       </div>
-
       <button routerLink="/fidelidade" class="fidelidade-botao">
         ASSINAR PLANO
       </button>
     </div>
   </div>
-</div>
-<div class="mapa-container">
-  <iframe
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3822.257878882561!2d-49.229727924858416!3d-16.663974044968104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef3059d42ca45%3A0x287fe03c189b0775!2sStudio%20Money%20Barber!5e0!3m2!1spt-BR!2sbr!4v1751644981020!5m2!1spt-BR!2sbr"
-    allowfullscreen
-    loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade"
-  >
-  </iframe>
-</div>
-<br />
 
-<!-- RODAPÉ COMPLETO -->
-<!-- RODAPÉ -->
-<div class="rodape">
-  <div class="rodape-conteudo">
-    <!-- LOGO + TÍTULO + LINKS -->
-    <div class="rodape-coluna logo-coluna">
-      <div class="logo-wrapper">
-        <img src="assets/logo.png" alt="Logo" class="rodape-logo" />
-        <div class="logo-texto">
-          <span class="logo-titulo">Studio Money Barber</span>
-          <div class="rodape-links-internos">
-            <a href="#">Home</a>
-            <a href="#">Barbeiros</a>
-            <a href="#">Serviços</a>
-            <a href="#">Planos</a>
+  <div class="mapa-container">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3822.257878882561!2d-49.229727924858416!3d-16.663974044968104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef3059d42ca45%3A0x287fe03c189b0775!2sStudio%20Money%20Barber!5e0!3m2!1spt-BR!2sbr!4v1751644981020!5m2!1spt-BR!2sbr"
+      allowfullscreen
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    >
+    </iframe>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="rodape">
+    <div class="rodape-conteudo">
+      <!-- LOGO + TÍTULO + LINKS -->
+      <div class="rodape-coluna logo-coluna">
+        <div class="logo-wrapper">
+          <img src="assets/logo.png" alt="Logo" class="rodape-logo" />
+          <div class="logo-texto">
+            <span class="logo-titulo">Studio Money Barber</span>
+            <div class="rodape-links-internos">
+              <a
+                href="#"
+                (click)="irParaSecao('navbar'); $event.preventDefault()"
+                >Home</a
+              >
+              <a
+                href="#"
+                (click)="irParaSecao('barbeiros'); $event.preventDefault()"
+                >Barbeiros</a
+              >
+              <a
+                href="#"
+                (click)="irParaSecao('servico'); $event.preventDefault()"
+                >Serviços</a
+              >
+              <a
+                href="#"
+                (click)="irParaSecao('planos'); $event.preventDefault()"
+                >Planos</a
+              >
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- CONTATO -->
+      <div class="rodape-coluna">
+        <h4>Contato</h4>
+        <p>
+          <img
+            src="assets/whatsapp.png"
+            alt="WhatsApp do Felipe"
+            class="rede-social"
+          />
+          (62) 99936-1327 / (62) 99114-5896
+        </p>
+        <p>
+          <img src="assets/gmail.png" alt="Email" class="rede-social" />
+          studiomoneybarber&#64;gmail.com
+        </p>
+      </div>
+
+      <!-- REDES SOCIAIS -->
+      <div class="rodape-coluna">
+        <h4>Redes Sociais</h4>
+        <p>
+          <img
+            src="assets/instagram.png"
+            alt="Instagram"
+            class="rede-social"
+            width="20px"
+          />
+          <a
+            href="https://www.instagram.com/studio_money_barber/"
+            target="_blank"
+          >
+            Instagram</a
+          >
+        </p>
+        <p>
+          <img
+            src="assets/facebook.png"
+            alt="Facebook"
+            class="rede-social"
+            width="20px"
+          />
+          <a href="https://facebook.com" target="_blank"> Facebook</a>
+        </p>
+      </div>
     </div>
 
-    <!-- CONTATO -->
-    <div class="rodape-coluna">
-      <h4>Contato</h4>
-      <p>
-        <img
-          src="assets/whatsapp.png"
-          alt="WhatsApp do Felipe"
-          class="rede-social"
-        />
-        (62) 99936-1327 / (62) 99114-5896
-      </p>
-      <p>
-        <img src="assets/gmail.png" alt="Email" class="rede-social" />
-        studiomoneybarber&#64;gmail.com
-      </p>
-    </div>
-
-    <!-- REDES SOCIAIS -->
-    <div class="rodape-coluna">
-      <h4>Redes Sociais</h4>
-      <p>
-        <img
-          src="assets/instagram.png"
-          alt="Instagram"
-          class="rede-social"
-          width="20px"
-        />
-        <a
-          href="https://www.instagram.com/studio_money_barber/"
-          target="_blank"
-        >
-          Instagram</a
-        >
-      </p>
-      <p>
-        <img
-          src="assets/facebook.png"
-          alt="Facebook"
-          class="rede-social"
-          width="20px"
-        />
-        <a href="https://facebook.com" target="_blank"> Facebook</a>
-      </p>
+    <div class="rodape-direitos">
+      Copyright © 2025 Studio Money Barber. Todos os direitos reservados
     </div>
   </div>
 
-  <div class="rodape-direitos">
-    Copyright © 2025 Studio Money Barber. Todos os direitos reservados
+  <!-- BARRA INFERIOR MOBILE -->
+  <div class="bottom-nav">
+    <a routerLink="/dashboard" class="nav-item">
+      <img
+        src="assets/home-ativa.png"
+        alt="Início"
+        width="38px"
+        height="32px"
+      />
+      <span style="color: #f46d25; font-weight: bold">Início</span>
+    </a>
+    <a routerLink="/galeria" class="nav-item">
+      <img src="assets/galeria.png" alt="Galeria" width="34px" height="33px" />
+      <span>Galeria</span>
+    </a>
+    <a routerLink="/agendamento" class="nav-item">
+      <img
+        src="assets/agendamento.png"
+        alt="Agendamentos"
+        width="34px"
+        height="34px"
+      />
+      <span>Agendamentos</span>
+    </a>
+    <a routerLink="/produtos" class="nav-item">
+      <img src="assets/produto.png" alt="Produtos" width="30px" height="30px" />
+      <span>Produtos</span>
+    </a>
   </div>
-</div>
-
-<!-- BARRA INFERIOR MOBILE -->
-<div class="bottom-nav">
-  <a routerLink="/home" class="nav-item">
-    <img src="assets/home-ativa.png" alt="Início" width="38px" height="32px" />
-    <span style="color: #f46d25; font-weight: bold">Início</span>
-  </a>
-  <a routerLink="/galeria" class="nav-item">
-    <img src="assets/galeria.png" alt="Galeria" width="34px" height="33px" />
-    <span>Galeria</span>
-  </a>
-  <a routerLink="/agendamentos" class="nav-item">
-    <img
-      src="assets/agendamento.png"
-      alt="Agendamentos"
-      width="34px"
-      height="34px"
-    />
-    <span>Agendamentos</span>
-  </a>
-  <a routerLink="/produtos" class="nav-item">
-    <img src="assets/produto.png" alt="Produtos" width="30px" height="30px" />
-    <span>Produtos</span>
-  </a>
-  <a routerLink="/menu" class="nav-item">
-    <img src="assets/user-profile.png" alt="Menu" width="40px" height="40px" />
-    <span>Menu</span>
-  </a>
 </div>

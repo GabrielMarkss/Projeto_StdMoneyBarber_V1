@@ -7,6 +7,12 @@
   align-items: center;
   padding: 1rem;
 }
+.profile-img {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  cursor: pointer;
+}
 
 .greeting div {
   font-size: 20px;
@@ -277,7 +283,7 @@
   font-size: 24px;
   display: flex;
   align-items: center;
-  gap: 8px
+  gap: 8px;
 }
 
 /* ===== SERVIÇOS ===== */
@@ -315,7 +321,7 @@
   border-radius: 4px;
 }
 
-.checkbox-container input:checked~.checkmark {
+.checkbox-container input:checked ~ .checkmark {
   background-color: #f46d25;
   border: 1px solid #f46d25;
 }
@@ -333,7 +339,7 @@
   transform: rotate(45deg);
 }
 
-.checkbox-container input:checked~.checkmark:after {
+.checkbox-container input:checked ~ .checkmark:after {
   display: block;
 }
 
@@ -831,7 +837,6 @@
   }
 
   .navbar .dropdown,
-  .profile-img,
   .editar-notificacao,
   .apagar-notificacao {
     display: none !important;
