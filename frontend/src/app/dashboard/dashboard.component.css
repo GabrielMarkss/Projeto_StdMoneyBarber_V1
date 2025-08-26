@@ -393,11 +393,6 @@
   align-self: center;
 }
 
-/* ===== FORMULÁRIO DE IMAGEM ===== */
-.formulario-modal {
-  /* Already defined above, reused for image form */
-}
-
 /* ===== SESSÃO BARBEIROS ===== */
 .barbeiros-section {
   text-align: center;
@@ -428,7 +423,7 @@
 .popup-form-barbeiro {
   background: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-  padding: 2rem 2rem;
+  padding: 2rem;
   border-radius: 12px;
   max-width: 420px;
   margin: 0 auto 3rem;
@@ -776,11 +771,6 @@
 .pagina.ativa {
   background-color: #f46d25;
   color: white;
-}
-
-/* ===== FORMULÁRIO DE SERVIÇO ===== */
-.formulario-modal {
-  /* Already defined above, reused for service form */
 }
 
 /* ===== CARDS ===== */
@@ -1687,6 +1677,60 @@
 
   .dropdown-menu {
     display: none !important;
-    /* Esconde o dropdown no mobile */
+  }
+
+  /* Formulário Modal (Notificações, Imagens, Serviços) */
+  .formulario-modal {
+    width: 80%;
+    max-width: 280px;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .formulario-modal input[type="text"],
+  .formulario-modal textarea {
+    padding: 6px 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .formulario-modal input[type="file"] {
+    margin-bottom: 8px;
+  }
+
+  .botoes-container {
+    gap: 8px;
+  }
+
+  .formulario-modal button.cancelar,
+  .formulario-modal button.salvar {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  /* Formulário de Barbeiro */
+  .popup-form-barbeiro {
+    max-width: 280px;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .form-input-barbeiro {
+    padding: 0.4rem 0.7rem;
+    margin-bottom: 0.8rem;
+    font-size: 14px;
+    border: 1px solid #ccc;
+  }
+
+  .botoes-form-barbearia {
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .btn-salvar-barbeiro,
+  .btn-cancelar-barbeiro {
+    padding: 0.6rem 1.2rem;
+    font-size: 14px;
+    border-radius: 4px;
   }
 }
