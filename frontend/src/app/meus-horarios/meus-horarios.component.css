@@ -351,7 +351,6 @@
   max-width: 1500px;
   margin: 2rem auto;
   padding: 0 0.5rem;
-  font-family: Arial, sans-serif;
 }
 
 .container-agendamentos h2 {
@@ -366,9 +365,14 @@
 /* Lista de agendamentos */
 .agendamentos-lista {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 3 colunas fixas */
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
+
+.agendamento-card .linha strong {
+  font-size: 17px;
+}
+
 
 /* Mensagem de sem agendamentos */
 .sem-agendamentos {
@@ -386,12 +390,12 @@
   background: white;
   border-radius: 10px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  padding: 0.8rem;
+  padding: 1rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 140px;
+  width: 330px;
 }
 
 /* Contêiner de botões do agendamento */
@@ -640,6 +644,37 @@
   .bottom-nav .nav-item span {
     font-size: 11px;
     line-height: 1;
+  }
+
+  .container-agendamentos {
+    width: 95%;
+    margin: 5px;
+  }
+
+  .agendamentos-lista {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+  }
+
+  .editar-agendamento,
+  .cancelar-agendamento {
+    padding: 4px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    transition: background-color 0.3s ease;
+    border: 1px solid #f46d25;
+  }
+
+  .agendamento-card {
+    padding: 1rem;
+    width: 90%;
+  }
+
+  .agendamento-card .linha strong,
+  .agendamento-card .linha span {
+    font-size: 15px;
   }
 }
 

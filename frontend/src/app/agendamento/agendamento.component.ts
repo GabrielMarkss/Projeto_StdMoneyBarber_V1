@@ -101,7 +101,7 @@ export class AgendamentoComponent implements OnInit {
     private agendamentoService: AgendamentoService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const data = new Date();
@@ -128,9 +128,8 @@ export class AgendamentoComponent implements OnInit {
       'nov',
       'dez',
     ];
-    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${
-      meses[data.getMonth()]
-    } ${data.getFullYear()}`;
+    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${meses[data.getMonth()]
+      } ${data.getFullYear()}`;
     const hojeNum = data.getDay();
     this.diaSelecionado =
       hojeNum === 0
@@ -156,8 +155,8 @@ export class AgendamentoComponent implements OnInit {
         barbeiroParam === 'felipe'
           ? 'Felipe'
           : barbeiroParam === 'ezequiel'
-          ? 'Ezequiel'
-          : 'Sem Preferência';
+            ? 'Ezequiel'
+            : 'Sem Preferência';
       this.resumo.barbeiro = this.barbeiroSelecionado;
       console.log(
         'Inicializando com barbeiro:',
@@ -328,14 +327,16 @@ export class AgendamentoComponent implements OnInit {
   carregarHorarios() {
     const dia = this.diasSemana.find((d) => d.sigla === this.diaSelecionado);
     if (!dia) return;
+
     const data = new Date();
     data.setDate(
       data.getDate() +
-        ((this.diasSemana.findIndex((d) => d.sigla === this.diaSelecionado) +
-          7 -
-          data.getDay()) %
-          7)
+      ((this.diasSemana.findIndex((d) => d.sigla === this.diaSelecionado) +
+        7 -
+        data.getDay()) %
+        7)
     );
+
     const dataFormatada = `${data.getFullYear()}-${String(
       data.getMonth() + 1
     ).padStart(2, '0')}-${String(data.getDate()).padStart(2, '0')}`;
@@ -343,56 +344,66 @@ export class AgendamentoComponent implements OnInit {
     this.horarioService
       .listarDisponiveis(dataFormatada, this.barbeiroSelecionado)
       .subscribe({
-        next: (res) => {
+        next: (res: Horario[]) => {
           console.log('Horários recebidos:', res);
-          let horariosValidos = res;
+          let horariosValidos: Horario[] = res;
 
-          // Unify time slots for "Sem Preferência"
+          // ---------- SEM PREFERÊNCIA ----------
           if (this.barbeiroSelecionado === 'Sem Preferência') {
-            const horariosUnificados = new Map<string, Horario>();
-            const barbeirosPorHorario = new Map<string, string[]>();
-
-            // Collect barbers for each time slot
-            horariosValidos.forEach((h) => {
-              const hora = h.horario;
-              if (!barbeirosPorHorario.has(hora)) {
-                barbeirosPorHorario.set(hora, []);
+            // 1️⃣ Agrupa horários por barbeiro
+            const horariosPorBarbeiro: Map<string, Set<string>> = new Map();
+            res.forEach((h: Horario) => {
+              if (!h.barbeiro) return;
+              if (!horariosPorBarbeiro.has(h.barbeiro)) {
+                horariosPorBarbeiro.set(h.barbeiro, new Set<string>());
               }
-              if (h.barbeiro) {
-                barbeirosPorHorario.get(hora)!.push(h.barbeiro);
-              }
+              horariosPorBarbeiro.get(h.barbeiro)!.add(h.horario);
             });
 
-            horariosValidos.forEach((h) => {
-              const hora = h.horario;
-              if (!horariosUnificados.has(hora)) {
-                const barbeiros = barbeirosPorHorario.get(hora)!;
-                const barbeiroDisplay =
-                  barbeiros.length === 1 ? barbeiros[0] : 'Sem Preferência';
-                horariosUnificados.set(hora, {
-                  id: undefined, // Use undefined to match Horario interface
-                  horario: hora,
-                  barbeiro: barbeiroDisplay,
-                  bloqueado: h.bloqueado,
-                  diaSemana: h.diaSemana,
-                });
+            let horariosComuns: Set<string> = new Set(); // inicializado vazio
+            let primeiro = true;
+
+            horariosPorBarbeiro.forEach((horarios: Set<string>) => {
+              if (primeiro) {
+                horariosComuns = new Set(horarios); // primeiro barbeiro
+                primeiro = false;
+              } else {
+                horariosComuns = new Set(
+                  [...horariosComuns].filter((hora) => horarios.has(hora))
+                );
               }
             });
-            horariosValidos = Array.from(horariosUnificados.values()).sort(
-              (a, b) => a.horario.localeCompare(b.horario)
+            const horariosUnificados: Horario[] = [];
+            horariosComuns.forEach((hora: string) => {
+              const base = res.find((h: Horario) => h.horario === hora)!;
+              horariosUnificados.push({
+                id: Date.now() + Math.floor(Math.random() * 1000), // id único
+                horario: hora,
+                barbeiro: 'Sem Preferência',
+                bloqueado: base.bloqueado,
+                diaSemana: base.diaSemana,
+              });
+            });
+
+            // 4️⃣ Ordena
+            horariosValidos = horariosUnificados.sort((a, b) =>
+              a.horario.localeCompare(b.horario)
             );
           } else {
-            horariosValidos = horariosValidos.sort((a, b) =>
+            // ---------- BARBEIRO ESPECÍFICO ----------
+            horariosValidos = res.sort((a, b) =>
               a.horario.localeCompare(b.horario)
             );
           }
 
+          // Atualiza variáveis do componente
           this.horarios = horariosValidos;
           this.horariosSelecionados.clear();
           this.horariosSelecionadosParaBloqueio.clear();
           this.horariosSelecionadosParaDesbloqueio.clear();
           this.horarioSelecionadoCliente = null;
           this.selecionarTodos = false;
+
           console.log('Horários carregados:', this.horarios);
         },
         error: (err) => {
@@ -612,6 +623,7 @@ export class AgendamentoComponent implements OnInit {
     };
     return this.horarios.filter((h) => filtro[periodo](h.horario));
   }
+
 
   formatarHorario(horario: string): string {
     return horario.slice(0, 5);

@@ -677,7 +677,8 @@
 .coluna-acoes {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* joga tudo para a direita */
+  justify-content: flex-end;
+  /* joga tudo para a direita */
   gap: 8px;
 }
 
@@ -697,7 +698,8 @@
 .preco {
   font-weight: bold;
   font-size: 16px;
-  margin-right: 5px; /* espaço entre preço e ícones */
+  margin-right: 5px;
+  /* espaço entre preço e ícones */
 }
 
 .rodape-tabela {
@@ -995,7 +997,7 @@
 /* ===== MAPA ===== */
 .mapa-container {
   width: 100%;
-  height: 400px;
+  height: 350px;
   overflow: hidden;
   border-radius: 0;
   margin-top: 20px;
@@ -1101,9 +1103,83 @@
   margin-top: 40px;
 }
 
+/* ===== POP-UP DE MENU MOBILE ===== */
+.menu-mobile-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-mobile-content {
+  background: #222;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 300px;
+  padding: 20px;
+  position: relative;
+}
+
+.fechar-menu-mobile {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.fechar-menu-mobile:hover {
+  color: #f46d25;
+}
+
+.menu-mobile-lista {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.menu-mobile-lista li {
+  margin: 10px 0;
+}
+
+.menu-mobile-lista li a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-mobile-lista li a:hover {
+  background-color: #444;
+}
+
+/* Ajustar a barra inferior para garantir que o item Menu seja clicável */
+.bottom-nav .nav-item {
+  cursor: pointer;
+}
+
 /* ===== MEDIA QUERIES ===== */
 @media (min-width: 769px) {
   .bottom-nav {
+    display: none !important;
+  }
+
+  .menu-mobile-popup {
     display: none !important;
   }
 }
@@ -1307,7 +1383,8 @@
 
   .cabecalho-tabela {
     display: flex;
-    justify-content: center; /* centraliza os dois */
+    justify-content: center;
+    /* centraliza os dois */
     align-items: center;
     gap: 10px;
   }
@@ -1329,7 +1406,8 @@
   }
 
   .botao-criar .botao-criar-texto {
-    display: none; /* esconde o texto no mobile */
+    display: none;
+    /* esconde o texto no mobile */
   }
 
   .botao-criar::before {
@@ -1395,7 +1473,8 @@
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
-    padding-right: 10px; /* Garante 10px de distância do preço */
+    padding-right: 10px;
+    /* Garante 10px de distância do preço */
   }
 
   .icone-acao {
@@ -1409,7 +1488,8 @@
     font-size: 15px;
     width: 100%;
     padding-right: 0;
-    margin-left: 10px; /* Adiciona espaçamento à esquerda para separar do ícone */
+    margin-left: 10px;
+    /* Adiciona espaçamento à esquerda para separar do ícone */
   }
 
   .rodape-tabela {
@@ -1475,7 +1555,7 @@
   }
 
   .fidelidade-img {
-    width: 145px;
+    width: 135px;
     margin-bottom: 55px;
   }
 
@@ -1484,7 +1564,7 @@
   }
 
   .fidelidade-conteudo h3 {
-    font-size: 19px;
+    font-size: 15px;
   }
 
   .fidelidade-conteudo p {
@@ -1540,6 +1620,22 @@
     line-height: 1;
   }
 
+  .mapa-container {
+    height: 200px;
+  }
+
+  .rodape-logo {
+    height: 69px;
+  }
+
+  .logo-titulo {
+    font-size: 16px;
+  }
+
+  .rodape-links-internos {
+    font-size: 13px;
+  }
+
   .rodape-direitos {
     padding-bottom: 65px;
   }
@@ -1547,11 +1643,18 @@
   .rodape-coluna {
     margin-bottom: -20px;
   }
+
   .rodape-coluna h4 {
-    font-size: 17px;
+    font-size: 15px;
   }
+
   .rodape-coluna p,
   .rodape-coluna a {
-    font-size: 15px;
+    font-size: 13px;
+  }
+
+  .dropdown-menu {
+    display: none !important;
+    /* Esconde o dropdown no mobile */
   }
 }

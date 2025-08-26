@@ -273,6 +273,13 @@
   align-items: center;
 }
 
+.coluna-direita h3 {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px
+}
+
 /* ===== SERVIÇOS ===== */
 .servico-item {
   display: flex;
@@ -308,7 +315,7 @@
   border-radius: 4px;
 }
 
-.checkbox-container input:checked ~ .checkmark {
+.checkbox-container input:checked~.checkmark {
   background-color: #f46d25;
   border: 1px solid #f46d25;
 }
@@ -326,7 +333,7 @@
   transform: rotate(45deg);
 }
 
-.checkbox-container input:checked ~ .checkmark:after {
+.checkbox-container input:checked~.checkmark:after {
   display: block;
 }
 
@@ -359,7 +366,7 @@
 /* ===== TÍTULOS ===== */
 .seletor-barbeiro {
   padding: 4px 12px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   border: 1px solid #f46d25;
   border-radius: 5px;
@@ -396,7 +403,7 @@
   cursor: pointer;
   font-size: 18px;
   font-weight: bold;
-  padding: 15px 20px;
+  padding: 14px 20px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -475,6 +482,16 @@
   color: #666 !important;
   cursor: not-allowed;
   font-style: italic;
+}
+
+.horario.selecionado {
+  background-color: #f46d25 !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+.horario:hover:not(.bloqueado):not(.passado) .editar {
+  opacity: 1;
 }
 
 .horario:hover:not(.bloqueado):not(.passado):not(:has(.editar)) {
@@ -800,31 +817,37 @@
 @media (max-width: 768px) {
   .navbar {
     padding: 0.8rem 0 0.5rem 1rem !important;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     background-color: #000;
+    /* mantém fundo preto como o seu */
     z-index: 1001;
+    /* um pouco acima da bottom-nav */
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
-  .dropdown,
+  .navbar .dropdown,
   .profile-img,
-  .icone-acao {
+  .editar-notificacao,
+  .apagar-notificacao {
     display: none !important;
   }
 
   .greeting div {
     font-size: 16px !important;
     margin-bottom: 0.5px;
+    /* Aproxima da data */
   }
 
   .greeting small {
     font-size: 11px !important;
     font-weight: bold;
     line-height: 2;
+    /* Deixa mais compacto */
   }
 
   .right {
@@ -839,6 +862,7 @@
   .notificacao-popup {
     border-radius: 3px;
     width: 12.5rem;
+    /* menor que os 20rem do desktop */
     top: 1.5rem;
     right: 0.25rem;
   }
@@ -867,6 +891,7 @@
     line-height: 1;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    /* LIMITA para 2 linhas no mobile */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -874,218 +899,6 @@
 
   .nova-notificacao {
     display: none;
-  }
-
-  .formulario-modal {
-    width: 90%;
-    max-width: 320px;
-    padding: 15px;
-  }
-
-  .formulario-modal input[type="text"],
-  .formulario-modal textarea {
-    font-size: 13px;
-  }
-
-  .formulario-modal button {
-    padding: 6px 12px;
-    font-size: 14px;
-  }
-
-  .container-horarios {
-    flex-direction: column;
-    padding: 0.5rem;
-    padding-bottom: 5rem; /* Space for bottom nav */
-  }
-
-  .coluna-esquerda,
-  .coluna-direita {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .coluna-esquerda {
-    order: 1; /* Services appear first */
-  }
-
-  .coluna-direita {
-    order: 2; /* Schedules and summary below */
-    align-items: center;
-  }
-
-  .servico-item {
-    padding: 6px 0;
-  }
-
-  .checkbox-container {
-    font-size: 15px;
-  }
-
-  .servico-nome {
-    font-size: 15px;
-  }
-
-  .servico-preco {
-    font-size: 14px;
-  }
-
-  .seletor-barbeiro {
-    padding: 2px 2px;
-    font-size: 16px;
-    border-radius: 4px;
-    font-weight: normal;
-  }
-
-  .seletor-barbeiro option {
-    padding: 6px;
-    font-size: 14px;
-  }
-
-  .dias-semana {
-    display: flex;
-    gap: 0.312rem;
-    flex-wrap: wrap;
-    margin-bottom: -0.5rem;
-  }
-
-  .dias-semana button {
-    background-color: #eee;
-    border: none;
-    border-radius: 4px;
-    color: #f46d25;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: bold;
-    padding: 10px 10px; /* Reduced by 2px */
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .dias-semana button:hover {
-    background-color: #f26c1e;
-    color: white;
-  }
-
-  .dias-semana .ativo {
-    background-color: #f26c1e;
-    color: white;
-  }
-
-  .acoes button {
-    padding: 8px 25px;
-  }
-
-  .periodo h4 {
-    font-size: 16px;
-    margin: 8px 0;
-    text-align: center;
-    width: 100%;
-  }
-
-  .periodo .horarios {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    justify-content: center;
-  }
-
-  .horario-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .horario {
-    font-size: 15px;
-    min-width: 70px;
-    min-height: 30px;
-  }
-
-  .resumo-agendamento {
-    padding: 20px;
-    font-size: 15px;
-    margin-top: 20px;
-  }
-
-  .resumo-agendamento h3 {
-    font-size: 20px;
-  }
-
-  .resumo-agendamento p {
-    font-size: 16px;
-  }
-
-  .resumo-agendamento button {
-    padding: 10px 25px;
-    font-size: 15px;
-    border-radius: 5px;
-  }
-
-  .formulario-horario-popup {
-    width: 90%;
-    max-width: 300px;
-    padding: 15px;
-  }
-
-  .formulario-horario-popup input[type="time"],
-  .formulario-horario-popup select {
-    font-size: 14px;
-  }
-
-  .formulario-horario-popup .formulario-botoes {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-
-  .formulario-horario-popup .btn-cancelar,
-  .formulario-horario-popup .btn-salvar {
-    background: white;
-    color: #f46d25;
-    border: 2px solid #f46d25;
-    border-radius: 6px;
-    padding: 7px 15px; /* Reduced by 1px */
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .formulario-horario-popup .btn-cancelar:hover {
-    background-color: #f46d25;
-    color: white;
-  }
-
-  .formulario-horario-popup .btn-salvar {
-    background-color: #f46d25;
-    border: none;
-    color: white;
-  }
-
-  .formulario-horario-popup .btn-salvar:hover {
-    background-color: #d05e20;
-  }
-
-  .popup-conteudo {
-    max-width: 90%;
-    padding: 15px;
-  }
-
-  .cupom-input {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-
-  .botao-resgatar {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-
-  .cupom-opcao .titulo {
-    font-size: 16px;
-  }
-
-  .cupom-opcao .descricao {
-    font-size: 12px;
   }
 
   .bottom-nav {
@@ -1107,6 +920,7 @@
     color: white;
     text-decoration: none;
     padding: 0 12px;
+    /* espaçamento lateral de 12px */
     height: 3.5rem;
     justify-content: flex-end;
   }

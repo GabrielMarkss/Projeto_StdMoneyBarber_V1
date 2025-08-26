@@ -1,7 +1,7 @@
 export interface Horario {
   id?: number;
-  diaSemana: string;
   horario: string;
+  barbeiro: string;
   bloqueado: boolean;
-  barbeiro?: string;
+  diaSemana: string;
 }

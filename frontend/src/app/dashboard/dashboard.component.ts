@@ -79,6 +79,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   cardsVisiveis: Card[] = [];
   proximoIndexCard = 0;
   intervaloCarrosselCards: any;
+  mostrarMenuMobile = false
 
   constructor(
     public usuarioService: UsuarioService,
@@ -89,7 +90,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private cardService: CardService,
     private http: HttpClient,
     private barbeiroService: BarbeiroService // 👈 adicionado aqui
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const data = new Date();
@@ -116,9 +117,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       'nov',
       'dez',
     ];
-    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${
-      meses[data.getMonth()]
-    } ${data.getFullYear()}`;
+    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${meses[data.getMonth()]
+      } ${data.getFullYear()}`;
 
     if (this.usuarioService.isLoggedIn()) {
       this.usuarioService.getUsuarioLogado().subscribe({
@@ -172,6 +172,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.menuTimeout = setTimeout(() => {
       this.menuAberto = false;
     }, 200);
+  }
+
+  abrirMenuMobile() {
+    this.mostrarMenuMobile = true;
+  }
+
+  fecharMenuMobile() {
+    this.mostrarMenuMobile = false;
   }
 
   logout() {

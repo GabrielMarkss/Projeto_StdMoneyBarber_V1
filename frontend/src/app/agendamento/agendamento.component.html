@@ -6,8 +6,7 @@
       alt="Perfil"
       routerLink="/dashteste"
       class="profile-img"
-      style="width: 85px; height: 85px; border-radius: 50%; cursor: pointer"
-    />
+      style="width: 85px; height: 85px; border-radius: 50%; cursor: pointer" />
     <div class="greeting">
       <div>Olá, {{ usuarioService.nomeUsuario || "..." }}</div>
       <small>{{ dataHoje }}</small>
@@ -22,28 +21,24 @@
       gap: 0.5rem;
       padding-bottom: 0.25px;
       margin-top: 20px;
-    "
-  >
+    ">
     <div
       class="notificacao-wrapper"
       (mouseenter)="abrirNotificacao()"
       (mouseleave)="fecharNotificacao()"
-      style="margin-right: 0.625rem"
-    >
+      style="margin-right: 0.625rem">
       <img
         src="assets/notificacao.png"
         alt="Notificações"
         class="notificacao"
-        style="width: 2.25rem; cursor: pointer; transform: translateY(2px)"
-      />
+        style="width: 2.25rem; cursor: pointer; transform: translateY(2px)" />
       <div class="notificacao-popup" *ngIf="mostrarNotificacoes">
         <div *ngFor="let n of notificacoes" class="notificacao-card">
           <div class="notificacao-imagem">
             <img
               [src]="n.imagemUrl"
               alt="Imagem"
-              style="width: 100%; height: 100%"
-            />
+              style="width: 100%; height: 100%" />
           </div>
           <div class="notificacao-conteudo">
             <strong>{{ n.titulo }}</strong>
@@ -56,36 +51,29 @@
               align-items: center;
               gap: 0.3rem;
               margin-left: auto;
-            "
-          >
+            ">
             <span
               class="icone-acao editar notificacao"
               title="Editar notificação"
               style="font-size: 17px"
-              (click)="editarNotificacao(n)"
-              >✎</span
-            >
+              (click)="editarNotificacao(n)">✎</span>
             <span
               class="icone-acao apagar notificacao"
               title="Remover notificação"
               style="font-weight: bold"
-              (click)="confirmarRemocao(n)"
-              >✕</span
-            >
+              (click)="confirmarRemocao(n)">✕</span>
           </div>
         </div>
         <div
           class="nova-notificacao"
           *ngIf="usuarioService.usuarioEhAdmin()"
-          (click)="abrirFormularioNotificacao()"
-        >
+          (click)="abrirFormularioNotificacao()">
           + Nova notificação
         </div>
       </div>
       <div
         class="formulario-modal"
-        *ngIf="mostrarFormulario && usuarioService.usuarioEhAdmin()"
-      >
+        *ngIf="mostrarFormulario && usuarioService.usuarioEhAdmin()">
         <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
         <input
           type="text"
@@ -94,20 +82,17 @@
           [(ngModel)]="nova.titulo"
           class="form-control"
           placeholder="Título da notificação"
-          style="width: 100%"
-        />
+          style="width: 100%" />
         <textarea
           [(ngModel)]="nova.descricao"
           class="form-control"
           placeholder="Descrição da notificação"
           style="width: 100%; resize: none"
-          rows="3"
-        ></textarea>
+          rows="3"></textarea>
         <input
           style="color: black"
           type="file"
-          (change)="onFileChange($event)"
-        />
+          (change)="onFileChange($event)" />
         <div class="botoes-container">
           <button class="cancelar" (click)="cancelarFormulario()">
             Cancelar
@@ -117,8 +102,7 @@
             (click)="salvarNotificacao()"
             [disabled]="
               !nova.titulo.trim() || !nova.descricao.trim() || !nova.imagemUrl
-            "
-          >
+            ">
             Salvar
           </button>
         </div>
@@ -127,8 +111,7 @@
     <div
       class="dropdown"
       (mouseenter)="abrirMenu()"
-      (mouseleave)="fecharMenu()"
-    >
+      (mouseleave)="fecharMenu()">
       <div class="dropdown-toggle">☰</div>
       <ul class="dropdown-menu" *ngIf="menuAberto">
         <li><a routerLink="/menu">Perfil</a></li>
@@ -149,8 +132,7 @@
         <input
           type="checkbox"
           [checked]="servicosSelecionados.includes(servico.id!)"
-          (change)="toggleServico(servico.id!, $event)"
-        />
+          (change)="toggleServico(servico.id!, $event)" />
         <span class="checkmark"></span>
         <span class="servico-nome">{{ servico.nome }}</span>
         <span class="servico-preco">R$ {{ servico.preco.toFixed(2) }}</span>
@@ -160,13 +142,12 @@
 
   <!-- COLUNA DIREITA - HORÁRIOS -->
   <div class="coluna-direita">
-    <h3 style="display: flex; align-items: center; gap: 8px">
+    <h3>
       Horários Disponíveis -
       <select
         [(ngModel)]="barbeiroSelecionado"
         (change)="onBarbeiroChange()"
-        class="seletor-barbeiro"
-      >
+        class="seletor-barbeiro">
         <option *ngFor="let b of barbeiros" [ngValue]="b">
           {{ b }}
         </option>
@@ -178,8 +159,7 @@
       <button
         *ngFor="let dia of diasSemana"
         [ngClass]="{ ativo: dia.sigla === diaSelecionado }"
-        (click)="selecionarDia(dia.sigla)"
-      >
+        (click)="selecionarDia(dia.sigla)">
         {{ dia.sigla }}
       </button>
     </div>
@@ -192,28 +172,24 @@
           align-items: center;
           gap: 10px;
           margin-bottom: 10px;
-        "
-      >
+        ">
         <label style="display: flex; align-items: center; gap: 5px">
           <input
             type="checkbox"
             [(ngModel)]="selecionarTodos"
-            (change)="toggleSelecionarTodos()"
-          />
+            (change)="toggleSelecionarTodos()" />
           Selecionar todos
         </label>
         <button
           (click)="bloquearHorariosSelecionados()"
           [disabled]="horariosSelecionadosParaBloqueio.size === 0"
-          class="des-blok"
-        >
+          class="des-blok">
           Bloquear
         </button>
         <button
           (click)="desbloquearHorariosSelecionados()"
           [disabled]="horariosSelecionadosParaDesbloqueio.size === 0"
-          class="des-blok"
-        >
+          class="des-blok">
           Desbloquear
         </button>
       </div>
@@ -222,8 +198,7 @@
         <button
           (click)="apagarHorariosSelecionados()"
           [disabled]="horariosSelecionados.size === 0"
-          class="apagar"
-        >
+          class="apagar">
           Apagar
         </button>
       </div>
@@ -233,8 +208,7 @@
     <div
       *ngIf="diaSelecionado === 'DOM'"
       class="mensagem-fechado"
-      style="margin-top: 25px"
-    >
+      style="margin-top: 25px">
       <p style="color: red; font-weight: bold; text-align: center">
         Não estamos aberto aos Domingos. Que tal um outro dia?
       </p>
@@ -247,30 +221,27 @@
           <h4>{{ periodo | titlecase }}</h4>
           <div class="horarios">
             <ng-container
-              *ngFor="let horario of obterHorariosPorPeriodo(periodo)"
-            >
+              *ngFor="let horario of obterHorariosPorPeriodo(periodo)">
               <div class="horario-container">
                 <button
                   class="horario"
                   type="button"
                   [ngClass]="{
-                    selecionado: usuarioService.usuarioEhAdmin()
-                      ? horariosSelecionados.has(horario.id!)
-                      : horarioSelecionadoCliente?.id === horario.id &&
-                        horario.id != null,
-                    bloqueado: horario.bloqueado,
-                    passado: isHorarioPassado(horario),
-                    'admin-bloqueio':
-                      usuarioService.usuarioEhAdmin() &&
-                      (horariosSelecionadosParaBloqueio.has(horario.id!) ||
-                        horariosSelecionadosParaDesbloqueio.has(horario.id!))
-                  }"
+    selecionado: usuarioService.usuarioEhAdmin()
+      ? horariosSelecionados.has(horario.id!)
+      : horarioSelecionadoCliente?.id === horario.id && horario.id != null,
+    bloqueado: horario.bloqueado,
+    passado: isHorarioPassado(horario),
+    'admin-bloqueio':
+      usuarioService.usuarioEhAdmin() &&
+      (horariosSelecionadosParaBloqueio.has(horario.id!) ||
+        horariosSelecionadosParaDesbloqueio.has(horario.id!))
+  }"
                   [disabled]="
-                    !usuarioService.usuarioEhAdmin() &&
-                    (horario.bloqueado || isHorarioPassado(horario))
-                  "
-                  (click)="clicarHorario(horario)"
-                >
+    !usuarioService.usuarioEhAdmin() &&
+    (horario.bloqueado || isHorarioPassado(horario))
+  "
+                  (click)="clicarHorario(horario)">
                   {{ formatarHorario(horario.horario) }}
                   <span
                     class="editar"
@@ -278,8 +249,7 @@
                     (click)="
                       abrirFormularioEditarHorario(horario);
                       $event.stopPropagation()
-                    "
-                  >
+                    ">
                     ✎
                   </span>
                 </button>
@@ -316,16 +286,14 @@
     <!-- FORMULÁRIO POPUP DE HORÁRIO -->
     <div
       *ngIf="usuarioService.usuarioEhAdmin() && mostrarFormularioHorario"
-      class="formulario-horario-popup"
-    >
+      class="formulario-horario-popup">
       <form (ngSubmit)="modoEdicao ? editarHorario() : criarHorario()">
         <label for="barbeiro">Barbeiro:</label>
         <select
           id="barbeiro"
           [(ngModel)]="barbeiroFormulario"
           name="barbeiro"
-          required
-        >
+          required>
           <option value="Felipe">Felipe</option>
           <option value="Ezequiel">Ezequiel</option>
         </select>
@@ -335,14 +303,12 @@
           id="horario"
           [(ngModel)]="novoHorario"
           name="horario"
-          required
-        />
+          required />
         <div class="formulario-botoes">
           <button
             type="button"
             class="btn-cancelar"
-            (click)="cancelarFormularioHorario()"
-          >
+            (click)="cancelarFormularioHorario()">
             Cancelar
           </button>
           <button type="submit" class="btn-salvar">
@@ -356,8 +322,7 @@
     <div
       class="popup"
       *ngIf="mostrarPopupCupom"
-      (click)="fecharPopupCupom($event)"
-    >
+      (click)="fecharPopupCupom($event)">
       <div class="popup-conteudo" (click)="$event.stopPropagation()">
         <h3>Cupons fidelidade</h3>
         <div class="cupom-resgatar-container">
@@ -365,8 +330,7 @@
             type="text"
             class="cupom-input"
             placeholder="Digite o código"
-            [(ngModel)]="codigoCupom"
-          />
+            [(ngModel)]="codigoCupom" />
           <button class="botao-resgatar" (click)="resgatarCupom()">
             Resgatar
           </button>
@@ -376,8 +340,7 @@
             *ngFor="let cupom of cuponsDisponiveis"
             (click)="selecionarCupomPopup(cupom)"
             [class.selecionado]="cupomSelecionadoId === '' + cupom.id"
-            class="cupom-opcao"
-          >
+            class="cupom-opcao">
             <img [src]="cupom.imagem" alt="Cupom" />
             <div class="conteudo">
               <p class="titulo">{{ cupom.nome }}</p>
@@ -388,8 +351,7 @@
           <li
             class="cupom-opcao nenhum"
             (click)="selecionarCupomPopup(null)"
-            [class.selecionado]="!cupomSelecionadoId"
-          >
+            [class.selecionado]="!cupomSelecionadoId">
             Não adicionar cupom
           </li>
         </ul>
@@ -413,8 +375,7 @@
       src="assets/agendamento-ativa.png"
       alt="Agendamentos"
       width="34px"
-      height="34px"
-    />
+      height="34px" />
     <span style="color: #f46d25; font-weight: bold">Agendamentos</span>
   </a>
   <a routerLink="/produtos" class="nav-item">
