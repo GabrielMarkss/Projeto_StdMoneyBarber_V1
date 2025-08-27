@@ -92,6 +92,7 @@ export class AgendamentoComponent implements OnInit {
     cupomNome: '',
   };
   mostrarPopupCupom = false;
+  mostrarMenuMobile = false;
 
   constructor(
     public usuarioService: UsuarioService,
@@ -210,6 +211,20 @@ export class AgendamentoComponent implements OnInit {
 
   fecharMenu() {
     this.menuTimeout = setTimeout(() => (this.menuAberto = false), 150);
+  }
+
+  abrirMenuMobile() {
+    this.mostrarMenuMobile = true;
+  }
+
+  fecharMenuMobile() {
+    this.mostrarMenuMobile = false;
+  }
+
+  logout() {
+    this.usuarioService.logout();
+    this.fecharMenuMobile();
+    this.router.navigate(['/']);
   }
 
   abrirNotificacao() {

@@ -5,7 +5,8 @@
       src="assets/user-profile.png"
       alt="Perfil"
       routerLink="/dashteste"
-      class="profile-img" />
+      class="profile-img"
+    />
     <div class="greeting">
       <div>Olá, {{ usuarioService.nomeUsuario || "..." }}</div>
       <small>{{ dataHoje }}</small>
@@ -15,11 +16,13 @@
     <div
       class="notificacao-wrapper"
       (mouseenter)="abrirNotificacao()"
-      (mouseleave)="fecharNotificacao()">
+      (mouseleave)="fecharNotificacao()"
+    >
       <img
         src="assets/notificacao.png"
         alt="Notificações"
-        class="notificacao" />
+        class="notificacao"
+      />
       <div class="notificacao-popup" *ngIf="mostrarNotificacoes">
         <div *ngFor="let n of notificacoes" class="notificacao-card">
           <div class="notificacao-imagem">
@@ -36,23 +39,29 @@
               align-items: center;
               gap: 0.3rem;
               margin-left: auto;
-            ">
+            "
+          >
             <span
               class="editar-notificacao"
               title="Editar notificação"
               style="cursor: pointer; font-size: 18px"
-              (click)="editarNotificacao(n)">✎</span>
+              (click)="editarNotificacao(n)"
+              >✎</span
+            >
             <span
               class="apagar-notificacao"
               title="Remover notificação"
               style="cursor: pointer; font-size: 18px"
-              (click)="confirmarRemocao(n)">✕</span>
+              (click)="confirmarRemocao(n)"
+              >✕</span
+            >
           </div>
         </div>
         <div
           class="nova-notificacao"
           *ngIf="usuarioService.usuarioEhAdmin()"
-          (click)="abrirFormularioNotificacao()">
+          (click)="abrirFormularioNotificacao()"
+        >
           + Nova notificação
         </div>
       </div>
@@ -60,7 +69,8 @@
     <div
       class="dropdown"
       (mouseenter)="abrirMenu()"
-      (mouseleave)="fecharMenu()">
+      (mouseleave)="fecharMenu()"
+    >
       <div class="dropdown-toggle">☰</div>
       <ul class="dropdown-menu" *ngIf="menuAberto">
         <li><a routerLink="/menu">Perfil</a></li>
@@ -87,20 +97,23 @@
     z-index: 999;
     width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  ">
+  "
+>
   <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
   <input
     type="text"
     [(ngModel)]="nova.titulo"
     class="form-control"
     placeholder="Título da notificação"
-    style="width: 100%" />
+    style="width: 100%"
+  />
   <textarea
     [(ngModel)]="nova.descricao"
     class="form-control"
     placeholder="Descrição da notificação"
     style="width: 100%; resize: none"
-    rows="3"></textarea>
+    rows="3"
+  ></textarea>
   <input style="color: black" type="file" (change)="onFileChange($event)" />
   <div class="botoes-container">
     <button class="cancelar" (click)="cancelarFormulario()">Cancelar</button>
@@ -109,7 +122,8 @@
       (click)="salvarNotificacao()"
       [disabled]="
         !nova.titulo.trim() || !nova.descricao.trim() || !nova.imagemUrl
-      ">
+      "
+    >
       Salvar
     </button>
   </div>
@@ -130,7 +144,8 @@
     z-index: 999;
     width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  ">
+  "
+>
   <h3 style="color: black; margin-top: 0">Editar Agendamento</h3>
   <div style="margin-bottom: 10px">
     <label style="color: black">Barbeiro:</label>
@@ -147,7 +162,8 @@
         <input
           type="checkbox"
           [checked]="servicosSelecionados.includes(servico.id!)"
-          (change)="toggleServico(servico.id!, $event)" />
+          (change)="toggleServico(servico.id!, $event)"
+        />
         {{ servico.nome }} (R$ {{ servico.preco.toFixed(2) }})
       </label>
     </div>
@@ -158,7 +174,8 @@
       type="date"
       [(ngModel)]="dataSelecionada"
       (change)="carregarHorarios()"
-      style="width: 100%" />
+      style="width: 100%"
+    />
   </div>
   <div style="margin-bottom: 10px">
     <label style="color: black">Horário:</label>
@@ -166,7 +183,8 @@
       <option
         *ngFor="let horario of horarios"
         [value]="horario.horario"
-        [disabled]="horario.bloqueado">
+        [disabled]="horario.bloqueado"
+      >
         {{ formatarHorario(horario.horario) }}
         {{ horario.bloqueado ? "(Indisponível)" : "" }}
       </option>
@@ -181,7 +199,8 @@
       (click)="salvarEdicao()"
       [disabled]="
         !servicosSelecionados.length || !dataSelecionada || !horarioSelecionado
-      ">
+      "
+    >
       Salvar
     </button>
   </div>
@@ -197,9 +216,11 @@
     <div *ngFor="let agendamento of agendamentos" class="agendamento-card">
       <div class="linha">
         <strong>Status:</strong>
-        <b><span [ngStyle]="{ color: corStatus(agendamento.status || '') }">
+        <b
+          ><span [ngStyle]="{ color: corStatus(agendamento.status || '') }">
             {{ agendamento.status || "" }}
-          </span></b>
+          </span></b
+        >
       </div>
       <div class="linha">
         <strong>Barbeiro:</strong>
@@ -217,14 +238,14 @@
         <strong>Subtotal:</strong>
         <span>R$ {{ agendamento.subtotal.toFixed(2) }}</span>
       </div>
-      <div class="linha">
+      <!-- <div class="linha">
         <strong>Cupom:</strong>
         <span>{{ agendamento.cupomNome || "Nenhum" }}</span>
       </div>
       <div class="linha">
         <strong>Desconto:</strong>
         <span>- R$ {{ agendamento.desconto.toFixed(2) }}</span>
-      </div>
+      </div> -->
       <div class="linha">
         <strong>Total:</strong>
         <span>R$ {{ agendamento.total.toFixed(2) }}</span>
@@ -240,33 +261,34 @@
             agendamento.data,
             agendamento.horario
           )
-        ">
+        "
+      >
         <button
           class="editar-agendamento"
-          (click)="abrirFormularioEdicao(agendamento)">
+          (click)="abrirFormularioEdicao(agendamento)"
+        >
           Editar
         </button>
         <button
           class="cancelar-agendamento"
-          (click)="confirmarRemocaoAgendamento(agendamento.id!)">
+          (click)="confirmarRemocaoAgendamento(agendamento.id!)"
+        >
           Cancelar
         </button>
       </div>
     </div>
   </div>
-</div><br><br><br><br><br><br>
+</div>
+<br /><br /><br /><br /><br /><br />
+
 <!-- BARRA INFERIOR MOBILE -->
-<nav class="bottom-nav">
-  <a routerLink="/dashteste" class="nav-item">
+<div class="bottom-nav">
+  <a routerLink="/dashboard" class="nav-item">
     <img src="assets/inicio.png" alt="Início" width="38px" height="32px" />
     <span>Início</span>
   </a>
   <a routerLink="/galeria" class="nav-item">
-    <img
-      src="assets/galeria.png"
-      alt="Galeria"
-      width="34px"
-      height="33px" />
+    <img src="assets/galeria.png" alt="Galeria" width="34px" height="33px" />
     <span>Galeria</span>
   </a>
   <a routerLink="/agendamento" class="nav-item">
@@ -274,16 +296,35 @@
       src="assets/agendamento.png"
       alt="Agendamentos"
       width="34px"
-      height="34px" />
+      height="34px"
+    />
     <span>Agendamentos</span>
   </a>
   <a routerLink="/produtos" class="nav-item">
     <img src="assets/produto.png" alt="Produtos" width="30px" height="30px" />
     <span>Produtos</span>
   </a>
-  <a routerLink="/menu" class="nav-item">
-    <img src="assets/user-profile.png" alt="Menu" width="40px"
-      height="40px" />
+  <a class="nav-item" (click)="abrirMenuMobile()">
+    <img src="assets/user-profile.png" alt="Menu" width="40px" height="40px" />
     <span>Menu</span>
   </a>
-</nav>
+
+  <!-- POP-UP DE MENU MOBILE -->
+  <div class="menu-mobile-popup" *ngIf="mostrarMenuMobile">
+    <div class="menu-mobile-content">
+      <button class="fechar-menu-mobile" (click)="fecharMenuMobile()">✕</button>
+      <ul class="menu-mobile-lista">
+        <li><a routerLink="/menu" (click)="fecharMenuMobile()">Perfil</a></li>
+        <li>
+          <a
+            routerLink="/meus-horarios"
+            (click)="fecharMenuMobile()"
+            style="color: #f46d25"
+            >Meus horarios</a
+          >
+        </li>
+        <li><a (click)="logout(); fecharMenuMobile()">Sair</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

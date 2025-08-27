@@ -1252,10 +1252,6 @@
     line-height: 2;
   }
 
-  .right {
-    margin-top: 0.8rem !important;
-  }
-
   .notificacao {
     width: 20px !important;
     height: 20px !important;
@@ -1348,7 +1344,7 @@
 
   .barbeiro-info h3 {
     font-size: 20px;
-    margin: 0.1rem 0 -0.3rem;
+    margin: 1px 0 -0.3rem;
   }
 
   .barbeiro-info p {

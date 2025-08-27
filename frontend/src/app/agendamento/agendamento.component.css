@@ -7,12 +7,6 @@
   align-items: center;
   padding: 1rem;
 }
-.profile-img {
-  width: 85px;
-  height: 85px;
-  border-radius: 50%;
-  cursor: pointer;
-}
 
 .greeting div {
   font-size: 20px;
@@ -263,12 +257,12 @@
   font-family: Arial, sans-serif;
 }
 
-/* COLUNAS */
+/* ===== COLUNAS ===== */
 .coluna-esquerda,
 .coluna-direita {
   flex: 1;
   background-color: #f9f9f9;
-  padding: 1rem;
+  padding: 0 1rem 1rem;
   border-radius: 12px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -283,7 +277,7 @@
   font-size: 24px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 /* ===== SERVIÇOS ===== */
@@ -301,7 +295,7 @@
   position: relative;
   padding-left: 30px;
   cursor: pointer;
-  font-size: 17px;
+  font-size: 13px;
   user-select: none;
 }
 
@@ -351,6 +345,7 @@
 .servico-preco {
   font-weight: bold;
   color: #333;
+  font-size: 13px;
 }
 
 .des-blok {
@@ -362,6 +357,7 @@
   padding: 4px 10px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 13px;
 }
 
 .des-blok:hover {
@@ -371,8 +367,8 @@
 
 /* ===== TÍTULOS ===== */
 .seletor-barbeiro {
-  padding: 4px 12px;
-  font-size: 18px;
+  padding: 2px 15px;
+  font-size: 17px;
   font-weight: bold;
   border: 1px solid #f46d25;
   border-radius: 5px;
@@ -386,7 +382,7 @@
   padding: 8px;
   background-color: #fff;
   color: #222;
-  font-size: 16px;
+  font-size: 13px;
 }
 
 /* ===== DIAS DA SEMANA ===== */
@@ -394,7 +390,6 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin-bottom: -0.5rem;
 }
 
 .dias-semana.admin {
@@ -407,9 +402,9 @@
   border-radius: 4px;
   color: #f46d25;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
-  padding: 14px 20px;
+  padding: 10px 12px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -435,9 +430,9 @@
   border-radius: 5px;
   color: white;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: bold;
-  padding: 8px 30px;
+  padding: 8px 20px;
   transition: background-color 0.3s ease;
 }
 
@@ -447,13 +442,12 @@
 
 /* ===== PERÍODOS E HORÁRIOS ===== */
 .periodo {
-  margin-top: 25px;
   text-align: center;
 }
 
 .periodo h4 {
-  font-size: 18px;
-  margin: -5px 0 5px 0;
+  font-size: 16px;
+  margin: -15px 0 5px 0;
   text-align: center;
   width: 100%;
 }
@@ -461,8 +455,10 @@
 .periodo .horarios {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 5px;
   justify-content: center;
+  max-width: calc(6 * (72px + 7px) - 7px);
+  /* 8 items * (width + gap) - last gap */
 }
 
 .horario {
@@ -472,10 +468,10 @@
   color: #000;
   cursor: pointer;
   display: flex;
-  font-size: 17px;
+  font-size: 15px;
   justify-content: center;
-  min-height: 35px;
-  min-width: 80px;
+  min-height: 32px;
+  min-width: 72px;
   overflow: hidden;
   position: relative;
   align-items: center;
@@ -510,13 +506,13 @@
   background-color: #f46d25 !important;
   color: white !important;
   font-weight: bold;
-  font-size: 18px;
-  padding-right: 25px;
+  font-size: 13px;
+  padding-right: 20px;
 }
 
 .horario .editar {
   color: white;
-  font-size: 14px;
+  font-size: 12px;
   opacity: 0;
   pointer-events: auto;
   position: absolute;
@@ -546,12 +542,14 @@
 
 .formulario-horario-popup label {
   font-weight: bold;
+  font-size: 13px;
 }
 
 .formulario-horario-popup input[type="time"] {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  font-size: 13px;
 }
 
 .formulario-horario-popup .formulario-botoes {
@@ -568,6 +566,7 @@
   padding: 8px 16px;
   font-weight: bold;
   cursor: pointer;
+  font-size: 13px;
 }
 
 .formulario-horario-popup .btn-cancelar:hover {
@@ -583,13 +582,14 @@
   color: white;
   font-weight: bold;
   cursor: pointer;
+  font-size: 13px;
 }
 
 .formulario-horario-popup .btn-salvar:hover {
   background-color: #d05e20;
 }
 
-/* RESUMO AGENDAMENTO */
+/* ===== RESUMO AGENDAMENTO ===== */
 .resumo-agendamento {
   background: #f9f9f9;
   padding: 30px 35px;
@@ -597,7 +597,7 @@
   width: 100%;
   max-width: none;
   font-family: Arial, sans-serif;
-  font-size: 17px;
+  font-size: 13px;
   margin-top: 40px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
@@ -607,7 +607,7 @@
 }
 
 .resumo-agendamento h3 {
-  font-size: 24px;
+  font-size: 16px;
   margin-bottom: 18px;
   font-weight: bold;
 }
@@ -616,7 +616,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 17px;
+  font-size: 13px;
   gap: 12px;
   margin: 0;
 }
@@ -633,7 +633,7 @@
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 13px;
   transition: background-color 0.3s ease;
   align-self: center;
   margin-top: 24px;
@@ -643,7 +643,7 @@
   background-color: #d35400;
 }
 
-/* BOTÃO CONFIRMAR */
+/* ===== BOTÃO CONFIRMAR ===== */
 .botao-confirmar {
   display: flex;
   justify-content: center;
@@ -658,7 +658,7 @@
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 13px;
   transition: background-color 0.3s ease;
 }
 
@@ -708,7 +708,7 @@
 .cupom-input {
   flex: 1;
   padding: 10px 14px;
-  font-size: 16px;
+  font-size: 13px;
   border: 1px solid #ccc;
   border-radius: 6px;
   text-transform: uppercase;
@@ -730,7 +730,7 @@
   padding: 12px 24px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 13px;
   transition: background-color 0.3s ease;
   white-space: nowrap;
   height: 44px;
@@ -775,13 +775,13 @@
 
 .cupom-opcao .titulo {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 13px;
   color: #000;
   margin: 0;
 }
 
 .cupom-opcao .descricao {
-  font-size: 14px;
+  font-size: 13px;
   color: #6c757d;
   margin: 0;
 }
@@ -790,7 +790,7 @@
   position: absolute;
   right: 10px;
   bottom: 8px;
-  font-size: 18px;
+  font-size: 13px;
   cursor: pointer;
   opacity: 0.6;
   transition: opacity 0.3s ease;
@@ -813,14 +813,89 @@
   justify-content: center;
 }
 
+/* ===== POP-UP DE MENU MOBILE ===== */
+.menu-mobile-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-mobile-content {
+  background: #222;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 300px;
+  padding: 20px;
+  position: relative;
+}
+
+.fechar-menu-mobile {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.fechar-menu-mobile:hover {
+  color: #f46d25;
+}
+
+.menu-mobile-lista {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.menu-mobile-lista li {
+  margin: 10px 0;
+}
+
+.menu-mobile-lista li a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-mobile-lista li a:hover {
+  background-color: #444;
+}
+
+/* Ajustar a barra inferior para garantir que o item Menu seja clicável */
+.bottom-nav .nav-item {
+  cursor: pointer;
+}
+
 /* ====== MEDIA QUERIES ====== */
 @media (min-width: 769px) {
   .bottom-nav {
     display: none !important;
   }
+
+  .menu-mobile-popup {
+    display: none !important;
+  }
 }
 
 @media (max-width: 768px) {
+  /* ====== NAVBAR ====== */
   .navbar {
     padding: 0.8rem 0 0.5rem 1rem !important;
     position: fixed;
@@ -828,15 +903,14 @@
     left: 0;
     right: 0;
     background-color: #000;
-    /* mantém fundo preto como o seu */
     z-index: 1001;
-    /* um pouco acima da bottom-nav */
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
   .navbar .dropdown,
+  .profile-img,
   .editar-notificacao,
   .apagar-notificacao {
     display: none !important;
@@ -845,14 +919,12 @@
   .greeting div {
     font-size: 16px !important;
     margin-bottom: 0.5px;
-    /* Aproxima da data */
   }
 
   .greeting small {
     font-size: 11px !important;
     font-weight: bold;
     line-height: 2;
-    /* Deixa mais compacto */
   }
 
   .right {
@@ -867,7 +939,6 @@
   .notificacao-popup {
     border-radius: 3px;
     width: 12.5rem;
-    /* menor que os 20rem do desktop */
     top: 1.5rem;
     right: 0.25rem;
   }
@@ -883,10 +954,6 @@
     font-size: 10px;
   }
 
-  .notificacao-conteudo {
-    font-size: 12px;
-  }
-
   .notificacao-conteudo strong {
     font-size: 13px;
   }
@@ -896,7 +963,6 @@
     line-height: 1;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    /* LIMITA para 2 linhas no mobile */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -906,6 +972,7 @@
     display: none;
   }
 
+  /* ====== BOTTOM NAV ====== */
   .bottom-nav {
     display: flex;
     justify-content: space-around;
@@ -925,7 +992,6 @@
     color: white;
     text-decoration: none;
     padding: 0 12px;
-    /* espaçamento lateral de 12px */
     height: 3.5rem;
     justify-content: flex-end;
   }
@@ -939,5 +1005,184 @@
   .bottom-nav .nav-item span {
     font-size: 11px;
     line-height: 1;
+  }
+
+  /* ====== CONTAINER GERAL ====== */
+  .container-horarios {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+
+  .coluna-esquerda,
+  .coluna-direita {
+    width: 100%;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+  }
+
+  .coluna-esquerda {
+    order: 1;
+    margin-top: 65px;
+  }
+
+  .coluna-direita {
+    order: 2;
+    align-items: stretch;
+    margin-bottom: 75px;
+  }
+
+  /* ====== SERVIÇOS ====== */
+  .servico-item {
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .checkbox-container {
+    font-size: 13px;
+  }
+
+  .servico-preco {
+    font-size: 13px;
+  }
+
+  /* ====== TÍTULOS ====== */
+  .coluna-direita h3 {
+    font-size: 17px;
+    margin-top: 15px;
+    flex: 1;
+  }
+
+  .des-blok {
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 13px;
+  }
+
+  .seletor-barbeiro {
+    width: auto;
+    font-size: 14px;
+    padding: 0px 2px;
+    flex: 2;
+  }
+
+  .coluna-direita h3,
+  .seletor-barbeiro {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+  }
+
+  /* ====== DIAS DA SEMANA ====== */
+  .dias-semana {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 0.3rem;
+  }
+
+  .dias-semana button {
+    font-size: 13px;
+    padding: 7px 9px;
+    flex: 1;
+    max-width: none;
+  }
+
+  /* ====== PERÍODOS E HORÁRIOS ====== */
+  .periodo h4 {
+    font-size: 13px;
+  }
+
+  .horarios {
+    gap: 5px;
+    max-width: calc(8 * (60px + 5px) - 5px);
+    /* 8 items * (width + gap) - last gap */
+  }
+
+  .horario {
+    font-size: 13px;
+    min-width: 60px;
+    padding: 6px;
+    min-height: 25px;
+  }
+
+  .horario .editar {
+    font-size: 12px;
+  }
+
+  /* ====== RESUMO AGENDAMENTO ====== */
+  .resumo-agendamento {
+    padding: 15px;
+    margin-top: 15px;
+    font-size: 13px;
+
+    margin-bottom: 0px;
+  }
+
+  .resumo-agendamento h3 {
+    font-size: 16px;
+  }
+
+  .resumo-agendamento p {
+    font-size: 13px;
+  }
+
+  .resumo-agendamento button {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  /* ====== CUPOM ====== */
+  .popup-conteudo {
+    width: 95%;
+    max-width: 350px;
+    padding: 15px;
+  }
+
+  .cupom-opcao {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .cupom-opcao img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .cupom-opcao .titulo {
+    font-size: 13px;
+  }
+
+  .cupom-opcao .descricao {
+    font-size: 13px;
+  }
+
+  .botao-resgatar {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .cupom-input {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  /* ====== FORMULÁRIO POPUP DE HORÁRIO ====== */
+  .formulario-horario-popup {
+    width: 100%;
+    max-width: 250px;
+    padding: 15px;
+  }
+
+  .formulario-horario-popup input[type="time"],
+  .formulario-horario-popup select {
+    font-size: 13px;
+    padding: 6px;
+  }
+
+  .formulario-horario-popup .btn-cancelar,
+  .formulario-horario-popup .btn-salvar {
+    padding: 6px 10px;
+    font-size: 12px;
   }
 }

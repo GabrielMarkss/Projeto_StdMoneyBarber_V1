@@ -46,6 +46,7 @@ export class MeusHorariosComponent implements OnInit {
   horarios: Horario[] = [];
   barbeiroSelecionado: string = 'Sem Preferência';
   horarioSelecionado: string = '';
+  mostrarMenuMobile = false;
 
   constructor(
     public usuarioService: UsuarioService,
@@ -124,10 +125,23 @@ export class MeusHorariosComponent implements OnInit {
     this.menuAberto = true;
   }
 
-  fecharMenu(): void {
+  fecharMenu() {
     this.menuTimeout = setTimeout(() => (this.menuAberto = false), 150);
   }
 
+  abrirMenuMobile() {
+    this.mostrarMenuMobile = true;
+  }
+
+  fecharMenuMobile() {
+    this.mostrarMenuMobile = false;
+  }
+
+  logout() {
+    this.usuarioService.logout();
+    this.fecharMenuMobile();
+    this.router.navigate(['/']);
+  }
   abrirNotificacao(): void {
     clearTimeout(this.notificacaoTimeout);
     this.mostrarNotificacoes = true;

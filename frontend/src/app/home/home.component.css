@@ -5,7 +5,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
 }
 
 .left {
@@ -23,7 +22,7 @@
 }
 
 .greeting {
-  padding: 15px;
+  padding: 14px 15px 10px 16px;
 }
 
 .greeting div {
@@ -45,6 +44,7 @@
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  margin-right: 25px;
   transition: background-color 0.3s ease;
 }
 
@@ -248,6 +248,24 @@
   line-height: 1.2;
 }
 
+.botao-criar {
+  background-color: #f3741c;
+  border: none;
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.botao-criar:hover {
+  background-color: #d65b1d;
+}
+
 .subtitulo {
   color: #888;
   font-size: 14px;
@@ -292,6 +310,19 @@
   font-weight: bold;
   font-size: 16px;
   margin-right: 5px;
+}
+
+.icone-acao.editar,
+.icone-acao.apagar {
+  font-size: 17px;
+}
+
+.icone-acao.editar:hover {
+  color: blue;
+}
+
+.icone-acao.apagar:hover {
+  color: red;
 }
 
 .rodape-tabela {
@@ -352,13 +383,95 @@
 }
 
 .card-img {
-  width: 55px;
+  width: 50px;
 }
 
 .card-descricao {
   font-size: 16px;
   color: #333;
   margin: 10px 0;
+}
+
+.card-acoes {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.card-acoes button {
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 6px;
+  padding: 0;
+  line-height: 1;
+}
+
+.editar-card:hover {
+  color: blue;
+}
+
+.apagar-card:hover {
+  color: red;
+}
+
+.adicionar-card-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.botao-adicionar-card {
+  padding: 10px 25px;
+  background-color: #f46d25;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+}
+
+/* ===== FORMULÁRIO DE CARD ===== */
+.textarea-descricao {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 12px;
+  resize: vertical;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.input-file {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.botoes-formulario-card {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-cancelar,
+.btn-salvar {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-cancelar {
+  background-color: #ccc;
+  color: #000;
+}
+
+.btn-salvar {
+  background-color: #f46d25;
+  color: white;
 }
 
 /* ===== PLANO DE FIDELIDADE ===== */
@@ -380,7 +493,7 @@
 }
 
 .fidelidade-img {
-  width: 330px;
+  width: 300px;
 }
 
 .fidelidade-conteudo {
@@ -422,7 +535,7 @@
 
 .fidelidade-botao {
   margin-top: 12px;
-  background-color: #f46d25;
+  background-color: #f3741c;
   color: white;
   border: none;
   padding: 10px 40px;
@@ -474,7 +587,7 @@
 /* ===== MAPA ===== */
 .mapa-container {
   width: 100%;
-  height: 400px;
+  height: 350px;
   overflow: hidden;
   border-radius: 0;
   margin-top: 20px;
@@ -580,10 +693,120 @@
   margin-top: 40px;
 }
 
+/* ===== BARRA INFERIOR MOBILE ===== */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: end;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #000;
+  padding: 5px 0 15px 0;
+  z-index: 1000;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 0 12px;
+  height: 3.5rem;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.nav-item img {
+  max-height: 42px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.nav-item span {
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* ===== POP-UP DE MENU MOBILE ===== */
+.menu-mobile-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-mobile-content {
+  background: #222;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 300px;
+  padding: 20px;
+  position: relative;
+}
+
+.fechar-menu-mobile {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.fechar-menu-mobile:hover {
+  color: #f46d25;
+}
+
+.menu-mobile-lista {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.menu-mobile-lista li {
+  margin: 10px 0;
+}
+
+.menu-mobile-lista li a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-mobile-lista li a:hover {
+  background-color: #444;
+}
+
 /* ===== MEDIA QUERIES ===== */
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none !important;
+  }
+
+  .menu-mobile-popup {
+    display: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
-    padding: 0.8rem 0 0.5rem 1rem !important;
     top: 0;
     left: 0;
     right: 0;
@@ -594,19 +817,85 @@
     justify-content: space-between;
   }
 
-  .profile-img {
-    width: 45px;
-    height: 45px;
+  .dropdown,
+  .profile-img,
+  .editar-notificacao,
+  .apagar-notificacao,
+  .botao-adicionar,
+  .botao-editar,
+  .botao-remover,
+  .botao-navegacao,
+  .botoes-hover {
+    display: none !important;
   }
+
   .greeting div {
-    font-size: 16px;
+    font-size: 16px !important;
     margin-bottom: 0.5px;
   }
 
   .greeting small {
-    font-size: 11px;
+    font-size: 11px !important;
     font-weight: bold;
     line-height: 2;
+  }
+
+  .login-button {
+    background-color: #f46d25;
+    color: white;
+    padding: 4px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-right: 25px;
+    transition: background-color 0.3s ease;
+  }
+
+  .notificacao {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .notificacao-popup {
+    border-radius: 4px;
+    width: 12.5rem;
+    top: 1.5rem;
+    right: 0.25rem;
+  }
+
+  .notificacao-card {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .notificacao-imagem {
+    width: 40px;
+    height: 40px;
+    font-size: 10px;
+  }
+
+  .notificacao-conteudo {
+    font-size: 12px;
+  }
+
+  .notificacao-conteudo strong {
+    font-size: 13px;
+  }
+
+  .notificacao-conteudo small {
+    font-size: 11.5px;
+    line-height: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nova-notificacao {
+    display: none;
   }
 
   .imagem-wrapper {
@@ -626,12 +915,14 @@
     display: block;
   }
 
-  .barbeiros-section {
-    text-align: center;
-  }
-
   .titulo {
     font-size: 1.7rem;
+  }
+
+  .btn-adicionar-barbeiro {
+    padding: 0.4rem 0.625rem;
+    border-radius: 4px;
+    font-size: 14px;
   }
 
   .barbeiro-card {
@@ -654,7 +945,7 @@
 
   .barbeiro-info h3 {
     font-size: 20px;
-    margin: 0.1rem 0 -0.3rem;
+    margin: 1px 0 -0.3rem;
   }
 
   .barbeiro-info p {
@@ -682,6 +973,13 @@
     text-decoration: underline;
     color: black;
     margin-top: 4px;
+  }
+
+  .btn-remover-x {
+    top: 0rem;
+    right: 0.3rem;
+    font-size: 16px;
+    font-weight: bold;
   }
 
   .layout-servicos {
@@ -721,6 +1019,27 @@
   .cabecalho-tabela h2 {
     font-size: 20px;
     text-align: center;
+  }
+
+  .botao-criar {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+
+  .botao-criar .botao-criar-texto {
+    display: none;
+  }
+
+  .botao-criar::before {
+    content: "+";
+    color: #fff;
+    font-weight: bold;
   }
 
   .tabela-servicos {
@@ -783,6 +1102,11 @@
     padding-right: 10px;
   }
 
+  .icone-acao {
+    display: flex !important;
+    font-size: 15px;
+  }
+
   .preco {
     text-align: right;
     font-weight: bold;
@@ -840,6 +1164,11 @@
   .card-descricao {
     font-size: 14px;
     margin: 6px 0;
+  }
+
+  .botao-adicionar-card {
+    padding: 8px 25px;
+    border-radius: 4px;
   }
 
   .fidelidade-box {
@@ -941,5 +1270,64 @@
   .rodape-coluna p,
   .rodape-coluna a {
     font-size: 13px;
+  }
+
+  .dropdown-menu {
+    display: none !important;
+  }
+
+  /* Formulário Modal (Notificações, Imagens, Serviços) */
+  .formulario-modal {
+    width: 80%;
+    max-width: 280px;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .formulario-modal input[type="text"],
+  .formulario-modal textarea {
+    padding: 6px 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .formulario-modal input[type="file"] {
+    margin-bottom: 8px;
+  }
+
+  .botoes-container {
+    gap: 8px;
+  }
+
+  .formulario-modal button.cancelar,
+  .formulario-modal button.salvar {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  /* Formulário de Barbeiro */
+  .popup-form-barbeiro {
+    max-width: 280px;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .form-input-barbeiro {
+    padding: 0.4rem 0.7rem;
+    margin-bottom: 0.8rem;
+    font-size: 14px;
+    border: 1px solid #ccc;
+  }
+
+  .botoes-form-barbearia {
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .btn-salvar-barbeiro,
+  .btn-cancelar-barbeiro {
+    padding: 0.6rem 1.2rem;
+    font-size: 14px;
+    border-radius: 4px;
   }
 }
