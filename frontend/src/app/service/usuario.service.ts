@@ -6,14 +6,23 @@ import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
-  private apiUrl = `http://${window.location.hostname}:8080/api/usuarios`;
+  private apiUrl = `http://localhost:8080/api/usuarios`;
   private usuarioLogadoSubject = new BehaviorSubject<{
     id: number;
     nome: string;
+    sobrenome: string | null;
     email: string;
+    telefone: string | null;
     admin: boolean;
+    imagemUrl: string | null;
   } | null>(null);
-  nomeUsuario: string = '';
+
+  public nome: string = '';
+  public sobrenome: string | null = null;
+  public email: string = '';
+  public telefone: string | null = null;
+  public imagemUrl: string | null = null;
+  public nomeUsuario: string = '';
 
   constructor(private http: HttpClient, private router: Router) {
     this.loadUsuarioLogado();
@@ -55,9 +64,7 @@ export class UsuarioService {
 
   register(usuario: any): Observable<string> {
     return this.http
-      .post(`${this.apiUrl}/register`, usuario, {
-        responseType: 'text',
-      })
+      .post(`${this.apiUrl}/register`, usuario, { responseType: 'text' })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Erro no registro:', error);
@@ -74,6 +81,11 @@ export class UsuarioService {
   logout() {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
+    this.nome = '';
+    this.sobrenome = null;
+    this.email = '';
+    this.telefone = null;
+    this.imagemUrl = null;
     this.nomeUsuario = '';
     this.usuarioLogadoSubject.next(null);
     this.router.navigate(['/login']);
@@ -86,8 +98,11 @@ export class UsuarioService {
   getUsuarioLogado(): Observable<{
     id: number;
     nome: string;
+    sobrenome: string | null;
     email: string;
+    telefone: string | null;
     admin: boolean;
+    imagemUrl: string | null;
   } | null> {
     const token = this.getToken();
     if (!token) {
@@ -95,15 +110,25 @@ export class UsuarioService {
     }
 
     return this.http
-      .get<{ id: number; nome: string; email: string; admin: boolean }>(
-        `${this.apiUrl}/me`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
+      .get<{
+        id: number;
+        nome: string;
+        sobrenome: string | null;
+        email: string;
+        telefone: string | null;
+        admin: boolean;
+        imagemUrl: string | null;
+      }>(`${this.apiUrl}/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .pipe(
         tap((user) => {
           if (user && user.id) {
+            this.nome = user.nome;
+            this.sobrenome = user.sobrenome;
+            this.email = user.email;
+            this.telefone = user.telefone;
+            this.imagemUrl = user.imagemUrl;
             this.nomeUsuario = user.nome;
             this.usuarioLogadoSubject.next(user);
           } else {
@@ -129,11 +154,21 @@ export class UsuarioService {
       this.getUsuarioLogado().subscribe({
         next: (user) => {
           if (user) {
+            this.nome = user.nome;
+            this.sobrenome = user.sobrenome;
+            this.email = user.email;
+            this.telefone = user.telefone;
+            this.imagemUrl = user.imagemUrl;
             this.nomeUsuario = user.nome;
             this.usuarioLogadoSubject.next(user);
           }
         },
         error: () => {
+          this.nome = '';
+          this.sobrenome = null;
+          this.email = '';
+          this.telefone = null;
+          this.imagemUrl = null;
           this.nomeUsuario = '';
           this.usuarioLogadoSubject.next(null);
         },
@@ -144,9 +179,55 @@ export class UsuarioService {
   getUsuarioLogadoSnapshot(): {
     id: number;
     nome: string;
+    sobrenome: string | null;
     email: string;
+    telefone: string | null;
     admin: boolean;
+    imagemUrl: string | null;
   } | null {
     return this.usuarioLogadoSubject.value;
+  }
+
+  atualizarDados(dados: any): Observable<any> {
+    const token = this.getToken();
+    return this.http
+      .put(`${this.apiUrl}/me`, dados, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .pipe(
+        tap((response: any) => {
+          console.log('Resposta da atualização:', response);
+          this.loadUsuarioLogado();
+        }),
+        catchError((error: HttpErrorResponse) => {
+          console.error('Erro ao atualizar dados:', error);
+          return throwError(
+            () =>
+              new Error(
+                error.error?.erro || error.error?.message || error.message
+              )
+          );
+        })
+      );
+  }
+
+  uploadImagem(file: File): Observable<any> {
+    const token = this.getToken();
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http
+      .post(`${this.apiUrl}/me/imagem`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .pipe(
+        tap(() => this.loadUsuarioLogado()),
+        catchError((error) => {
+          console.error('Erro ao fazer upload da imagem:', error);
+          return throwError(
+            () => new Error(error.error?.message || error.message)
+          );
+        })
+      );
   }
 }

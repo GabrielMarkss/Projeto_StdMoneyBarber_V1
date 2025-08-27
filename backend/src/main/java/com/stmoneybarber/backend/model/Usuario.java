@@ -1,12 +1,9 @@
 package com.stmoneybarber.backend.model;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "usuarios")
-@CrossOrigin("*")
 public class Usuario {
 
     @Id
@@ -26,6 +23,9 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
+    private String imagemUrl; // Campo opcional para URL da imagem de perfil
+
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -80,5 +80,13 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getImagemUrl() {
+        return imagemUrl;
+    }
+
+    public void setImagemUrl(String imagemUrl) {
+        this.imagemUrl = imagemUrl;
     }
 }
