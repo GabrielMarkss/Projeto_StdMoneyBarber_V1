@@ -60,25 +60,62 @@ public class AgendamentoService {
         }
 
         String barbeiro = agendamento.getBarbeiro();
-        Optional<Horario> horarioExistente = java.util.Optional.empty();
-        if ("Sem Preferência".equals(barbeiro)) {
-            // Para "Sem Preferência", verificamos se há pelo menos um horário disponível
-            // para algum barbeiro
+        if (barbeiro == null || "Sem Preferência".equals(barbeiro)) {
+            // Para "Sem Preferência", verificar se há pelo menos dois barbeiros disponíveis
             List<Horario> horariosDisponiveis = horarioRepository.findByDiaSemana(diaSemana).stream()
                     .filter(h -> h.getBarbeiro() != null && !h.isBloqueado() && h.getHora().equals(horario))
+                    .filter(h -> agendamentoRepository.findByDataAndHorarioAndBarbeiro(data, horario,
+                            h.getBarbeiro()) == null)
                     .collect(Collectors.toList());
-            if (horariosDisponiveis.isEmpty()) {
+
+            long countSemPref = agendamentoRepository.countByDataAndHorarioAndBarbeiroIsNull(data, horario);
+
+            if (horariosDisponiveis.size() < 2 || countSemPref > 0) {
                 throw new IllegalArgumentException("Nenhum horário disponível para 'Sem Preferência' em: " + horario);
             }
+
+            // Definir barbeiro como null e horarioId como null para "Sem Preferência"
+            agendamento.setBarbeiro(null);
+            agendamento.setHorarioId(null);
         } else {
-            // Para barbeiro específico, verificamos o horário associado ao barbeiro
-            horarioExistente = horarioRepository.findByDiaSemanaAndHoraAndBarbeiro(diaSemana, horario, barbeiro);
+            // Para barbeiro específico
+            Optional<Horario> horarioExistente = horarioRepository.findByDiaSemanaAndHoraAndBarbeiro(diaSemana, horario,
+                    barbeiro);
             if (horarioExistente.isEmpty()) {
                 throw new IllegalArgumentException("Horário não cadastrado para " + barbeiro + ": " + horario);
             }
             if (horarioExistente.get().isBloqueado()) {
                 throw new IllegalArgumentException("Horário já está bloqueado para " + barbeiro + ": " + horario);
             }
+            if (agendamentoRepository.findByDataAndHorarioAndBarbeiro(data, horario, barbeiro) != null) {
+                throw new IllegalArgumentException("Horário já agendado para " + barbeiro + " em: " + horario);
+            }
+
+            // Reatribuir agendamentos "Sem Preferência" pendentes
+            List<Agendamento> semPrefs = agendamentoRepository.findByDataAndHorarioAndBarbeiroIsNull(data, horario);
+            for (Agendamento sem : semPrefs) {
+                String outroBarbeiro = barbeiro.equals("Felipe") ? "Ezequiel" : "Felipe";
+                Optional<Horario> horOutro = horarioRepository.findByDiaSemanaAndHoraAndBarbeiro(diaSemana, horario,
+                        outroBarbeiro);
+                if (horOutro.isEmpty() || horOutro.get().isBloqueado() ||
+                        agendamentoRepository.findByDataAndHorarioAndBarbeiro(data, horario, outroBarbeiro) != null) {
+                    throw new IllegalArgumentException(
+                            "Conflito ao reatribuir agendamento Sem Preferência para " + outroBarbeiro);
+                }
+                sem.setBarbeiro(outroBarbeiro);
+                sem.setHorarioId(horOutro.get().getId());
+                agendamentoRepository.save(sem);
+                // Bloquear o horário do barbeiro reatribuído
+                horOutro.ifPresent(horarioToBlock -> {
+                    horarioToBlock.setBloqueado(true);
+                    horarioRepository.save(horarioToBlock);
+                    logger.info("Horário bloqueado para {} em {}", outroBarbeiro, horario);
+                });
+                logger.info("Agendamento Sem Preferência ID={} reatribuído para {}", sem.getId(), outroBarbeiro);
+            }
+
+            // Definir horarioId se não informado
+            agendamento.setHorarioId(horarioExistente.get().getId());
         }
 
         for (Long servicoId : agendamento.getServicos()) {
@@ -91,10 +128,13 @@ public class AgendamentoService {
         Agendamento novoAgendamento = agendamentoRepository.save(agendamento);
 
         // Bloquear horário apenas para barbeiro específico
-        if (!"Sem Preferência".equals(barbeiro)) {
+        if (barbeiro != null && !"Sem Preferência".equals(barbeiro)) {
+            Optional<Horario> horarioExistente = horarioRepository.findByDiaSemanaAndHoraAndBarbeiro(diaSemana, horario,
+                    barbeiro);
             horarioExistente.ifPresent(horarioToBlock -> {
                 horarioToBlock.setBloqueado(true);
                 horarioRepository.save(horarioToBlock);
+                logger.info("Horário bloqueado para {} em {}", barbeiro, horario);
             });
         }
 

@@ -308,23 +308,25 @@
     <img src="assets/user-profile.png" alt="Menu" width="40px" height="40px" />
     <span>Menu</span>
   </a>
+</div>
 
-  <!-- POP-UP DE MENU MOBILE -->
-  <div class="menu-mobile-popup" *ngIf="mostrarMenuMobile">
-    <div class="menu-mobile-content">
-      <button class="fechar-menu-mobile" (click)="fecharMenuMobile()">✕</button>
-      <ul class="menu-mobile-lista">
-        <li><a routerLink="/menu" (click)="fecharMenuMobile()">Perfil</a></li>
-        <li>
-          <a
-            routerLink="/meus-horarios"
-            (click)="fecharMenuMobile()"
-            style="color: #f46d25"
-            >Meus horarios</a
-          >
-        </li>
-        <li><a (click)="logout(); fecharMenuMobile()">Sair</a></li>
-      </ul>
-    </div>
+<!-- POP-UP DE MENU MOBILE -->
+<div
+  class="menu-mobile-popup"
+  *ngIf="mostrarMenuMobile"
+  (click)="fecharMenuMobile($event)"
+>
+  <div class="menu-mobile-content" (click)="$event.stopPropagation()">
+    <ul class="menu-mobile-lista">
+      <li>
+        <a routerLink="/perfil" (click)="fecharMenuMobile()">Perfil</a>
+      </li>
+      <li>
+        <a routerLink="/meus-horarios" (click)="fecharMenuMobile()"
+          >Meus horarios</a
+        >
+      </li>
+      <li><a (click)="logout(); fecharMenuMobile()">Sair</a></li>
+    </ul>
   </div>
 </div>

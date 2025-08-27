@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   cardsVisiveis: Card[] = [];
   proximoIndexCard = 0;
   intervaloCarrosselCards: any;
-  mostrarMenuMobile = false
+  mostrarMenuMobile = false;
 
   constructor(
     public usuarioService: UsuarioService,
@@ -90,17 +90,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private cardService: CardService,
     private http: HttpClient,
     private barbeiroService: BarbeiroService // 👈 adicionado aqui
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const data = new Date();
     const dias = [
       'Domingo',
-      'Segunda',
-      'Terça',
-      'Quarta',
-      'Quinta',
-      'Sexta',
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
       'Sábado',
     ];
     const meses = [
@@ -117,8 +117,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       'nov',
       'dez',
     ];
-    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${meses[data.getMonth()]
-      } ${data.getFullYear()}`;
+    this.dataHoje = `${dias[data.getDay()]}, ${data.getDate()} ${
+      meses[data.getMonth()]
+    } ${data.getFullYear()}`;
 
     if (this.usuarioService.isLoggedIn()) {
       this.usuarioService.getUsuarioLogado().subscribe({
@@ -178,13 +179,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.mostrarMenuMobile = true;
   }
 
-  fecharMenuMobile() {
-    this.mostrarMenuMobile = false;
+  fecharMenuMobile(event?: MouseEvent) {
+    if (event && event.target) {
+      const target = event.target as HTMLElement;
+      // Verifica se o clique foi fora do menu-mobile-content
+      if (
+        target.classList.contains('menu-mobile-popup') &&
+        !target.closest('.menu-mobile-content')
+      ) {
+        this.mostrarMenuMobile = false;
+      }
+    }
   }
 
   logout() {
     this.usuarioService.logout();
-    this.router.navigate(['/']); // Redireciona para home
+    this.fecharMenuMobile();
+    this.router.navigate(['/']);
   }
 
   // ---------------------- Serviços ----------------------

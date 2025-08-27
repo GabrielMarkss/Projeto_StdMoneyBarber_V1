@@ -7,6 +7,7 @@ import { AgendamentoComponent } from './agendamento/agendamento.component';
 import { ProdutosComponent } from './produtos/produtos.component';
 import { HomeComponent } from './home/home.component';
 import { MeusHorariosComponent } from './meus-horarios/meus-horarios.component';
+import { PerfilComponent } from './perfil/perfil.component';
 
 export const appRoutes: Routes = [
   {
@@ -38,6 +39,10 @@ export const appRoutes: Routes = [
   {
     path: 'produtos',
     component: ProdutosComponent,
+  },
+  {
+    path: 'perfil',
+    component: PerfilComponent,
   },
   {
     path: 'dashboard',

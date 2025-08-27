@@ -28,6 +28,7 @@ public class Agendamento {
     private double desconto;
     private double total;
     private String cupomNome;
+    private Long horarioId;
 
     @Enumerated(EnumType.STRING)
     private StatusAgendamento status;
@@ -125,5 +126,13 @@ public class Agendamento {
 
     public void setStatus(StatusAgendamento status) {
         this.status = status;
+    }
+
+    public Long getHorarioId() {
+        return horarioId;
+    }
+
+    public void setHorarioId(Long horarioId) {
+        this.horarioId = horarioId;
     }
 }

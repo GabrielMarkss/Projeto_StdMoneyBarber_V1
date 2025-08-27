@@ -716,16 +716,15 @@
   </div>
 
   <!-- POP-UP DE MENU MOBILE -->
-  <div class="menu-mobile-popup" *ngIf="mostrarMenuMobile">
-    <div class="menu-mobile-content">
-      <button class="fechar-menu-mobile" (click)="fecharMenuMobile()">✕</button>
+  <div
+    class="menu-mobile-popup"
+    *ngIf="mostrarMenuMobile"
+    (click)="fecharMenuMobile($event)"
+  >
+    <div class="menu-mobile-content" (click)="$event.stopPropagation()">
       <ul class="menu-mobile-lista">
-        <li><a routerLink="/menu" (click)="fecharMenuMobile()">Perfil</a></li>
         <li>
-          <a routerLink="/galeria" (click)="fecharMenuMobile()">Galeria</a>
-        </li>
-        <li>
-          <a routerLink="/produtos" (click)="fecharMenuMobile()">Produtos</a>
+          <a routerLink="/perfil" (click)="fecharMenuMobile()">Perfil</a>
         </li>
         <li>
           <a routerLink="/meus-horarios" (click)="fecharMenuMobile()"

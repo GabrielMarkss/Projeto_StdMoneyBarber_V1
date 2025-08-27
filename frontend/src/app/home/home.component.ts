@@ -47,11 +47,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     const data = new Date();
     const dias = [
       'Domingo',
-      'Segunda',
-      'Terça',
-      'Quarta',
-      'Quinta',
-      'Sexta',
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
       'Sábado',
     ];
     const meses = [

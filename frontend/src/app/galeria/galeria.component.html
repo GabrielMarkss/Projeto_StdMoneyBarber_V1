@@ -172,8 +172,8 @@
 </nav>
 
 <!-- BARRA INFERIOR MOBILE -->
-<nav class="bottom-nav">
-  <a routerLink="/dashteste" class="nav-item">
+<div class="bottom-nav">
+  <a routerLink="/dashboard" class="nav-item">
     <img src="assets/inicio.png" alt="Início" width="38px" height="32px" />
     <span>Início</span>
   </a>
@@ -199,8 +199,29 @@
     <img src="assets/produto.png" alt="Produtos" width="30px" height="30px" />
     <span>Produtos</span>
   </a>
-  <a routerLink="/menu" class="nav-item">
+  <a class="nav-item" (click)="abrirMenuMobile()">
     <img src="assets/user-profile.png" alt="Menu" width="40px" height="40px" />
     <span>Menu</span>
   </a>
-</nav>
+</div>
+
+<!-- POP-UP DE MENU MOBILE -->
+<div
+  class="menu-mobile-popup"
+  *ngIf="mostrarMenuMobile"
+  (click)="fecharMenuMobile($event)"
+>
+  <div class="menu-mobile-content" (click)="$event.stopPropagation()">
+    <ul class="menu-mobile-lista">
+      <li>
+        <a routerLink="/perfil" (click)="fecharMenuMobile()">Perfil</a>
+      </li>
+      <li>
+        <a routerLink="/meus-horarios" (click)="fecharMenuMobile()"
+          >Meus horarios</a
+        >
+      </li>
+      <li><a (click)="logout(); fecharMenuMobile()">Sair</a></li>
+    </ul>
+  </div>
+</div>

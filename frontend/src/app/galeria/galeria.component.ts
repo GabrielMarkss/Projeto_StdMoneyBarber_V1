@@ -3,7 +3,7 @@ import { UsuarioService } from '../service/usuario.service';
 import { NotificacaoService } from '../service/notificacao.service';
 import { Notificacao } from '../models/Notificacao.model';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -20,7 +20,6 @@ export class GaleriaComponent implements OnInit {
   menuTimeout: any;
   notificacaoTimeout: any;
   dataHoje: string = '';
-
   notificacoes: Notificacao[] = [];
   nova: Notificacao = {
     titulo: '',
@@ -28,22 +27,23 @@ export class GaleriaComponent implements OnInit {
     imagemUrl: '',
   };
   imagemSelecionada: File | null = null;
-  router: any;
+  mostrarMenuMobile = false;
 
   constructor(
     public usuarioService: UsuarioService,
-    private notificacaoService: NotificacaoService
+    private notificacaoService: NotificacaoService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     const data = new Date();
     const dias = [
       'Domingo',
-      'Segunda',
-      'Terça',
-      'Quarta',
-      'Quinta',
-      'Sexta',
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
       'Sábado',
     ];
     const meses = [
@@ -91,8 +91,13 @@ export class GaleriaComponent implements OnInit {
       console.warn('Usuário não está logado. Redirecionando para login.');
       this.router.navigate(['/login']);
     }
-    
-    this.listarNotificacoes();
+  }
+
+  irParaSecao(id: string) {
+    const elemento = document.getElementById(id);
+    if (elemento) {
+      elemento.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   abrirMenu() {
@@ -103,7 +108,30 @@ export class GaleriaComponent implements OnInit {
   fecharMenu() {
     this.menuTimeout = setTimeout(() => {
       this.menuAberto = false;
-    }, 150);
+    }, 200);
+  }
+
+  abrirMenuMobile() {
+    this.mostrarMenuMobile = true;
+  }
+
+  fecharMenuMobile(event?: MouseEvent) {
+    if (event && event.target) {
+      const target = event.target as HTMLElement;
+      // Verifica se o clique foi fora do menu-mobile-content
+      if (
+        target.classList.contains('menu-mobile-popup') &&
+        !target.closest('.menu-mobile-content')
+      ) {
+        this.mostrarMenuMobile = false;
+      }
+    }
+  }
+
+  logout() {
+    this.usuarioService.logout();
+    this.fecharMenuMobile();
+    this.router.navigate(['/']);
   }
 
   abrirNotificacao() {
@@ -135,7 +163,6 @@ export class GaleriaComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.imagemSelecionada = file;
-
       const reader = new FileReader();
       reader.onload = () => {
         this.nova.imagemUrl = reader.result as string;
@@ -146,25 +173,41 @@ export class GaleriaComponent implements OnInit {
 
   salvarNotificacao() {
     if (this.nova.id) {
-      this.notificacaoService
-        .atualizar(this.nova.id, this.nova)
-        .subscribe(() => {
+      this.notificacaoService.atualizar(this.nova.id, this.nova).subscribe({
+        next: () => {
           console.log('Notificação atualizada');
           this.cancelarFormulario();
           this.listarNotificacoes();
-        });
+        },
+        error: (err) => {
+          console.error('Erro ao atualizar notificação:', err);
+          alert('Erro ao atualizar notificação: ' + (err.error || err.message));
+        },
+      });
     } else {
-      this.notificacaoService.criar(this.nova).subscribe(() => {
-        console.log('Notificação criada');
-        this.cancelarFormulario();
-        this.listarNotificacoes();
+      this.notificacaoService.criar(this.nova).subscribe({
+        next: () => {
+          console.log('Notificação criada');
+          this.cancelarFormulario();
+          this.listarNotificacoes();
+        },
+        error: (err) => {
+          console.error('Erro ao criar notificação:', err);
+          alert('Erro ao criar notificação: ' + (err.error || err.message));
+        },
       });
     }
   }
 
   listarNotificacoes() {
-    this.notificacaoService.listar().subscribe((res) => {
-      this.notificacoes = res;
+    this.notificacaoService.listar().subscribe({
+      next: (res) => {
+        this.notificacoes = res;
+      },
+      error: (err) => {
+        console.error('Erro ao listar notificações:', err);
+        alert('Erro ao carregar notificações: ' + (err.error || err.message));
+      },
     });
   }
 
@@ -172,11 +215,13 @@ export class GaleriaComponent implements OnInit {
     const confirmar = confirm('Você deseja remover esta notificação?');
     if (!confirmar) return;
 
-    const isAdmin = this.usuarioService.usuarioEhAdmin(); // crie esse método se necessário
-
+    const isAdmin = this.usuarioService.usuarioEhAdmin();
     this.notificacaoService.deletar(notificacao.id!, true, isAdmin).subscribe({
       next: () => this.listarNotificacoes(),
-      error: (err) => alert(err.error || 'Erro ao remover notificação'),
+      error: (err) => {
+        console.error('Erro ao remover notificação:', err);
+        alert('Erro ao remover notificação: ' + (err.error || err.message));
+      },
     });
   }
 

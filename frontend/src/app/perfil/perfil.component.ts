@@ -7,13 +7,13 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-dashteste',
-  templateUrl: './produtos.component.html',
-  styleUrls: ['./produtos.component.css'],
+  selector: 'app-perfil',
+  templateUrl: './perfil.component.html',
+  styleUrls: ['./perfil.component.css'],
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
 })
-export class ProdutosComponent implements OnInit {
+export class PerfilComponent implements OnInit {
   menuAberto = false;
   mostrarNotificacoes = false;
   mostrarFormulario = false;
@@ -31,6 +31,7 @@ export class ProdutosComponent implements OnInit {
   router: any;
 
   mostrarMenuMobile = false;
+  mostrarModalImagem = false;
 
   constructor(
     public usuarioService: UsuarioService,
@@ -119,23 +120,13 @@ export class ProdutosComponent implements OnInit {
     this.mostrarMenuMobile = true;
   }
 
-  fecharMenuMobile(event?: MouseEvent) {
-    if (event && event.target) {
-      const target = event.target as HTMLElement;
-      // Verifica se o clique foi fora do menu-mobile-content
-      if (
-        target.classList.contains('menu-mobile-popup') &&
-        !target.closest('.menu-mobile-content')
-      ) {
-        this.mostrarMenuMobile = false;
-      }
-    }
+  fecharMenuMobile() {
+    this.mostrarMenuMobile = false;
   }
 
   logout() {
     this.usuarioService.logout();
-    this.fecharMenuMobile();
-    this.router.navigate(['/']);
+    this.router.navigate(['/']); // Redireciona para home
   }
   abrirNotificacao() {
     clearTimeout(this.notificacaoTimeout);
@@ -160,19 +151,6 @@ export class ProdutosComponent implements OnInit {
       imagemUrl: '',
     };
     this.imagemSelecionada = null;
-  }
-
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.imagemSelecionada = file;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.nova.imagemUrl = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
   }
 
   salvarNotificacao() {
@@ -214,5 +192,21 @@ export class ProdutosComponent implements OnInit {
   editarNotificacao(n: Notificacao) {
     this.nova = { ...n };
     this.mostrarFormulario = true;
+  }
+
+  abrirModalImagem() {
+    this.mostrarModalImagem = true;
+  }
+
+  fecharModalImagem() {
+    this.mostrarModalImagem = false;
+  }
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      // Aqui você vai adicionar a lógica para envio da imagem
+      console.log('Imagem selecionada:', file.name);
+    }
   }
 }

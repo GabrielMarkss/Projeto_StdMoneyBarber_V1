@@ -10,4 +10,5 @@ export interface Agendamento {
   total: number;
   cupomNome: string | null;
   status?: 'PENDENTE' | 'ATIVO' | 'FINALIZADO';
+  horarioId?: number | null;
 }

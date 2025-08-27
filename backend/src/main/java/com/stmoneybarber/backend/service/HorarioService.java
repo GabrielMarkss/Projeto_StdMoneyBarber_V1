@@ -1,6 +1,7 @@
 package com.stmoneybarber.backend.service;
 
 import com.stmoneybarber.backend.model.Horario;
+import com.stmoneybarber.backend.repository.AgendamentoRepository;
 import com.stmoneybarber.backend.repository.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class HorarioService {
 
     @Autowired
     private HorarioRepository horarioRepo;
+
+    @Autowired
+    private AgendamentoRepository agendamentoRepo;
 
     public List<Horario> listarTodos() {
         return horarioRepo.findAll();
@@ -113,38 +117,49 @@ public class HorarioService {
             return Collections.emptyList();
         }
 
-        List<Horario> horarios;
         if ("Sem Preferência".equals(barbeiro)) {
-            horarios = horarioRepo.findByDiaSemana(diaSemana).stream()
-                    .filter(h -> h.getBarbeiro() != null)
-                    .filter(h -> h.getHora() != null)
+            List<Horario> todos = horarioRepo.findByDiaSemana(diaSemana).stream()
+                    .filter(h -> h.getBarbeiro() != null && h.getHora() != null)
                     .collect(Collectors.toList());
 
-            logger.info("Horários encontrados para 'Sem Preferência': {}", horarios.size());
+            Map<LocalTime, List<Horario>> horariosPorHora = todos.stream()
+                    .collect(Collectors.groupingBy(Horario::getHora));
 
-            Map<LocalTime, Horario> horariosUnificados = new HashMap<>();
-            for (Horario h : horarios) {
-                LocalTime hora = h.getHora();
-                if (!horariosUnificados.containsKey(hora)) {
-                    Horario horarioSemPreferencia = new Horario();
-                    horarioSemPreferencia.setHora(hora);
-                    horarioSemPreferencia.setDiaSemana(diaSemana);
-                    horarioSemPreferencia.setBarbeiro("Sem Preferência");
-                    horarioSemPreferencia.setBloqueado(h.isBloqueado());
-                    horariosUnificados.put(hora, horarioSemPreferencia);
+            List<Horario> horariosComuns = new ArrayList<>();
+            for (Map.Entry<LocalTime, List<Horario>> entry : horariosPorHora.entrySet()) {
+                LocalTime hora = entry.getKey();
+                List<Horario> hs = entry.getValue();
+
+                Set<String> barbeirosDisp = hs.stream()
+                        .map(Horario::getBarbeiro)
+                        .collect(Collectors.toSet());
+
+                // Remover barbeiros com agendamentos na data específica
+                barbeirosDisp.removeIf(b -> agendamentoRepo.findByDataAndHorarioAndBarbeiro(data, hora, b) != null);
+
+                long countSemPref = agendamentoRepo.countByDataAndHorarioAndBarbeiroIsNull(data, hora);
+
+                if (barbeirosDisp.size() >= 2 && countSemPref == 0) {
+                    Horario horario = new Horario();
+                    horario.setHora(hora);
+                    horario.setDiaSemana(diaSemana);
+                    horario.setBarbeiro("Sem Preferência");
+                    horario.setBloqueado(false);
+                    horariosComuns.add(horario);
                 }
             }
-            return new ArrayList<>(horariosUnificados.values()).stream()
+
+            return horariosComuns.stream()
                     .sorted(Comparator.comparing(Horario::getHora))
                     .collect(Collectors.toList());
         } else {
-            horarios = horarioRepo.findByDiaSemanaAndBarbeiro(diaSemana, barbeiro).stream()
+            // Para barbeiros específicos, retornar todos os horários, mesmo bloqueados
+            List<Horario> horarios = horarioRepo.findByDiaSemanaAndBarbeiro(diaSemana, barbeiro).stream()
                     .filter(h -> h.getHora() != null)
                     .sorted(Comparator.comparing(Horario::getHora))
                     .collect(Collectors.toList());
-        }
 
-        logger.info("Horários encontrados para {} e barbeiro {}: {}", data, barbeiro, horarios.size());
-        return horarios;
+            return horarios;
+        }
     }
 }

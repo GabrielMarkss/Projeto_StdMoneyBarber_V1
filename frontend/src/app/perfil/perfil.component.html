@@ -162,7 +162,7 @@
     >
       <div class="dropdown-toggle">☰</div>
       <ul class="dropdown-menu" *ngIf="menuAberto">
-        <li><a routerLink="/menu">Perfil</a></li>
+        <li><a routerLink="/perfil-user">Perfil</a></li>
         <li><a routerLink="/galeria">Galeria</a></li>
         <li><a routerLink="/produtos">Produtos</a></li>
         <li><a routerLink="/agendamentos">Agendamentos</a></li>
@@ -171,57 +171,52 @@
   </div>
 </nav>
 
-<!-- BARRA INFERIOR MOBILE -->
-<div class="bottom-nav">
-  <a routerLink="/dashboard" class="nav-item">
-    <img src="assets/inicio.png" alt="Início" width="38px" height="32px" />
-    <span>Início</span>
-  </a>
-  <a routerLink="/galeria" class="nav-item">
-    <img src="assets/galeria.png" alt="Galeria" width="34px" height="33px" />
-    <span>Galeria</span>
-  </a>
-  <a routerLink="/agendamento" class="nav-item">
-    <img
-      src="assets/agendamento.png"
-      alt="Agendamentos"
-      width="34px"
-      height="34px"
-    />
-    <span>Agendamentos</span>
-  </a>
-  <a routerLink="/produtos" class="nav-item">
-    <img
-      src="assets/produto-ativo.png"
-      alt="Produtos"
-      width="30px"
-      height="30px"
-    />
-    <span style="color: #f46d25; font-weight: bold">Produtos</span>
-  </a>
-  <a class="nav-item" (click)="abrirMenuMobile()">
-    <img src="assets/user-profile.png" alt="Menu" width="40px" height="40px" />
-    <span>Menu</span>
-  </a>
-</div>
+<div class="perfil-container">
+  <div class="perfil-header">
+    <div class="avatar-wrapper" (click)="abrirModalImagem()">
+      <img src="assets/user-profile.png" alt="Avatar" class="avatar-img" />
+      <div class="edit-overlay">✎</div>
+    </div>
+    <div class="rating">
+      <span class="estrela">⭐ 4,93</span>
+      <button class="selo-btn">Quero o selo!</button>
+    </div>
+  </div>
 
-<!-- POP-UP DE MENU MOBILE -->
-<div
-  class="menu-mobile-popup"
-  *ngIf="mostrarMenuMobile"
-  (click)="fecharMenuMobile($event)"
->
-  <div class="menu-mobile-content" (click)="$event.stopPropagation()">
-    <ul class="menu-mobile-lista">
-      <li>
-        <a routerLink="/perfil" (click)="fecharMenuMobile()">Perfil</a>
-      </li>
-      <li>
-        <a routerLink="/meus-horarios" (click)="fecharMenuMobile()"
-          >Meus horarios</a
-        >
-      </li>
-      <li><a (click)="logout(); fecharMenuMobile()">Sair</a></li>
-    </ul>
+  <div class="perfil-info">
+    <div class="campo">
+      <span class="label">Nome</span>
+      <span class="valor">{{ usuarioService.nome }}</span>
+    </div>
+    <div class="campo">
+      <span class="label">Sobrenome</span>
+      <span class="valor">{{ usuarioService.sobrenome }}</span>
+    </div>
+    <div class="campo">
+      <span class="label">Alterar telefone</span>
+      <span class="valor">{{ usuarioService.telefone }}</span>
+    </div>
+    <div class="campo">
+      <span class="label">Alterar email</span>
+      <span class="valor">{{ usuarioService.email }}</span>
+    </div>
+    <div class="campo">
+      <span class="label">Alterar senha</span>
+      <span class="valor">********</span>
+    </div>
+  </div>
+
+  <!-- MODAL DE ALTERAR IMAGEM -->
+  <div class="modal-overlay" *ngIf="mostrarModalImagem">
+    <div class="modal-content">
+      <h3>Alterar Foto de Perfil</h3>
+      <input type="file" (change)="onFileChange($event)" />
+      <div class="modal-botoes">
+        <button class="btn-cancelar" (click)="fecharModalImagem()">
+          Cancelar
+        </button>
+        <button class="btn-salvar" disabled>Salvar</button>
+      </div>
+    </div>
   </div>
 </div>

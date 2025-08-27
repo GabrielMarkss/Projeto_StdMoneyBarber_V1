@@ -217,8 +217,17 @@ export class AgendamentoComponent implements OnInit {
     this.mostrarMenuMobile = true;
   }
 
-  fecharMenuMobile() {
-    this.mostrarMenuMobile = false;
+  fecharMenuMobile(event?: MouseEvent) {
+    if (event && event.target) {
+      const target = event.target as HTMLElement;
+      // Verifica se o clique foi fora do menu-mobile-content
+      if (
+        target.classList.contains('menu-mobile-popup') &&
+        !target.closest('.menu-mobile-content')
+      ) {
+        this.mostrarMenuMobile = false;
+      }
+    }
   }
 
   logout() {
@@ -361,58 +370,17 @@ export class AgendamentoComponent implements OnInit {
       .listarDisponiveis(dataFormatada, this.barbeiroSelecionado)
       .subscribe({
         next: (res: Horario[]) => {
-          console.log('Horários recebidos:', res);
-          let horariosValidos: Horario[] = res;
+          console.log('Horários recebidos do backend:', res);
 
-          // ---------- SEM PREFERÊNCIA ----------
-          if (this.barbeiroSelecionado === 'Sem Preferência') {
-            // 1️⃣ Agrupa horários por barbeiro
-            const horariosPorBarbeiro: Map<string, Set<string>> = new Map();
-            res.forEach((h: Horario) => {
-              if (!h.barbeiro) return;
-              if (!horariosPorBarbeiro.has(h.barbeiro)) {
-                horariosPorBarbeiro.set(h.barbeiro, new Set<string>());
-              }
-              horariosPorBarbeiro.get(h.barbeiro)!.add(h.horario);
-            });
+          // Normaliza horários para HH:mm e remove duplicatas
+          const horariosValidos = res
+            .filter((h) => h.horario) // Apenas remove horários sem horário
+            .map((h) => ({
+              ...h,
+              horario: h.horario.slice(0, 5), // Normaliza para HH:mm
+            }))
+            .sort((a, b) => a.horario.localeCompare(b.horario));
 
-            let horariosComuns: Set<string> = new Set(); // inicializado vazio
-            let primeiro = true;
-
-            horariosPorBarbeiro.forEach((horarios: Set<string>) => {
-              if (primeiro) {
-                horariosComuns = new Set(horarios); // primeiro barbeiro
-                primeiro = false;
-              } else {
-                horariosComuns = new Set(
-                  [...horariosComuns].filter((hora) => horarios.has(hora))
-                );
-              }
-            });
-            const horariosUnificados: Horario[] = [];
-            horariosComuns.forEach((hora: string) => {
-              const base = res.find((h: Horario) => h.horario === hora)!;
-              horariosUnificados.push({
-                id: Date.now() + Math.floor(Math.random() * 1000), // id único
-                horario: hora,
-                barbeiro: 'Sem Preferência',
-                bloqueado: base.bloqueado,
-                diaSemana: base.diaSemana,
-              });
-            });
-
-            // 4️⃣ Ordena
-            horariosValidos = horariosUnificados.sort((a, b) =>
-              a.horario.localeCompare(b.horario)
-            );
-          } else {
-            // ---------- BARBEIRO ESPECÍFICO ----------
-            horariosValidos = res.sort((a, b) =>
-              a.horario.localeCompare(b.horario)
-            );
-          }
-
-          // Atualiza variáveis do componente
           this.horarios = horariosValidos;
           this.horariosSelecionados.clear();
           this.horariosSelecionadosParaBloqueio.clear();
@@ -420,7 +388,10 @@ export class AgendamentoComponent implements OnInit {
           this.horarioSelecionadoCliente = null;
           this.selecionarTodos = false;
 
-          console.log('Horários carregados:', this.horarios);
+          console.log(
+            'Horários finais carregados para exibição:',
+            this.horarios
+          );
         },
         error: (err) => {
           console.error('Erro ao carregar horários:', err);
@@ -611,7 +582,10 @@ export class AgendamentoComponent implements OnInit {
     this.modoEdicao = false;
     this.horarioEditando = null;
     this.novoHorario = '';
-    this.barbeiroFormulario = 'Felipe';
+    this.barbeiroFormulario =
+      this.barbeiroSelecionado === 'Sem Preferência'
+        ? 'Felipe'
+        : this.barbeiroSelecionado;
     this.mostrarFormularioHorario = true;
   }
 
@@ -628,7 +602,10 @@ export class AgendamentoComponent implements OnInit {
     this.novoHorario = '';
     this.horarioEditando = null;
     this.modoEdicao = false;
-    this.barbeiroFormulario = 'Felipe';
+    this.barbeiroFormulario =
+      this.barbeiroSelecionado === 'Sem Preferência'
+        ? 'Felipe'
+        : this.barbeiroSelecionado;
   }
 
   obterHorariosPorPeriodo(periodo: 'manha' | 'tarde' | 'noite') {
@@ -736,9 +713,7 @@ export class AgendamentoComponent implements OnInit {
     const hora = this.formatarHorario(horario.horario);
     this.resumo.data = `${dia}/${mes}/${ano}`;
     this.resumo.horario = hora;
-
-    // Use the barber assigned to the time slot (Felipe, Ezequiel, or Sem Preferência)
-    this.resumo.barbeiro = horario.barbeiro || 'Sem Preferência';
+    this.resumo.barbeiro = horario.barbeiro;
     this.atualizarValores();
   }
 
@@ -800,6 +775,10 @@ export class AgendamentoComponent implements OnInit {
       total: this.resumo.total,
       cupomNome: this.resumo.cupomNome || null,
       status: 'PENDENTE',
+      horarioId:
+        this.resumo.barbeiro === 'Sem Preferência'
+          ? null
+          : this.horarioSelecionadoCliente?.id,
     };
 
     console.log('Payload enviado:', JSON.stringify(agendamento, null, 2));

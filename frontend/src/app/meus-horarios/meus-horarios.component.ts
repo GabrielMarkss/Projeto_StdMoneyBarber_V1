@@ -133,8 +133,17 @@ export class MeusHorariosComponent implements OnInit {
     this.mostrarMenuMobile = true;
   }
 
-  fecharMenuMobile() {
-    this.mostrarMenuMobile = false;
+  fecharMenuMobile(event?: MouseEvent) {
+    if (event && event.target) {
+      const target = event.target as HTMLElement;
+      // Verifica se o clique foi fora do menu-mobile-content
+      if (
+        target.classList.contains('menu-mobile-popup') &&
+        !target.closest('.menu-mobile-content')
+      ) {
+        this.mostrarMenuMobile = false;
+      }
+    }
   }
 
   logout() {
