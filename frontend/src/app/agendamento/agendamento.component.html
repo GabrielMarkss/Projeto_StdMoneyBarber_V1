@@ -1,15 +1,14 @@
-<!-- Navbar -->
+<!-- NAVBAR SUPERIOR -->
 <nav class="navbar" id="navbar">
   <div class="left" style="display: flex; align-items: center">
     <img
-      src="assets/user-profile.png"
+      src="assets/logo.png"
       alt="Perfil"
       routerLink="/dashteste"
       class="profile-img"
-      style="width: 85px; height: 85px; border-radius: 50%; cursor: pointer"
     />
     <div class="greeting">
-      <div>Olá, {{ usuarioService.nomeUsuario || "..." }}</div>
+      <div>Studio Money Barber</div>
       <small>{{ dataHoje }}</small>
     </div>
   </div>
@@ -131,7 +130,7 @@
     >
       <div class="dropdown-toggle">☰</div>
       <ul class="dropdown-menu" *ngIf="menuAberto">
-        <li><a routerLink="/menu">Perfil</a></li>
+        <li><a routerLink="/perfil">Perfil</a></li>
         <li><a routerLink="/galeria">Galeria</a></li>
         <li><a routerLink="/produtos">Produtos</a></li>
         <li><a routerLink="/meus-horarios">Meus Horários</a></li>

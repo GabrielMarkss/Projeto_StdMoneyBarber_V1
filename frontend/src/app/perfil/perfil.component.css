@@ -14,10 +14,11 @@
 }
 
 .profile-img {
-  width: 90px;
-  height: 90px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
+  padding: 15px;
 }
 
 .greeting {
@@ -279,18 +280,16 @@
 }
 
 .perfil-container {
-  max-width: 600px;
-  margin: 75px auto 0px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .avatar-wrapper {
   position: relative;
-  display: flex;
-  justify-content: center;
   margin-bottom: 20px;
 }
 
@@ -304,82 +303,104 @@
 
 .edit-overlay {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.5); /* Fundo preto transparente */
-  color: white; /* Ícone branco */
-  border-radius: 50%;
-  font-size: 18px;
-  line-height: 1;
-  width: 28px;
-  height: 28px;
-  display: none; /* Escondido por padrão */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-  cursor: pointer;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 24px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: 50%;
 }
 
-/* Mostrar o ícone no hover (desktop) */
 .avatar-wrapper:hover .edit-overlay {
-  display: flex;
+  opacity: 1;
 }
 
-.perfil-info .campo {
-  display: flex;
-  flex-direction: column;
-  margin: 10px 0;
+.mostrar-icone-mobile {
+  opacity: 1 !important;
+}
+
+.perfil-info {
+  width: 100%;
+}
+
+.campo {
+  position: relative;
+  margin-bottom: 20px;
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .label-container {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .label {
   font-weight: bold;
 }
 
-.valor {
-  text-align: left;
-}
-
-.edit-icon {
-  cursor: pointer;
+.arrow-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 18px;
+  cursor: pointer;
   color: #007bff;
 }
 
-input {
-  width: 100%;
-  padding: 5px;
-  margin: 5px 0;
+.arrow-icon:hover {
+  color: #0056b3;
+}
+
+.valor {
+  display: block;
+  color: #333;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-container input {
+  flex: 1;
+  padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-button {
-  padding: 5px 10px;
-  margin: 5px;
+.botoes-container {
+  display: flex;
+  gap: 10px;
+}
+
+.botoes-container button {
+  padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.botoes-container button:first-of-type {
-  background: #28a745;
+.botoes-container button:first-child {
+  background-color: #007bff;
   color: white;
 }
 
-.botoes-container button:last-of-type {
-  background: #ccc;
-  color: black;
+.botoes-container button:last-child {
+  background-color: #6c757d;
+  color: white;
 }
 
 .modal-overlay {
@@ -390,37 +411,80 @@ button {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 999;
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 280px;
-  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.modal-content input {
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 .modal-botoes {
-  margin-top: 10px;
-}
-
-.btn-cancelar {
-  background: #ccc;
-  padding: 5px 16px;
-  font-size: 13px;
-  font-weight: bold;
-  color: black;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .btn-salvar {
-  background: #f46d25;
-  padding: 5px 16px;
-  font-size: 13px;
-  font-weight: bold;
+  background-color: #007bff;
   color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-salvar:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.btn-cancelar {
+  background-color: #6c757d;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f8f8f8;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+}
+
+.nav-item img {
+  margin-bottom: 5px;
 }
 
 /* ===== POP-UP DE MENU MOBILE ===== */
@@ -487,75 +551,7 @@ button {
 .menu-mobile-lista li a:hover {
   background-color: #444;
 }
-
-.confirmacao-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  z-index: 1000;
-  width: 300px; /* Largura padrão no desktop */
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  font-family: Arial, sans-serif;
-}
-
-.confirmacao-modal .modal-content {
-  text-align: center; /* Centraliza h3 e p */
-}
-
-.confirmacao-modal h3 {
-  color: black;
-  margin-top: 0;
-  font-size: 18px;
-}
-
-.confirmacao-modal p {
-  font-size: 14px;
-  color: #333;
-  margin: 10px 0;
-}
-
-.confirmacao-modal .modal-botoes {
-  display: flex;
-  justify-content: center; /* Centraliza os botões */
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.confirmacao-modal .btn-cancelar {
-  background: white;
-  color: #f46d25;
-  border: 2px solid #f46d25;
-  border-radius: 5px;
-  padding: 8px 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.confirmacao-modal .btn-cancelar:hover {
-  background-color: #f46d25;
-  color: white;
-}
-
-.confirmacao-modal .btn-salvar {
-  background-color: #f46d25;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 16px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.confirmacao-modal .btn-salvar:hover {
-  background-color: #d05e20;
-}
-
+/* ===== MEDIA QUERIES ===== */
 @media (min-width: 769px) {
   .bottom-nav {
     display: none !important;
@@ -568,7 +564,6 @@ button {
 @media (max-width: 768px) {
   .navbar {
     padding: 0.8rem 0 0.5rem 1rem !important;
-    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -588,7 +583,6 @@ button {
 
   .greeting div {
     font-size: 16px !important;
-    margin-bottom: 0.5px;
   }
 
   .greeting small {
@@ -597,8 +591,8 @@ button {
     line-height: 2;
   }
 
-  .right {
-    margin-top: 0.8rem !important;
+  .notificacao-wrapper {
+    margin: 0 10px 10px 0;
   }
 
   .notificacao {
@@ -607,7 +601,7 @@ button {
   }
 
   .notificacao-popup {
-    border-radius: 3px;
+    border-radius: 4px;
     width: 12.5rem;
     top: 1.5rem;
     right: 0.25rem;
@@ -695,77 +689,27 @@ button {
     display: none;
   }
 
-  .perfil-info .campo {
-    display: flex;
-    flex-direction: column;
-    margin: 10px 0;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-
-  .label-container {
-    display: flex;
+  .input-container {
+    flex-direction: row;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
   }
 
-  .label {
-    font-weight: bold;
+  .input-container input {
+    min-width: 120px;
   }
 
-  .valor {
-    text-align: left;
+  .botoes-container {
+    flex-direction: row;
+    gap: 8px;
   }
 
-  .edit-icon {
-    cursor: pointer;
-    font-size: 18px;
-    color: #007bff;
-  }
-
-  input {
-    width: 100%;
-    padding: 5px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-
-  button {
-    padding: 5px 10px;
-    margin: 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .botoes-container button:first-of-type {
-    background: #28a745;
-    color: white;
-  }
-
-  .botoes-container button:last-of-type {
-    background: #ccc;
-    color: black;
+  .botoes-container button {
+    padding: 5px 8px;
+    font-size: 12px;
   }
 
   .confirmacao-modal {
-    width: 280px; /* Largura especificada para mobile */
-    padding: 15px;
-  }
-
-  .confirmacao-modal h3 {
-    font-size: 16px;
-  }
-
-  .confirmacao-modal p {
-    font-size: 13px;
-  }
-
-  .confirmacao-modal .btn-cancelar,
-  .confirmacao-modal .btn-salvar {
-    padding: 6px 12px;
-    font-size: 13px;
+    display: none; /* Remove o pop-up de confirmação no mobile */
   }
 }

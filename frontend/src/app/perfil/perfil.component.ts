@@ -29,8 +29,8 @@ export class PerfilComponent implements OnInit {
   imagemSelecionada: File | null = null;
   mostrarMenuMobile = false;
   mostrarModalImagem = false;
-  mostrarIconeMobile = false; // Controla a visibilidade do ícone no mobile
-  mostrarIconeDesktop = false; // Controla a visibilidade do ícone no desktop
+  mostrarIconeMobile = false;
+  mostrarIconeDesktop = false;
 
   editandoNome = false;
   editandoSobrenome = false;
@@ -146,7 +146,6 @@ export class PerfilComponent implements OnInit {
   fecharMenuMobile(event?: MouseEvent) {
     if (event && event.target) {
       const target = event.target as HTMLElement;
-      // Verifica se o clique foi fora do menu-mobile-content
       if (
         target.classList.contains('menu-mobile-popup') &&
         !target.closest('.menu-mobile-content')
@@ -237,7 +236,7 @@ export class PerfilComponent implements OnInit {
       event.target &&
       !(event.target as Element).closest('.campo, .confirmacao-modal')
     ) {
-      this.verificarEdicao(this.campoEditado);
+      this.cancelarEdicao(this.campoEditado); // Fecha o campo ao clicar fora
     }
   }
 
@@ -245,14 +244,10 @@ export class PerfilComponent implements OnInit {
     if (this.isMobile()) {
       this.mostrarIconeMobile = !this.mostrarIconeMobile;
       if (this.mostrarIconeMobile) {
-        // Abrir o modal após um pequeno atraso para permitir que o ícone seja visível
-        setTimeout(() => {
-          this.abrirModalImagem();
-          this.mostrarIconeMobile = false; // Esconder o ícone após abrir o modal
-        }, 300);
+        this.abrirModalImagem();
       }
     } else {
-      this.abrirModalImagem(); // No desktop, abrir o modal diretamente
+      this.abrirModalImagem();
     }
   }
 
@@ -263,7 +258,7 @@ export class PerfilComponent implements OnInit {
   fecharModalImagem() {
     this.mostrarModalImagem = false;
     this.imagemSelecionada = null;
-    this.mostrarIconeMobile = false; // Resetar no mobile
+    this.mostrarIconeMobile = false;
   }
 
   salvarImagem() {
@@ -291,11 +286,9 @@ export class PerfilComponent implements OnInit {
 
   iniciarEdicao(campo: string) {
     if (this.isMobile() && this.mostrarConfirmacao) {
-      // Impede abrir outro campo enquanto o pop-up está aberto
       return;
     }
 
-    // Cancela qualquer edição ativa antes de iniciar uma nova
     if (this.campoEditado) {
       this.cancelarEdicao(this.campoEditado);
     }
@@ -306,7 +299,7 @@ export class PerfilComponent implements OnInit {
           this.tempNome = this.usuarioService.nome || '';
           this.valorOriginal['nome'] = this.tempNome;
           this.editandoNome = true;
-          this.campoEditado = campo; // Define o campo editado
+          this.campoEditado = campo;
         }
         break;
       case 'sobrenome':
@@ -345,7 +338,6 @@ export class PerfilComponent implements OnInit {
   }
 
   onInputChange(campo: string) {
-    // Rastreia alterações no input
     switch (campo) {
       case 'nome':
         this.valorAlterado['nome'] = this.tempNome;
@@ -366,17 +358,15 @@ export class PerfilComponent implements OnInit {
   }
 
   verificarEdicao(campo: string) {
-    if (this.isMobile()) {
-      const valorOriginal = this.valorOriginal[campo] || '';
-      const valorAlterado = this.valorAlterado[campo] || '';
-      if (valorOriginal !== valorAlterado && valorAlterado.trim()) {
-        // Mostra o pop-up se o valor foi alterado e não está vazio
+    const valorOriginal = this.valorOriginal[campo] || '';
+    const valorAlterado = this.valorAlterado[campo] || '';
+    if (valorOriginal !== valorAlterado && valorAlterado.trim()) {
+      if (!this.isMobile()) {
         this.mostrarConfirmacao = true;
         this.campoEditado = campo;
-      } else {
-        // Cancela a edição se não houve alterações ou o valor está vazio
-        this.cancelarEdicao(campo);
       }
+    } else {
+      this.cancelarEdicao(campo); // Fecha o campo se não houver alterações
     }
   }
 
@@ -453,7 +443,7 @@ export class PerfilComponent implements OnInit {
     this.usuarioService.atualizarDados(dados).subscribe({
       next: () => {
         console.log(`${campo} atualizado`);
-        this.cancelarEdicao(campo); // Chama cancelarEdicao para limpar estados
+        this.cancelarEdicao(campo);
         alert(`${campo} atualizado com sucesso`);
       },
       error: (err) => {

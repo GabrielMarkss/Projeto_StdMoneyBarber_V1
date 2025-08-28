@@ -1,11 +1,28 @@
-/* ====== NAVBAR ====== */
+/* ===== NAVBAR ===== */
 .navbar {
   background-color: #111;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 12px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 15px;
+}
+
+.greeting {
+  padding: -15px;
 }
 
 .greeting div {
@@ -18,10 +35,24 @@
   font-size: 14px;
 }
 
-/* ====== NOTIFICAÇÃO - POPUP E ÍCONES ====== */
+.right {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding-bottom: 0.25px;
+  margin-top: 20px;
+}
+
+/* ===== NOTIFICAÇÃO - POPUP E ÍCONES ===== */
 .notificacao-wrapper {
   position: relative;
   cursor: pointer;
+}
+
+.notificacao {
+  width: 2.25rem;
+  cursor: pointer;
+  transform: translateY(2px);
 }
 
 .notificacao-popup {
@@ -31,43 +62,12 @@
   width: 20rem;
   background: white;
   color: black;
-  border-radius: 6px;
+  border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   font-family: sans-serif;
 }
 
-.icone-acao {
-  font-size: 16px;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  user-select: none;
-  background: none;
-  border: none;
-}
-
-.icone-acao.notificacao {
-  position: absolute;
-  top: 6px;
-}
-
-.icone-acao.notificacao[title="Editar notificação"] {
-  right: 32px;
-}
-
-.icone-acao.notificacao[title="Remover notificação"] {
-  right: 8px;
-}
-
-.icone-acao.editar:hover {
-  color: blue;
-}
-
-.icone-acao.apagar:hover {
-  color: red;
-}
-
-/* ====== NOTIFICAÇÃO - CONTEUDO ====== */
 .notificacao-card {
   display: flex;
   padding: 10px;
@@ -80,7 +80,7 @@
 
 .notificacao-card:hover {
   background-color: #eee;
-  border-radius: 6px;
+  border-radius: 5px;
 }
 
 .notificacao-imagem {
@@ -115,6 +115,36 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.icone-acao {
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  user-select: none;
+  background: none;
+  border: none;
+}
+
+.icone-acao.notificacao {
+  position: absolute;
+  top: 6px;
+}
+
+.icone-acao.notificacao[title="Editar notificação"] {
+  right: 32px;
+}
+
+.icone-acao.notificacao[title="Remover notificação"] {
+  right: 8px;
+}
+
+.icone-acao.editar:hover {
+  color: blue;
+}
+
+.icone-acao.apagar:hover {
+  color: red;
 }
 
 .nova-notificacao {
@@ -895,10 +925,14 @@
 }
 
 @media (max-width: 768px) {
-  /* ====== NAVBAR ====== */
+  .dropdown,
+  .profile-img,
+  .botoes-hover {
+    display: none !important;
+  }
+
   .navbar {
     padding: 0.8rem 0 0.5rem 1rem !important;
-    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -909,26 +943,30 @@
     justify-content: space-between;
   }
 
-  .navbar .dropdown,
-  .profile-img,
-  .editar-notificacao,
-  .apagar-notificacao {
-    display: none !important;
+  .profile-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 15px;
+  }
+
+  .greeting {
+    padding: -15px;
   }
 
   .greeting div {
-    font-size: 16px !important;
-    margin-bottom: 0.5px;
+    font-size: 20px;
+    font-weight: bold;
   }
 
   .greeting small {
-    font-size: 11px !important;
-    font-weight: bold;
-    line-height: 2;
+    color: #aaa;
+    font-size: 14px;
   }
 
-  .right {
-    margin-top: 0.8rem !important;
+  .notificacao-wrapper {
+    margin: 0 10px 10px 0;
   }
 
   .notificacao {
@@ -937,7 +975,7 @@
   }
 
   .notificacao-popup {
-    border-radius: 3px;
+    border-radius: 4px;
     width: 12.5rem;
     top: 1.5rem;
     right: 0.25rem;
@@ -952,6 +990,10 @@
     width: 40px;
     height: 40px;
     font-size: 10px;
+  }
+
+  .notificacao-conteudo {
+    font-size: 12px;
   }
 
   .notificacao-conteudo strong {

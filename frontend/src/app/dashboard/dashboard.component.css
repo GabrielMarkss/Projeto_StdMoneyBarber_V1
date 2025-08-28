@@ -14,10 +14,11 @@
 }
 
 .profile-img {
-  width: 90px;
-  height: 90px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
+  padding: 15px;
 }
 
 .greeting {
@@ -1217,6 +1218,15 @@
 }
 
 @media (max-width: 768px) {
+  .dropdown,
+  .profile-img,
+  .botao-editar,
+  .botao-remover,
+  .botao-navegacao,
+  .botoes-hover {
+    display: none !important;
+  }
+
   .navbar {
     padding: 0.8rem 0 0.5rem 1rem !important;
     top: 0;
@@ -1229,27 +1239,18 @@
     justify-content: space-between;
   }
 
-  .dropdown,
-  .profile-img,
-  .editar-notificacao,
-  .apagar-notificacao,
-  .botao-adicionar,
-  .botao-editar,
-  .botao-remover,
-  .botao-navegacao,
-  .botoes-hover {
-    display: none !important;
-  }
-
   .greeting div {
     font-size: 16px !important;
-    margin-bottom: 0.5px;
   }
 
   .greeting small {
     font-size: 11px !important;
     font-weight: bold;
     line-height: 2;
+  }
+
+  .notificacao-wrapper {
+    margin: 0 10px 10px 0;
   }
 
   .notificacao {
@@ -1352,6 +1353,10 @@
     margin: 2px 0;
     line-height: 1.2;
     width: 200px;
+  }
+
+  .i {
+    display: block;
   }
 
   .contato {

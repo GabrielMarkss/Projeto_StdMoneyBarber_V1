@@ -2,7 +2,11 @@
 <nav class="navbar" id="navbar">
   <div class="left" style="display: flex; align-items: center">
     <img
-      src="assets/user-profile.png"
+      [src]="
+        usuarioService.imagemUrl
+          ? 'http://localhost:8080' + usuarioService.imagemUrl
+          : 'assets/user.png'
+      "
       alt="Perfil"
       routerLink="/dashteste"
       class="profile-img"
@@ -140,7 +144,7 @@
     >
       <div class="dropdown-toggle">☰</div>
       <ul class="dropdown-menu" *ngIf="menuAberto">
-        <li><a routerLink="/menu">Perfil</a></li>
+        <li><a routerLink="/perfil">Perfil</a></li>
         <li><a routerLink="/galeria">Galeria</a></li>
         <li><a routerLink="/produtos">Produtos</a></li>
         <li><a routerLink="/meus-horarios">Meus horarios</a></li>
@@ -346,13 +350,13 @@
           </a>
         </p>
         <p>
-          Você pode agendar com o &nbsp; {{ b.nome }} pelo WhatsApp ou
+          Você pode agendar com
+          <span class="i">o {{ b.nome }} pelo WhatsApp ou </span>
           <a
             [routerLink]="['/agendamento']"
             [queryParams]="{ barbeiro: b.nome }"
             class="btn-agendar"
-          >
-            Agendar Online por aqui
+            >Agende Online clicando aqui
           </a>
         </p>
       </div>

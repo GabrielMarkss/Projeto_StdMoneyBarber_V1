@@ -2,39 +2,28 @@
 <nav class="navbar" id="navbar">
   <div class="left" style="display: flex; align-items: center">
     <img
-      src="assets/user-profile.png"
+      src="assets/logo.png"
       alt="Perfil"
       routerLink="/dashteste"
       class="profile-img"
     />
     <div class="greeting">
-      <div>Olá, {{ usuarioService.nomeUsuario || "..." }}</div>
+      <div>Studio Money Barber</div>
       <small>{{ dataHoje }}</small>
     </div>
   </div>
 
-  <div
-    class="right"
-    style="
-      display: flex;
-      align-items: flex-end;
-      gap: 0.5rem;
-      padding-bottom: 0.25px;
-      margin-top: 20px;
-    "
-  >
+  <div class="right">
     <!-- Ícone Notificação com pop-up -->
     <div
       class="notificacao-wrapper"
       (mouseenter)="abrirNotificacao()"
       (mouseleave)="fecharNotificacao()"
-      style="margin-right: 0.625rem"
     >
       <img
         src="assets/notificacao.png"
         alt="Notificações"
         class="notificacao"
-        style="width: 2.25rem; cursor: pointer; transform: translateY(2px)"
       />
 
       <!-- Pop-up dinâmico -->
@@ -63,15 +52,12 @@
             <span
               class="icone-acao editar notificacao"
               title="Editar notificação"
-              style="font-size: 17px"
               (click)="editarNotificacao(n)"
               >✎</span
             >
-
             <span
               class="icone-acao apagar notificacao"
               title="Remover notificação"
-              style="font-weight: bold"
               (click)="confirmarRemocao(n)"
               >✕</span
             >
@@ -92,29 +78,20 @@
         class="formulario-modal"
         *ngIf="mostrarFormulario && usuarioService.usuarioEhAdmin()"
       >
-        <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
-
+        <h3>Nova Notificação</h3>
         <input
           type="text"
           [(ngModel)]="nova.titulo"
           class="form-control"
           placeholder="Título da notificação"
-          style="width: 100%"
         />
         <textarea
           [(ngModel)]="nova.descricao"
           class="form-control"
           placeholder="Descrição da notificação"
-          style="width: 100%; resize: none"
           rows="3"
         ></textarea>
-
-        <input
-          style="color: black"
-          type="file"
-          (change)="onFileChange($event)"
-        />
-
+        <input type="file" (change)="onFileChange($event)" />
         <div class="botoes-container">
           <button class="cancelar" (click)="cancelarFormulario()">
             Cancelar
@@ -140,7 +117,7 @@
     >
       <div class="dropdown-toggle">☰</div>
       <ul class="dropdown-menu" *ngIf="menuAberto">
-        <li><a routerLink="/menu">Perfil</a></li>
+        <li><a routerLink="/perfil">Perfil</a></li>
         <li><a routerLink="/galeria">Galeria</a></li>
         <li><a routerLink="/produtos">Produtos</a></li>
         <li><a routerLink="/meus-horarios">Meus horarios</a></li>
@@ -157,7 +134,7 @@
       [src]="
         usuarioService.imagemUrl
           ? 'http://localhost:8080' + usuarioService.imagemUrl
-          : 'assets/user-profile.png'
+          : 'assets/user.png'
       "
       alt="Avatar"
       class="avatar-img"
@@ -175,231 +152,211 @@
   </div>
 
   <div class="perfil-info">
-    <div class="campo" (click)="iniciarEdicao('nome')">
+    <div class="campo">
       <div class="label-container">
         <span class="label">Nome</span>
-        <span class="edit-icon" *ngIf="!editandoNome && !isMobile()">✎</span>
       </div>
       <ng-container *ngIf="!editandoNome">
         <span class="valor">{{ usuarioService.nome || "Não informado" }}</span>
+        <span class="arrow-icon" (click)="iniciarEdicao('nome')">➔</span>
       </ng-container>
       <ng-container *ngIf="editandoNome">
-        <input
-          [(ngModel)]="tempNome"
-          type="text"
-          placeholder="Novo nome"
-          (blur)="verificarEdicao('nome')"
-          (ngModelChange)="onInputChange('nome')"
-        />
-        <div class="botoes-container" *ngIf="!isMobile()">
-          <button (click)="salvarEdicao('nome')">Salvar</button>
-          <button (click)="cancelarEdicao('nome')">Cancelar</button>
+        <div class="input-container">
+          <input
+            [(ngModel)]="tempNome"
+            type="text"
+            placeholder="Novo nome"
+            (blur)="verificarEdicao('nome')"
+            (ngModelChange)="onInputChange('nome')"
+            #nomeInput
+            autofocus
+          />
+          <div class="botoes-container">
+            <button (click)="salvarEdicao('nome')">Salvar</button>
+            <button (click)="cancelarEdicao('nome')">Cancelar</button>
+          </div>
         </div>
       </ng-container>
     </div>
-    <div class="campo" (click)="iniciarEdicao('sobrenome')">
+
+    <div class="campo">
       <div class="label-container">
         <span class="label">Sobrenome</span>
-        <span class="edit-icon" *ngIf="!editandoSobrenome && !isMobile()"
-          >✎</span
-        >
       </div>
       <ng-container *ngIf="!editandoSobrenome">
         <span class="valor">{{
           usuarioService.sobrenome || "Não informado"
         }}</span>
+        <span class="arrow-icon" (click)="iniciarEdicao('sobrenome')">➔</span>
       </ng-container>
       <ng-container *ngIf="editandoSobrenome">
-        <input
-          [(ngModel)]="tempSobrenome"
-          type="text"
-          placeholder="Novo sobrenome"
-          (blur)="verificarEdicao('sobrenome')"
-          (ngModelChange)="onInputChange('sobrenome')"
-        />
-        <div class="botoes-container" *ngIf="!isMobile()">
-          <button (click)="salvarEdicao('sobrenome')">Salvar</button>
-          <button (click)="cancelarEdicao('sobrenome')">Cancelar</button>
+        <div class="input-container">
+          <input
+            [(ngModel)]="tempSobrenome"
+            type="text"
+            placeholder="Novo sobrenome"
+            (blur)="verificarEdicao('sobrenome')"
+            (ngModelChange)="onInputChange('sobrenome')"
+            #sobrenomeInput
+            autofocus
+          />
+          <div class="botoes-container">
+            <button (click)="salvarEdicao('sobrenome')">Salvar</button>
+            <button (click)="cancelarEdicao('sobrenome')">Cancelar</button>
+          </div>
         </div>
       </ng-container>
     </div>
-    <div class="campo" (click)="iniciarEdicao('telefone')">
+
+    <div class="campo">
       <div class="label-container">
         <span class="label">Telefone</span>
-        <span class="edit-icon" *ngIf="!editandoTelefone && !isMobile()"
-          >✎</span
-        >
       </div>
       <ng-container *ngIf="!editandoTelefone">
         <span class="valor">{{
           usuarioService.telefone || "Não informado"
         }}</span>
+        <span class="arrow-icon" (click)="iniciarEdicao('telefone')">➔</span>
       </ng-container>
       <ng-container *ngIf="editandoTelefone">
-        <input
-          [(ngModel)]="tempTelefone"
-          type="text"
-          placeholder="Novo telefone"
-          (blur)="verificarEdicao('telefone')"
-          (ngModelChange)="onInputChange('telefone')"
-        />
-        <div class="botoes-container" *ngIf="!isMobile()">
-          <button (click)="salvarEdicao('telefone')">Salvar</button>
-          <button (click)="cancelarEdicao('telefone')">Cancelar</button>
-        </div>
-      </ng-container>
-    </div>
-    <div class="campo" (click)="iniciarEdicao('email')">
-      <div class="label-container">
-        <span class="label">Email</span>
-        <span class="edit-icon" *ngIf="!editandoEmail && !isMobile()">✎</span>
-      </div>
-      <ng-container *ngIf="!editandoEmail">
-        <span class="valor">{{ usuarioService.email || "Não informado" }}</span>
-      </ng-container>
-      <ng-container *ngIf="editandoEmail">
-        <input
-          [(ngModel)]="tempEmail"
-          type="email"
-          placeholder="Novo email"
-          (blur)="verificarEdicao('email')"
-          (ngModelChange)="onInputChange('email')"
-        />
-        <div class="botoes-container" *ngIf="!isMobile()">
-          <button (click)="salvarEdicao('email')">Salvar</button>
-          <button (click)="cancelarEdicao('email')">Cancelar</button>
-        </div>
-      </ng-container>
-    </div>
-    <div class="campo" (click)="iniciarEdicao('senha')">
-      <div class="label-container">
-        <span class="label">Senha</span>
-        <span class="edit-icon" *ngIf="!editandoSenha && !isMobile()">✎</span>
-      </div>
-      <ng-container *ngIf="!editandoSenha">
-        <span class="valor">********</span>
-      </ng-container>
-      <ng-container *ngIf="editandoSenha">
-        <input
-          [(ngModel)]="tempSenha"
-          type="password"
-          placeholder="Nova senha"
-          (blur)="verificarEdicao('senha')"
-          (ngModelChange)="onInputChange('senha')"
-        />
-        <div class="botoes-container" *ngIf="!isMobile()">
-          <button (click)="salvarEdicao('senha')">Salvar</button>
-          <button (click)="cancelarEdicao('senha')">Cancelar</button>
+        <div class="input-container">
+          <input
+            [(ngModel)]="tempTelefone"
+            type="text"
+            placeholder="Novo telefone"
+            (blur)="verificarEdicao('telefone')"
+            (ngModelChange)="onInputChange('telefone')"
+            #telefoneInput
+            autofocus
+          />
+          <div class="botoes-container">
+            <button (click)="salvarEdicao('telefone')">Salvar</button>
+            <button (click)="cancelarEdicao('telefone')">Cancelar</button>
+          </div>
         </div>
       </ng-container>
     </div>
 
-    <div
-      class="confirmacao-modal"
-      *ngIf="mostrarConfirmacao && isMobile() && campoEditado"
-    >
+    <div class="campo">
+      <div class="label-container">
+        <span class="label">Email</span>
+      </div>
+      <ng-container *ngIf="!editandoEmail">
+        <span class="valor">{{ usuarioService.email || "Não informado" }}</span>
+        <span class="arrow-icon" (click)="iniciarEdicao('email')">➔</span>
+      </ng-container>
+      <ng-container *ngIf="editandoEmail">
+        <div class="input-container">
+          <input
+            [(ngModel)]="tempEmail"
+            type="email"
+            placeholder="Novo email"
+            (blur)="verificarEdicao('email')"
+            (ngModelChange)="onInputChange('email')"
+            #emailInput
+            autofocus
+          />
+          <div class="botoes-container">
+            <button (click)="salvarEdicao('email')">Salvar</button>
+            <button (click)="cancelarEdicao('email')">Cancelar</button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="campo">
+      <div class="label-container">
+        <span class="label">Senha</span>
+      </div>
+      <ng-container *ngIf="!editandoSenha">
+        <span class="valor">********</span>
+        <span class="arrow-icon" (click)="iniciarEdicao('senha')">➔</span>
+      </ng-container>
+      <ng-container *ngIf="editandoSenha">
+        <div class="input-container">
+          <input
+            [(ngModel)]="tempSenha"
+            type="password"
+            placeholder="Nova senha"
+            (blur)="verificarEdicao('senha')"
+            (ngModelChange)="onInputChange('senha')"
+            #senhaInput
+            autofocus
+          />
+          <div class="botoes-container">
+            <button (click)="salvarEdicao('senha')">Salvar</button>
+            <button (click)="cancelarEdicao('senha')">Cancelar</button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- MODAL DE ALTERAR IMAGEM -->
+    <div class="modal-overlay" *ngIf="mostrarModalImagem">
       <div class="modal-content">
-        <h3>Salvar alterações?</h3>
-        <p>
-          Você editou o campo {{ campoEditado }}. Deseja salvar as alterações?
-        </p>
+        <h3>Alterar Imagem de Perfil</h3>
+        <input type="file" (change)="onFileChange($event)" accept="image/*" />
         <div class="modal-botoes">
-          <button class="btn-cancelar" (click)="cancelarEdicao(campoEditado)">
+          <button class="btn-cancelar" (click)="fecharModalImagem()">
             Cancelar
           </button>
-          <button class="btn-salvar" (click)="salvarEdicao(campoEditado)">
+          <button
+            class="btn-salvar"
+            (click)="salvarImagem()"
+            [disabled]="!imagemSelecionada"
+          >
             Salvar
           </button>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- MODAL DE ALTERAR IMAGEM -->
-    <div
-      class="modal-overlay"
-      *ngIf="mostrarConfirmacao && isMobile() && campoEditado"
-    >
-      <div class="confirmacao-modal">
-        <div class="modal-content">
-          <h3>Salvar alterações?</h3>
-          <p>
-            Você editou o campo {{ campoEditado }}. Deseja salvar as alterações?
-          </p>
-          <div class="modal-botoes">
-            <button class="btn-cancelar" (click)="cancelarEdicao(campoEditado)">
-              Cancelar
-            </button>
-            <button class="btn-salvar" (click)="salvarEdicao(campoEditado)">
-              Salvar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- BARRA INFERIOR MOBILE -->
+<div class="bottom-nav">
+  <a routerLink="/dashboard" class="nav-item">
+    <img src="assets/inicio.png" alt="Início" width="38px" height="32px" />
+    <span>Início</span>
+  </a>
+  <a routerLink="/galeria" class="nav-item">
+    <img src="assets/galeria.png" alt="Galeria" width="34px" height="33px" />
+    <span>Galeria</span>
+  </a>
+  <a routerLink="/agendamento" class="nav-item">
+    <img
+      src="assets/agendamento.png"
+      alt="Agendamentos"
+      width="34px"
+      height="34px"
+    />
+    <span>Agendamentos</span>
+  </a>
+  <a routerLink="/produtos" class="nav-item">
+    <img src="assets/produto.png" alt="Produtos" width="30px" height="30px" />
+    <span>Produtos</span>
+  </a>
+  <a class="nav-item" (click)="abrirMenuMobile()">
+    <img src="assets/user-profile.png" alt="Menu" width="40px" height="40px" />
+    <span>Menu</span>
+  </a>
+</div>
 
-    <!-- BARRA INFERIOR MOBILE -->
-    <div class="bottom-nav">
-      <a routerLink="/dashboard" class="nav-item">
-        <img src="assets/inicio.png" alt="Início" width="38px" height="32px" />
-        <span>Início</span>
-      </a>
-      <a routerLink="/galeria" class="nav-item">
-        <img
-          src="assets/galeria.png"
-          alt="Galeria"
-          width="34px"
-          height="33px"
-        />
-        <span>Galeria</span>
-      </a>
-      <a routerLink="/agendamento" class="nav-item">
-        <img
-          src="assets/agendamento.png"
-          alt="Agendamentos"
-          width="34px"
-          height="34px"
-        />
-        <span>Agendamentos</span>
-      </a>
-      <a routerLink="/produtos" class="nav-item">
-        <img
-          src="assets/produto.png"
-          alt="Produtos"
-          width="30px"
-          height="30px"
-        />
-        <span>Produtos</span>
-      </a>
-      <a class="nav-item" (click)="abrirMenuMobile()">
-        <img
-          src="assets/user-profile.png"
-          alt="Menu"
-          width="40px"
-          height="40px"
-        />
-        <span>Menu</span>
-      </a>
-    </div>
-
-    <!-- POP-UP DE MENU MOBILE -->
-    <div
-      class="menu-mobile-popup"
-      *ngIf="mostrarMenuMobile"
-      (click)="fecharMenuMobile($event)"
-    >
-      <div class="menu-mobile-content" (click)="$event.stopPropagation()">
-        <ul class="menu-mobile-lista">
-          <li>
-            <a routerLink="/perfil" (click)="fecharMenuMobile()">Perfil</a>
-          </li>
-          <li>
-            <a routerLink="/meus-horarios" (click)="fecharMenuMobile()"
-              >Meus horarios</a
-            >
-          </li>
-          <li><a (click)="logout(); fecharMenuMobile()">Sair</a></li>
-        </ul>
-      </div>
-    </div>
+<!-- POP-UP DE MENU MOBILE -->
+<div
+  class="menu-mobile-popup"
+  *ngIf="mostrarMenuMobile"
+  (click)="fecharMenuMobile($event)"
+>
+  <div class="menu-mobile-content" (click)="$event.stopPropagation()">
+    <ul class="menu-mobile-lista">
+      <li><a routerLink="/perfil" (click)="fecharMenuMobile()">Perfil</a></li>
+      <li>
+        <a routerLink="/meus-horarios" (click)="fecharMenuMobile()"
+          >Meus horarios</a
+        >
+      </li>
+      <li><a (click)="logout(); fecharMenuMobile()">Sair</a></li>
+    </ul>
   </div>
 </div>

@@ -1,26 +1,15 @@
 <!-- NAVBAR SUPERIOR -->
-<nav
-  class="navbar"
-  style="
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-  "
->
+<nav class="navbar" id="navbar">
   <div class="left" style="display: flex; align-items: center">
     <img
-      src="assets/user-profile.png"
+      src="assets/logo.png"
       alt="Perfil"
       routerLink="/dashteste"
       class="profile-img"
-      style="width: 85px; height: 85px; border-radius: 50%; cursor: pointer"
     />
-    <div class="greeting" style="color: white">
-      <div style="font-size: 20px; font-weight: bold">
-        Olá, {{ usuarioService.nomeUsuario || "..." }}
-      </div>
-      <small style="font-size: 14px">{{ dataHoje }}</small>
+    <div class="greeting">
+      <div>Studio Money Barber</div>
+      <small>{{ dataHoje }}</small>
     </div>
   </div>
 
@@ -72,16 +61,17 @@
             "
           >
             <span
-              class="editar-notificacao"
+              class="icone-acao editar notificacao"
               title="Editar notificação"
-              style="cursor: pointer; font-size: 18px"
+              style="font-size: 17px"
               (click)="editarNotificacao(n)"
               >✎</span
             >
+
             <span
-              class="apagar-notificacao"
+              class="icone-acao apagar notificacao"
               title="Remover notificação"
-              style="cursor: pointer; font-size: 18px"
+              style="font-weight: bold"
               (click)="confirmarRemocao(n)"
               >✕</span
             >
@@ -100,19 +90,7 @@
       <!-- Formulário de criação (modal) -->
       <div
         class="formulario-modal"
-        *ngIf="mostrarFormulario"
-        style="
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: white;
-          padding: 20px;
-          border-radius: 12px;
-          z-index: 999;
-          width: 400px;
-          box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-        "
+        *ngIf="mostrarFormulario && usuarioService.usuarioEhAdmin()"
       >
         <h3 style="color: black; margin-top: 0">Nova Notificação</h3>
 
@@ -154,7 +132,7 @@
       </div>
     </div>
 
-    <!-- Botão de menu -->
+    <!-- Botão de menu ☰ -->
     <div
       class="dropdown"
       (mouseenter)="abrirMenu()"
@@ -162,10 +140,11 @@
     >
       <div class="dropdown-toggle">☰</div>
       <ul class="dropdown-menu" *ngIf="menuAberto">
-        <li><a routerLink="/menu">Perfil</a></li>
+        <li><a routerLink="/perfil">Perfil</a></li>
         <li><a routerLink="/galeria">Galeria</a></li>
         <li><a routerLink="/produtos">Produtos</a></li>
-        <li><a routerLink="/agendamentos">Agendamentos</a></li>
+        <li><a routerLink="/meus-horarios">Meus horarios</a></li>
+        <li><a (click)="logout()">Sair</a></li>
       </ul>
     </div>
   </div>

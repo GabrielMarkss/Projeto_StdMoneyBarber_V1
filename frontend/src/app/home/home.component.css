@@ -5,6 +5,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 12px;
 }
 
 .left {
@@ -17,12 +18,11 @@
   height: 60px;
   border-radius: 50%;
   cursor: pointer;
-  margin-right: -15px;
   padding: 15px;
 }
 
 .greeting {
-  padding: 14px 15px 10px 16px;
+  padding: -15px;
 }
 
 .greeting div {
@@ -33,6 +33,14 @@
 .greeting small {
   color: #aaa;
   font-size: 14px;
+}
+
+.right {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding-bottom: 0.25px;
+  margin-top: 20px;
 }
 
 .login-button {
@@ -806,17 +814,6 @@
 }
 
 @media (max-width: 768px) {
-  .navbar {
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #000;
-    z-index: 1001;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
   .dropdown,
   .profile-img,
   .editar-notificacao,
@@ -829,9 +826,24 @@
     display: none !important;
   }
 
+  .navbar {
+    padding: 0.8rem 0 0.5rem 1rem !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .greeting {
+    padding: 6px 0 7px 0;
+  }
+
   .greeting div {
     font-size: 16px !important;
-    margin-bottom: 0.5px;
   }
 
   .greeting small {
@@ -840,6 +852,9 @@
     line-height: 2;
   }
 
+  .right {
+    padding-bottom: 10px;
+  }
   .login-button {
     background-color: #f46d25;
     color: white;
@@ -849,53 +864,8 @@
     font-size: 13px;
     font-weight: bold;
     cursor: pointer;
-    margin-right: 25px;
+    margin-right: 15px;
     transition: background-color 0.3s ease;
-  }
-
-  .notificacao {
-    width: 20px !important;
-    height: 20px !important;
-  }
-
-  .notificacao-popup {
-    border-radius: 4px;
-    width: 12.5rem;
-    top: 1.5rem;
-    right: 0.25rem;
-  }
-
-  .notificacao-card {
-    padding: 8px;
-    gap: 8px;
-  }
-
-  .notificacao-imagem {
-    width: 40px;
-    height: 40px;
-    font-size: 10px;
-  }
-
-  .notificacao-conteudo {
-    font-size: 12px;
-  }
-
-  .notificacao-conteudo strong {
-    font-size: 13px;
-  }
-
-  .notificacao-conteudo small {
-    font-size: 11.5px;
-    line-height: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .nova-notificacao {
-    display: none;
   }
 
   .imagem-wrapper {

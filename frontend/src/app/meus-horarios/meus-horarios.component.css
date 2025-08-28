@@ -1,30 +1,28 @@
-/* Navbar */
+/* ===== NAVBAR ===== */
 .navbar {
   background-color: #111;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 12px;
 }
 
-/* Lado esquerdo da navbar */
 .left {
   display: flex;
   align-items: center;
 }
 
-/* Imagem de perfil */
 .profile-img {
-  width: 85px;
-  height: 85px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
+  padding: 15px;
 }
 
-/* Saudação */
 .greeting {
-  color: white;
+  padding: -15px;
 }
 
 .greeting div {
@@ -37,7 +35,6 @@
   font-size: 14px;
 }
 
-/* Lado direito da navbar */
 .right {
   display: flex;
   align-items: flex-end;
@@ -46,21 +43,18 @@
   margin-top: 20px;
 }
 
-/* Wrapper de notificação */
+/* ===== NOTIFICAÇÃO - POPUP E ÍCONES ===== */
 .notificacao-wrapper {
   position: relative;
   cursor: pointer;
-  margin-right: 0.625rem;
 }
 
-/* Ícone de notificação */
 .notificacao {
   width: 2.25rem;
   cursor: pointer;
   transform: translateY(2px);
 }
 
-/* Popup de notificação */
 .notificacao-popup {
   position: absolute;
   top: 3rem;
@@ -68,13 +62,12 @@
   width: 20rem;
   background: white;
   color: black;
-  border-radius: 6px;
+  border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   font-family: sans-serif;
 }
 
-/* Cartão de notificação */
 .notificacao-card {
   display: flex;
   padding: 10px;
@@ -82,9 +75,14 @@
   align-items: center;
   gap: 10px;
   position: relative;
+  border: none;
 }
 
-/* Imagem da notificação */
+.notificacao-card:hover {
+  background-color: #eee;
+  border-radius: 5px;
+}
+
 .notificacao-imagem {
   width: 55px;
   height: 55px;
@@ -96,7 +94,6 @@
   text-align: center;
 }
 
-/* Conteúdo da notificação */
 .notificacao-conteudo {
   flex: 1;
   overflow: hidden;
@@ -120,39 +117,36 @@
   text-overflow: ellipsis;
 }
 
-/* Ícone de editar notificação */
-.editar-notificacao {
-  position: absolute;
-  top: 6px;
-  right: 32px;
+.icone-acao {
   font-size: 16px;
-  font-weight: bold;
-  color: #888;
   cursor: pointer;
   transition: color 0.3s ease;
+  user-select: none;
+  background: none;
+  border: none;
 }
 
-.editar-notificacao:hover {
+.icone-acao.notificacao {
+  position: absolute;
+  top: 6px;
+}
+
+.icone-acao.notificacao[title="Editar notificação"] {
+  right: 32px;
+}
+
+.icone-acao.notificacao[title="Remover notificação"] {
+  right: 8px;
+}
+
+.icone-acao.editar:hover {
   color: blue;
 }
 
-/* Ícone de apagar notificação */
-.apagar-notificacao {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #888;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.apagar-notificacao:hover {
+.icone-acao.apagar:hover {
   color: red;
 }
 
-/* Nova notificação */
 .nova-notificacao {
   padding: 6px;
   text-align: center;
@@ -168,78 +162,19 @@
   background-color: #f0f0f0;
 }
 
-/* Modal de formulário */
+/* ===== FORMULÁRIO DE NOTIFICAÇÃO ===== */
 .formulario-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 1.5rem;
+  padding: 20px;
   border-radius: 12px;
   z-index: 999;
-  width: 450px;
+  width: 400px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   font-family: Arial, sans-serif;
-}
-
-.formulario-modal h3 {
-  color: #333;
-  margin: 0 0 1rem;
-  font-size: 1.4rem;
-  font-weight: bold;
-}
-
-.formulario-modal .form-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.75rem;
-  gap: 1rem;
-}
-
-.formulario-modal label {
-  color: #333;
-  font-weight: bold;
-  font-size: 0.9rem;
-  width: 100px;
-  flex-shrink: 0;
-}
-
-.formulario-modal select,
-.formulario-modal input[type="text"] {
-  flex: 1;
-  padding: 6px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 0.85rem;
-  box-sizing: border-box;
-}
-
-.formulario-modal select:focus,
-.formulario-modal input[type="text"]:focus {
-  outline: none;
-  border-color: #f46d25;
-  box-shadow: 0 0 4px rgba(244, 109, 37, 0.3);
-}
-
-.formulario-modal .servicos-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.75rem;
-}
-
-.formulario-modal .servicos-group label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #555;
-  font-size: 0.85rem;
-  font-weight: normal;
-  width: auto;
-}
-
-.formulario-modal input[type="checkbox"] {
-  margin: 0;
 }
 
 .formulario-modal input[type="text"],
@@ -248,7 +183,7 @@
   padding: 8px 10px;
   margin-bottom: 12px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 5px;
   font-size: 14px;
   box-sizing: border-box;
 }
@@ -262,23 +197,21 @@
   margin-bottom: 12px;
 }
 
-.formulario-modal .botoes-container {
+.botoes-container {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 10px;
 }
 
 .formulario-modal button.cancelar {
-  padding: 6px 12px;
-  background-color: #fff;
+  background: white;
   color: #f46d25;
   border: 2px solid #f46d25;
   border-radius: 5px;
-  cursor: pointer;
+  padding: 8px 16px;
   font-weight: bold;
-  font-size: 0.85rem;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .formulario-modal button.cancelar:hover {
@@ -287,14 +220,13 @@
 }
 
 .formulario-modal button.salvar {
-  padding: 6px 12px;
   background-color: #f46d25;
-  color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
+  padding: 8px 16px;
+  color: white;
   font-weight: bold;
-  font-size: 0.85rem;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
@@ -307,16 +239,16 @@
   background-color: #d05e20;
 }
 
-/* Dropdown */
+/* ===== MENU DROPDOWN ===== */
 .dropdown {
   position: relative;
+  z-index: 9999;
 }
 
 .dropdown-toggle {
   background: none;
   border: none;
   color: white;
-  margin-right: 1rem;
   font-size: 2rem;
   cursor: pointer;
   font-weight: bold;
@@ -327,12 +259,12 @@
   right: 0;
   top: 2.5rem;
   background-color: #222;
-  border-radius: 6px;
+  border-radius: 5px;
   list-style: none;
   padding: 2px;
   margin: 10px;
   min-width: 160px;
-  z-index: 10;
+  z-index: 9999;
 }
 
 .dropdown-menu li a {
@@ -340,10 +272,11 @@
   padding: 10px 15px;
   color: white;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .dropdown-menu li a:hover {
-  background-color: #555;
+  background-color: #444;
 }
 
 /* Container principal */
@@ -603,9 +536,12 @@
 
 /* Media queries */
 @media (max-width: 768px) {
+  .dropdown,
+  .profile-img {
+    display: none !important;
+  }
   .navbar {
     padding: 0.8rem 0 0.5rem 1rem !important;
-    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -616,14 +552,8 @@
     justify-content: space-between;
   }
 
-  .navbar .dropdown,
-  .profile-img {
-    display: none !important;
-  }
-
   .greeting div {
     font-size: 16px !important;
-    margin-bottom: 0.5px;
   }
 
   .greeting small {
@@ -632,8 +562,8 @@
     line-height: 2;
   }
 
-  .right {
-    margin-top: 0.8rem !important;
+  .notificacao-wrapper {
+    margin: 0 10px 10px 0;
   }
 
   .notificacao {
@@ -642,7 +572,7 @@
   }
 
   .notificacao-popup {
-    border-radius: 5px;
+    border-radius: 4px;
     width: 12.5rem;
     top: 1.5rem;
     right: 0.25rem;
